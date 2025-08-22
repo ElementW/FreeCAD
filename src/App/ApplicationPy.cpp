@@ -70,6 +70,7 @@ PyMethodDef Application::Methods[] = {
      (PyCFunction)Application::sDumpConfig,
      METH_VARARGS,
      "Dump the configuration to the output."},
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
     {"addImportType",
      (PyCFunction)Application::sAddImportType,
      METH_VARARGS,
@@ -94,6 +95,7 @@ PyMethodDef Application::Methods[] = {
      (PyCFunction)Application::sGetExportType,
      METH_VARARGS,
      "Get the name of the module that can export the filetype"},
+#endif  // FC_NO_LEGACY_FORMAT_HANDLING
     {"getResourceDir",
      (PyCFunction)Application::sGetResourcePath,
      METH_VARARGS,
@@ -645,6 +647,14 @@ PyObject* Application::sGetVersion(PyObject* /*self*/, PyObject* args)
     return Py::new_reference_to(list);
 }
 
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
+#ifdef _MSC_VER
+# pragma warning(push)
+# pragma warning(disable : 34996)
+#else
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 PyObject* Application::sAddImportType(PyObject* /*self*/, PyObject* args)
 {
     char *psKey, *psMod;
@@ -778,6 +788,13 @@ PyObject* Application::sGetExportType(PyObject* /*self*/, PyObject* args)
         return Py::new_reference_to(dict);
     }
 }
+#ifdef _MSC_VER
+# pragma warning(disable : 34996)
+# pragma warning(pop)
+#else
+# pragma GCC diagnostic pop
+#endif
+#endif  // FC_NO_LEGACY_FORMAT_HANDLING
 
 PyObject* Application::sGetResourcePath(PyObject* /*self*/, PyObject* args)
 {
