@@ -65,6 +65,7 @@ set(FreeCADApp_LIBS
     FreeCADBase
     ${Boost_LIBRARIES}
     fmt::fmt
+    Microsoft.GSL::GSL
 )
 
 if(BUILD_TRACY_FRAME_PROFILER)
