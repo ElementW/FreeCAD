@@ -94,6 +94,8 @@ public:
     /// open/save dialog boxes. Note those patterns match more than just file extensions and should
     /// *never* be reduced to extensions only.
     FileNamePatternList fileNamePatterns;
+
+    // Can be extended with e.g. format detection std::function<>, icon path, etc
 };
 
 struct AppExport Translator
@@ -186,16 +188,19 @@ public:
     /// @name Formats
     /// @{
 
-    /// Register a file format.
+    /// @brief Register a file format.
     /// @returns `true` if the format was added, `false` if it was already known.
     /// @throws Base::ParserError if a file name pattern of the format is invalid.
     bool addFormat(const Format& format);
-    /// Get all known formats.
+    /// @brief Get all known formats.
+    /// Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
     std::vector<gsl::not_null<const Format*>> getFormats() const;
-    /// Find the format with the given MIME type.
+    /// @brief Find the format with the given MIME type.
+    /// Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
     /// @return Pointer to format, or `nullptr` if no such format is known.
     const Format* getFormatByMimeType(const MimeType& mimeType) const;
-    /// Get formats matching the given file name.
+    /// @brief Get formats matching the given file name.
+    /// Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
     /// @param name Full name (not path) of the file to figure out potential formats of.
     ///        *Never* pass a truncated file name or extension only; as this will fail to match formats.
     std::vector<gsl::not_null<const Format*>> getFormatsForFileName(const std::string_view& name) const;
@@ -205,7 +210,7 @@ public:
     /// @name Importers
     /// @{
 
-    /// Register an importer, associating one or more file formats to a Python module name.
+    /// @brief Register an importer, associating one or more file formats to a Python module name.
     void addImporter(const Importer& importer);
     std::vector<gsl::not_null<const Importer*>> getImporters() const;
     std::vector<gsl::not_null<const Importer*>> getImportersForMimeType(const MimeType& mimeType) const;
@@ -213,12 +218,14 @@ public:
     {
         return getImportersForMimeType(format.mimeType);
     }
-    /// Get importers able to import a file with the given file name.
+    /// @brief Get importers able to import a file with the given file name.
+    /// Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
     /// @param name Full name (not path) of the file to be imported.
     ///        *Never* pass a truncated file name or extension only; as this will fail to match importers.
     std::vector<gsl::not_null<const Importer*>> getImportersForFileName(const std::string_view& name) const;
     std::vector<gsl::not_null<const Format*>> getSupportedImportFormats() const;
-    /// Get the importers with a given Python module name.
+    /// @brief Get the importers with a given Python module name.
+    /// Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
     std::vector<gsl::not_null<const Importer*>> getImportersByModule(const std::string_view& module) const;
 
     /// @}
@@ -226,7 +233,7 @@ public:
     /// @name Exporters
     /// @{
 
-    /// Register an exporter, associating one or more file formats to a Python module name.
+    /// @brief Register an exporter, associating one or more file formats to a Python module name.
     void addExporter(const Exporter& exporter);
     std::vector<gsl::not_null<const Exporter*>> getExporters() const;
     std::vector<gsl::not_null<const Exporter*>> getExportersForMimeType(const MimeType& mimeType) const;
@@ -234,12 +241,14 @@ public:
     {
         return getExportersForMimeType(format.mimeType);
     }
-    /// Get exporters able to export to a file with the given file name.
+    /// @brief Get exporters able to export to a file with the given file name.
+    /// Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
     /// @param name Full name (not path) of the file to be exported to.
     ///        *Never* pass a truncated file name or extension only; as this will fail to match exporters.
     std::vector<gsl::not_null<const Exporter*>> getExportersForFileName(const std::string_view& name) const;
     std::vector<gsl::not_null<const Format*>> getSupportedExportFormats() const;
-    /// Get the exporters with a given Python module name.
+    /// @brief Get the exporters with a given Python module name.
+    /// Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
     std::vector<gsl::not_null<const Exporter*>> getExportersByModule(const std::string_view& module) const;
 
     /// @}

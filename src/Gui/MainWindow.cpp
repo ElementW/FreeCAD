@@ -72,6 +72,7 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <App/DocumentObjectGroup.h>
+#include <App/Formats.h>
 #include <App/SafeMode.h>
 #include <Base/ConsoleObserver.h>
 #include <Base/Parameter.h>
@@ -2152,13 +2153,9 @@ void MainWindow::loadUrls(App::Document* doc, const QList<QUrl>& urls)
         if (info.exists() && info.isFile()) {
             if (info.isSymLink())
                 info.setFile(info.symLinkTarget());
-            std::vector<std::string> module = App::GetApplication()
-                .getImportModules(info.completeSuffix().toLatin1());
-            if (module.empty()) {
-                module = App::GetApplication()
-                    .getImportModules(info.suffix().toLatin1());
-            }
-            if (!module.empty()) {
+            const auto importers = App::GetApplication().getFormats().getImportersForFileName(
+                        info.fileName().toStdString());
+            if (!importers.empty()) {
                 // ok, we support files with this extension
                 files << info.absoluteFilePath();
             }

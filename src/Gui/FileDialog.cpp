@@ -44,6 +44,7 @@
 
 #include <Base/Parameter.h>
 #include <App/Application.h>
+#include <App/Formats.h>
 
 #include "FileDialog.h"
 #include "MainWindow.h"
@@ -1029,54 +1030,53 @@ SelectModule::Dict SelectModule::exportHandler(const QString& fileName, const QS
 
 SelectModule::Dict SelectModule::exportHandler(const QStringList& fileNames, const QString& filter)
 {
+    const auto exporters = App::GetApplication().getFormats().getExporters();
     // first check if there is a certain filter selected
     SelectModule::Dict dict;
     if (!filter.isEmpty()) {
         // If an export filter is specified search directly for the module
-        std::map<std::string, std::string> filterList = App::GetApplication().getExportFilters();
-        std::map<std::string, std::string>::const_iterator it;
-        it = filterList.find((const char*)filter.toUtf8());
-        if (it != filterList.end()) {
-            QString module = QString::fromLatin1(it->second.c_str());
-            for (const auto & fileName : fileNames) {
-                dict[fileName] = module;
+        // HACK: this searches the correct exporter based on the filter text
+        for (const auto exporter : exporters) {
+            if (filter.split(QStringLiteral(" ("))[0] == exporter->supportedFormatsText()) {
+                const QString module = QString::fromStdString(exporter->moduleName);
+                for (const auto& fileName : fileNames) {
+                    dict[fileName] = module;
+                }
+                return dict;
             }
-            return dict;
         }
     }
 
     // the global filter (or no filter) was selected. We now try to sort filetypes that are
     // handled by more than one module and ask to the user to select one.
-    QMap<QString, SelectModule::Dict> filetypeHandler;
-    QMap<QString, QStringList > fileExtension;
-    for (const auto & fileName : fileNames) {
+    using ExporterList = std::vector<gsl::not_null<const App::Exporter*>>;
+    using FileList = QStringList;
+    QMap<ExporterList, FileList> exportersToFiles;
+    for (auto& fileName : fileNames) {
         QFileInfo fi(fileName);
-        QString ext = fi.completeSuffix().toLower();
-        std::map<std::string, std::string> filters = App::GetApplication().getExportFilters(ext.toLatin1());
-
-        if (filters.empty()) {
-            ext = fi.suffix().toLower();
-            filters = App::GetApplication().getExportFilters(ext.toLatin1());
-        }
-
-        fileExtension[ext].push_back(fileName);
-        for (const auto & filter : filters)
-            filetypeHandler[ext][QString::fromUtf8(filter.first.c_str())] = QString::fromLatin1(filter.second.c_str());
-        // set the default module handler
-        if (!filters.empty())
-            dict[fileName] = QString::fromLatin1(filters.begin()->second.c_str());
+        const auto exporters = App::GetApplication().getFormats().getExportersForFileName(fi.fileName().toStdString());
+        exportersToFiles[exporters].emplace_back(std::move(fileName));
     }
 
-    for (QMap<QString, SelectModule::Dict>::const_iterator it = filetypeHandler.cbegin();
-        it != filetypeHandler.cend(); ++it) {
-        if (it.value().size() > 1) {
-            SelectModule dlg(it.key(),it.value(), getMainWindow());
+    for (auto it = exportersToFiles.cbegin(); it != exportersToFiles.cend(); ++it) {
+        if (it.key().size() == 1) {
+            const auto moduleName = QString::fromStdString(it.key()[0]->moduleName);
+            for (const auto& fileName : it.value()) {
+                dict[fileName] = moduleName;
+            }
+        } else {
+            Dict filterToModule;
+            for (const auto filter : it.key()) {
+                filterToModule[QString::fromStdString(filter->getFileDialogFilter(App::GetApplication().getFormats()))] =
+                        QString::fromStdString(filter->moduleName);
+            }
+            SelectModule dlg(QStringLiteral("FIXME"), filterToModule, getMainWindow());
             QApplication::beep();
             if (dlg.exec()) {
-                QString mod = dlg.getModule();
-                const QStringList& files = fileExtension[it.key()];
-                for (const auto & file : files)
-                    dict[file] = mod;
+                const QString moduleName = dlg.getModule();
+                for (const auto& fileName : it.value()) {
+                    dict[fileName] = moduleName;
+                }
             }
         }
     }
@@ -1091,59 +1091,53 @@ SelectModule::Dict SelectModule::importHandler(const QString& fileName, const QS
 
 SelectModule::Dict SelectModule::importHandler(const QStringList& fileNames, const QString& filter)
 {
+    const auto importers = App::GetApplication().getFormats().getImporters();
     // first check if there is a certain filter selected
     SelectModule::Dict dict;
     if (!filter.isEmpty()) {
         // If an import filter is specified search directly for the module
-        std::map<std::string, std::string> filterList = App::GetApplication().getImportFilters();
-        std::map<std::string, std::string>::const_iterator it;
-        it = filterList.find((const char*)filter.toUtf8());
-        if (it != filterList.end()) {
-            QString module = QString::fromLatin1(it->second.c_str());
-            for (const auto & fileName : fileNames) {
-                dict[fileName] = module;
+        // HACK: this searches the correct importer based on the filter text
+        for (const auto importer : importers) {
+            if (filter.split(QStringLiteral(" ("))[0] == importer->supportedFormatsText()) {
+                const QString module = QString::fromStdString(importer->moduleName);
+                for (const auto& fileName : fileNames) {
+                    dict[fileName] = module;
+                }
+                return dict;
             }
-            return dict;
         }
     }
 
     // the global filter (or no filter) was selected. We now try to sort filetypes that are
     // handled by more than one module and ask to the user to select one.
-    QMap<QString, SelectModule::Dict> filetypeHandler;
-    QMap<QString, QStringList > fileExtension;
-    for (const auto & fileName : fileNames) {
+    using ImporterList = std::vector<gsl::not_null<const App::Importer*>>;
+    using FileList = QStringList;
+    QMap<ImporterList, FileList> importersToFiles;
+    for (auto& fileName : fileNames) {
         QFileInfo fi(fileName);
-        QString ext = fi.completeSuffix().toLower();
-        std::map<std::string, std::string> filters = App::GetApplication().getImportFilters(ext.toLatin1());
-
-        if (filters.empty()) {
-            ext = fi.suffix().toLower();
-            filters = App::GetApplication().getImportFilters(ext.toLatin1());
-        }
-
-        fileExtension[ext].push_back(fileName);
-        for (const auto & filter : filters)
-            filetypeHandler[ext][QString::fromUtf8(filter.first.c_str())] = QString::fromLatin1(filter.second.c_str());
-        // set the default module handler
-        if (!filters.empty())
-            dict[fileName] = QString::fromLatin1(filters.begin()->second.c_str());
+        const auto importers = App::GetApplication().getFormats().getImportersForFileName(fi.fileName().toStdString());
+        importersToFiles[importers].emplace_back(std::move(fileName));
     }
 
-    for (QMap<QString, SelectModule::Dict>::const_iterator it = filetypeHandler.cbegin();
-        it != filetypeHandler.cend(); ++it) {
-        if (it.value().size() > 1) {
-            SelectModule dlg(it.key(),it.value(), getMainWindow());
+    for (auto it = importersToFiles.cbegin(); it != importersToFiles.cend(); ++it) {
+        if (it.key().size() == 1) {
+            const auto moduleName = QString::fromStdString(it.key()[0]->moduleName);
+            for (const auto& fileName : it.value()) {
+                dict[fileName] = moduleName;
+            }
+        } else {
+            Dict filterToModule;
+            for (const auto filter : it.key()) {
+                filterToModule[QString::fromStdString(filter->getFileDialogFilter(App::GetApplication().getFormats()))] =
+                        QString::fromStdString(filter->moduleName);
+            }
+            SelectModule dlg(QStringLiteral("FIXME"), filterToModule, getMainWindow());
             QApplication::beep();
             if (dlg.exec()) {
-                QString mod = dlg.getModule();
-                const QStringList& files = fileExtension[it.key()];
-                for (const auto & file : files) {
-                    dict[file] = mod;
+                const QString moduleName = dlg.getModule();
+                for (const auto& fileName : it.value()) {
+                    dict[fileName] = moduleName;
                 }
-            }
-            else {
-                // Cancelled
-                return {};
             }
         }
     }

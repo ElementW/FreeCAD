@@ -40,6 +40,7 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <App/Expression.h>
+#include <App/Formats.h>
 #include <App/GeoFeature.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
@@ -104,27 +105,31 @@ void StdCmdOpen::activated(int iMsg)
 
     QString allSupportedFormats = QObject::tr("Supported formats") + QStringLiteral(" (");
     // Cram all formats FreeCAD can import under one label
-    const auto filetypes = App::GetApplication().getImportTypes();
-    for (const auto &type : filetypes) {
-        allSupportedFormats += QStringLiteral(" *.");
-        allSupportedFormats += QString::fromStdString(type);
+    const auto importers = App::GetApplication().getFormats().getImporters();
+    for (const auto& importer : importers) {
+        for (const auto& mimeType : importer->fileMimeTypes) {
+            const auto format = App::GetApplication().getFormats().getFormatByMimeType(mimeType);
+            for (const auto& pattern : format->fileNamePatterns) {
+                allSupportedFormats += QStringLiteral(" *.");
+                allSupportedFormats += QLatin1StringView(pattern);
+            }
+        }
     }
     allSupportedFormats += QLatin1Char(')');
     formatList += allSupportedFormats;
 
-    const auto importFilters = App::GetApplication().getImportFilters();
     // Make sure FCStd is the second entry in the format list
-    auto fcstdIt = importFilters.cend();
-    for (auto it = importFilters.cbegin(); it != importFilters.cend(); ++it) {
-        if (const auto fc = it->first.find("*.FCStd"); fc != std::string::npos) {
+    auto fcstdIt = importers.cend();
+    for (auto it = importers.cbegin(); it != importers.cend(); ++it) {
+        if ((*it)->handlesMimeType(App::MimeTypes::FreecadDocument)) {
             fcstdIt = it;
-            formatList += QString::fromStdString(it->first);
+            formatList += QLatin1StringView((*it)->getFileDialogFilter(App::GetApplication().getFormats()));
             break;
         }
     }
-    for (auto it = importFilters.cbegin(); it != importFilters.cend(); ++it) {
+    for (auto it = importers.cbegin(); it != importers.cend(); ++it) {
         if (it != fcstdIt) {
-            formatList += QString::fromStdString(it->first);
+            formatList += QLatin1StringView((*it)->getFileDialogFilter(App::GetApplication().getFormats()));
         }
     }
 
@@ -189,24 +194,30 @@ void StdCmdImport::activated(int iMsg)
     QStringList formatList;
 
     QString allSupportedFormats = QObject::tr("Supported formats") + QStringLiteral(" (");
-    const auto filetypes = App::GetApplication().getImportTypes();
-    for (const auto &type : filetypes) {
-        if (type != "FCStd") {
-            allSupportedFormats += QStringLiteral(" *.");
-            allSupportedFormats += QString::fromStdString(type);
+    const auto importers = App::GetApplication().getFormats().getImporters();
+    for (const auto importer : importers) {
+        if (importer->handlesMimeType(App::MimeTypes::FreecadDocument)) {
+            continue;
+        }
+        for (const auto& mimeType : importer->fileMimeTypes) {
+            const auto format = App::GetApplication().getFormats().getFormatByMimeType(mimeType);
+            for (const auto& pattern : format->fileNamePatterns) {
+                allSupportedFormats += QStringLiteral(" *.");
+                allSupportedFormats += QLatin1StringView(pattern);
+            }
         }
     }
     allSupportedFormats += QLatin1Char(')');
-    formatList += allSupportedFormats;
+    formatList << allSupportedFormats;
 
-    const auto importFilters = App::GetApplication().getImportFilters();
-    for (auto it = importFilters.cbegin(); it != importFilters.cend(); ++it) {
-        if (it->first.find("*.FCStd") == std::string::npos) {
-            formatList += QString::fromStdString(it->first);
+    for (const auto importer : importers) {
+        if (importer->handlesMimeType(App::MimeTypes::FreecadDocument)) {
+            continue;
         }
+        formatList << QString::fromStdString(importer->getFileDialogFilter(App::GetApplication().getFormats()));
     }
 
-    formatList += QObject::tr("All files") + QStringLiteral(" (*.*)");
+    formatList << QObject::tr("All files") + QStringLiteral(" (*.*)");
 
     Base::Reference<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
@@ -399,14 +410,15 @@ void StdCmdExport::activated(int iMsg)
     bool filenameWasGenerated = false;
 
     // fill the list of registered suffixes
-    QStringList filterList;
-    std::map<std::string, std::string> filterMap = App::GetApplication().getExportFilters();
-    for (const auto &filter : filterMap) {
-        // ignore the project file format
-        if (filter.first.find("(*.FCStd)") == std::string::npos) {
-            filterList << QString::fromStdString(filter.first);
+    QStringList formatList;
+    const auto exporters = App::GetApplication().getFormats().getExporters();
+    for (const auto exporter : exporters) {
+        if (exporter->handlesMimeType(App::MimeTypes::FreecadDocument)) {
+            continue;
         }
+        formatList << QString::fromStdString(exporter->getFileDialogFilter(App::GetApplication().getFormats()));
     }
+
     Base::Reference<ParameterGrp> hPath =
         App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
     QString selectedFilter;
@@ -459,7 +471,7 @@ void StdCmdExport::activated(int iMsg)
     }
         // Launch the file selection modal dialog
     QString filename = FileDialog::getSaveFileName(getMainWindow(),
-        QObject::tr("Export file"), defaultFilename, filterList, &selectedFilter);
+        QObject::tr("Export file"), defaultFilename, formatList, &selectedFilter);
     if (!filename.isEmpty()) {
         hPath->SetASCII("FileExportFilter", selectedFilter.toLatin1().constData());
 

@@ -48,6 +48,7 @@
 
 #include <App/Document.h>
 #include <App/DocumentObjectPy.h>
+#include <App/Formats.h>
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
@@ -896,11 +897,10 @@ void Application::exportTo(const char* FileName, const char* DocName, const char
             parameterGroup->SetBool("RecentIncludesExported",
                                     addToRecent);  // Make sure it gets added to the parameter list
             if (addToRecent) {
-                // search for a module that is able to open the exported file because otherwise
+                // search for an importer that is able to open the exported file because otherwise
                 // it doesn't need to be added to the recent files list (#0002047)
-                std::map<std::string, std::string> importMap =
-                    App::GetApplication().getImportFilters(te.c_str());
-                if (!importMap.empty()) {
+                const auto importers = App::GetApplication().getFormats().getExportersForFileName(File.fileName());
+                if (!importers.empty()) {
                     getMainWindow()->appendRecentFile(QString::fromUtf8(File.filePath().c_str()));
                 }
             }

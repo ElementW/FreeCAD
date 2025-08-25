@@ -38,6 +38,7 @@
 #include "FileUtilities.h"
 #include "ThumbnailSource.h"
 #include <App/Application.h>
+#include <App/Formats.h>
 #include <App/ProjectFile.h>
 #include <Base/FileInfo.h>
 #include <Base/TimeInfo.h>
@@ -110,15 +111,10 @@ FileStats getFileInfo(const std::string& path)
     return result;
 }
 
-bool freecadCanOpen(const QString& extension)
+bool freecadCanOpen(const QFileInfo& fileInfo)
 {
-    std::string ext = extension.toStdString();
-    auto importTypes = App::GetApplication().getImportTypes();
-    return std::ranges::find_if(importTypes,
-                                [&ext](const auto& item) {
-                                    return boost::iequals(item, ext);
-                                })
-        != importTypes.end();
+    return !App::GetApplication().getFormats().getImportersForFileName(
+                fileInfo.fileName().toStdString()).empty();
 }
 
 DisplayedFilesModel::DisplayedFilesModel(QObject* parent)
@@ -189,7 +185,7 @@ void DisplayedFilesModel::addFile(const QString& filePath)
         return;
     }
 
-    if (!freecadCanOpen(qfi.suffix())) {
+    if (!freecadCanOpen(qfi)) {
         return;
     }
 

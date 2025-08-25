@@ -53,9 +53,15 @@ Format Format::fromLegacyFilter(const std::string_view& filter)
     FileNamePatternList fileNamePatterns;
     const std::string_view f{filter};
     const auto fileNamePatternsStart = f.find_last_of('(');
+    if (fileNamePatternsStart == std::string_view::npos) {
+        throw Base::ValueError("No pattern list opening parens found");
+    }
     auto pos = fileNamePatternsStart;
-    while (pos != std::string_view::npos) {
+    while (true) {
         const auto next = f.find_first_of(" )", pos + 1);
+        if (next == std::string_view::npos) {
+            break;
+        }
         const auto len = next - pos - 1;
         fileNamePatterns.emplace_back(f.substr(pos + 1, len));
         pos = next;

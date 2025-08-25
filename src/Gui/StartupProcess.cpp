@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QImageReader>
 #include <QLabel>
+#include <QMimeDatabase>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QStatusBar>
@@ -43,6 +44,7 @@
 #include "MainWindow.h"
 #include "Language/Translator.h"
 #include <App/Application.h>
+#include <App/Formats.h>
 #include <Base/Console.h>
 
 
@@ -398,16 +400,32 @@ void StartupPostProcess::setBranding()
 
 void StartupPostProcess::setImportImageFormats()
 {
-    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    std::stringstream str;
-    str << "Image formats (";
-    for (const auto& ext : supportedFormats) {
-        str << "*." << ext.constData() << " *." << ext.toUpper().constData() << " ";
+    QMimeDatabase mimeDb;
+    const auto supportedMimes = QImageReader::supportedMimeTypes();
+    std::vector<std::string> importerMimes;
+    importerMimes.reserve(supportedMimes.size());
+    for (const auto& mimeName : supportedMimes) {
+        const QMimeType mime{mimeDb.mimeTypeForName(QString::fromLatin1(mimeName))};
+        const auto qtGlobPatterns = mime.globPatterns();
+        std::vector<std::string> patterns;
+        for (const auto& qtPattern : qtGlobPatterns) {
+            patterns.emplace_back(qtPattern.toStdString());
+        }
+        const App::Format format {
+            mime.comment().toStdString(),
+            mimeName.toStdString(),
+            patterns
+        };
+        App::GetApplication().getFormats().addFormat(format);
+        importerMimes.emplace_back(mimeName.data());
     }
-    str << ")";
-
-    std::string filter = str.str();
-    App::GetApplication().addImportType(filter.c_str(), "FreeCADGui");
+    App::Importer importer;
+    importer.moduleName = "FreeCADGui";
+    importer.fileMimeTypes = std::move(importerMimes);
+    importer.translatableSupportedFormatsText = QT_TRANSLATE_NOOP("Formats", "Image formats");
+    importer.translatableImportActionText = QT_TRANSLATE_NOOP("Formats", "Import images");
+    importer.translatableImportFilesText = QT_TRANSLATE_NOOP("Formats", "Import %1 image file(s)");
+    App::GetApplication().getFormats().addImporter(importer);
 }
 
 void StartupPostProcess::showMainWindow()

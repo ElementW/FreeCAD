@@ -36,6 +36,7 @@
 #include "DocumentPy.h"
 #include "DocumentObserverPython.h"
 #include "DocumentObjectPy.h"
+#include "Formats.h"
 
 
 // using Base::GetConsole;
@@ -287,14 +288,14 @@ PyObject* Application::sLoadFile(PyObject* /*self*/, PyObject* args)
 
         std::string module = mod;
         if (module.empty()) {
-            std::string ext = fi.extension();
-            std::vector<std::string> modules = GetApplication().getImportModules(ext.c_str());
+            const auto fileName = fi.fileName();
+            const auto modules = GetApplication().getFormats().getImportersForFileName(fileName);
             if (modules.empty()) {
-                PyErr_Format(PyExc_IOError, "Filetype %s is not supported.", ext.c_str());
+                PyErr_Format(PyExc_IOError, "File %s is not supported: no available importer", fileName.c_str());
                 return nullptr;
             }
             else {
-                module = modules.front();
+                module = modules.front()->moduleName;
             }
         }
 
