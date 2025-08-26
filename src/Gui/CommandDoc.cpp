@@ -100,50 +100,53 @@ void StdCmdOpen::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
 
-    // fill the list of registered endings
-    QStringList formatList;
-
-    QString allSupportedFormats = QObject::tr("Supported formats") + QStringLiteral(" (");
-    // Cram all formats FreeCAD can import under one label
     const auto importers = App::GetApplication().getFormats().getImporters();
-    for (const auto& importer : importers) {
+    // fill the list of registered endings
+    FileFilterList filterList;
+
+    FileFilter allSupportedFormats{QObject::tr("Supported formats"), {}};
+    // Cram all formats FreeCAD can import under one label
+    for (const auto importer : importers) {
         for (const auto& mimeType : importer->fileMimeTypes) {
             const auto format = App::GetApplication().getFormats().getFormatByMimeType(mimeType);
             for (const auto& pattern : format->fileNamePatterns) {
-                allSupportedFormats += QStringLiteral(" *.");
-                allSupportedFormats += QLatin1StringView(pattern);
+                allSupportedFormats.patterns << QString::fromStdString(pattern);
             }
         }
     }
-    allSupportedFormats += QLatin1Char(')');
-    formatList += allSupportedFormats;
+    filterList << allSupportedFormats;
 
     // Make sure FCStd is the second entry in the format list
     auto fcstdIt = importers.cend();
     for (auto it = importers.cbegin(); it != importers.cend(); ++it) {
         if ((*it)->handlesMimeType(App::MimeTypes::FreecadDocument)) {
             fcstdIt = it;
-            formatList += QLatin1StringView((*it)->getFileDialogFilter(App::GetApplication().getFormats()));
+            filterList << FileFilter::fromImporter(**it, App::GetApplication().getFormats());
             break;
         }
     }
     for (auto it = importers.cbegin(); it != importers.cend(); ++it) {
         if (it != fcstdIt) {
-            formatList += QLatin1StringView((*it)->getFileDialogFilter(App::GetApplication().getFormats()));
+            filterList << FileFilter::fromImporter(**it, App::GetApplication().getFormats());
         }
     }
+    // Sort the list alphabetically
+    // TODO: check locale/collate sensitivity
+    std::sort(filterList.begin(), filterList.end(), [](const FileFilter& lhs, const FileFilter& rhs) {
+        return lhs.filterName < rhs.filterName;
+    });
 
-    formatList += QObject::tr("All files") + QStringLiteral(" (*.*)");
+    filterList << FileFilter::AllFiles;
 
-    QString selectedFilter;
+    qsizetype selectedFilterIndex;
     QStringList fileList = FileDialog::getOpenFileNames(getMainWindow(),
-        QObject::tr("Open document"), QString(), formatList, &selectedFilter);
+        QObject::tr("Open document"), QString(), filterList, &selectedFilterIndex);
     if (fileList.isEmpty()) {
         return;
     }
 
     // load the files with the associated modules
-    SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
+    SelectModule::Dict dict = SelectModule::importHandler(fileList, filterList[selectedFilterIndex]);
     if (dict.isEmpty()) {
         QMessageBox::critical(getMainWindow(),
             qApp->translate("StdCmdOpen", "Cannot open file"),
@@ -190,43 +193,42 @@ void StdCmdImport::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
 
-    // fill the list of registered endings
-    QStringList formatList;
-
-    QString allSupportedFormats = QObject::tr("Supported formats") + QStringLiteral(" (");
     const auto importers = App::GetApplication().getFormats().getImporters();
-    for (const auto importer : importers) {
-        if (importer->handlesMimeType(App::MimeTypes::FreecadDocument)) {
-            continue;
-        }
-        for (const auto& mimeType : importer->fileMimeTypes) {
+    // fill the list of registered endings
+    FileFilterList filterList;
+
+    FileFilter allSupportedFormats{QObject::tr("Supported formats"), {}};
+    // Cram all formats FreeCAD can import except FCStd under one label
+    auto fcstdIt = importers.cend();
+    for (auto it = importers.cbegin(); it != importers.cend(); ++it) {
+        for (const auto& mimeType : (*it)->fileMimeTypes) {
+            if (mimeType == App::MimeTypes::FreecadDocument) {
+                continue;
+            }
             const auto format = App::GetApplication().getFormats().getFormatByMimeType(mimeType);
             for (const auto& pattern : format->fileNamePatterns) {
-                allSupportedFormats += QStringLiteral(" *.");
-                allSupportedFormats += QLatin1StringView(pattern);
+                allSupportedFormats.patterns << QString::fromStdString(pattern);
             }
         }
     }
-    allSupportedFormats += QLatin1Char(')');
-    formatList << allSupportedFormats;
+    filterList << allSupportedFormats;
 
-    for (const auto importer : importers) {
-        if (importer->handlesMimeType(App::MimeTypes::FreecadDocument)) {
-            continue;
+    for (auto it = importers.cbegin(); it != importers.cend(); ++it) {
+        if (it != fcstdIt) {
+            filterList << FileFilter::fromImporter(**it, App::GetApplication().getFormats());
         }
-        formatList << QString::fromStdString(importer->getFileDialogFilter(App::GetApplication().getFormats()));
     }
 
-    formatList << QObject::tr("All files") + QStringLiteral(" (*.*)");
+    filterList << FileFilter::AllFiles;
 
     Base::Reference<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-    QString selectedFilter = QString::fromStdString(hPath->GetASCII("FileImportFilter"));
+    qsizetype selectedFilterIndex = hPath->GetInt("FileImportFilterKey");
     QStringList fileList = FileDialog::getOpenFileNames(getMainWindow(),
-        QObject::tr("Import file"), QString(), formatList, &selectedFilter);
+        QObject::tr("Import file"), QString(), filterList, &selectedFilterIndex);
     if (!fileList.isEmpty()) {
-        hPath->SetASCII("FileImportFilter", selectedFilter.toLatin1().constData());
-        SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
+        hPath->SetInt("FileImportFilterKey", selectedFilterIndex);
+        SelectModule::Dict dict = SelectModule::importHandler(fileList, filterList[selectedFilterIndex]);
 
         bool emptyDoc = (getActiveGuiDocument()->getDocument()->countObjects() == 0);
         // load the files with the associated modules
@@ -409,25 +411,19 @@ void StdCmdExport::activated(int iMsg)
     App::ExportInfo exportInfo = doc->exportInfo();
     bool filenameWasGenerated = false;
 
-    // fill the list of registered suffixes
-    QStringList formatList;
+    FileFilterList filterList;
     const auto exporters = App::GetApplication().getFormats().getExporters();
     for (const auto exporter : exporters) {
         if (exporter->handlesMimeType(App::MimeTypes::FreecadDocument)) {
             continue;
         }
-        formatList << QString::fromStdString(exporter->getFileDialogFilter(App::GetApplication().getFormats()));
+        filterList << FileFilter::fromExporter(*exporter, App::GetApplication().getFormats());
     }
 
     Base::Reference<ParameterGrp> hPath =
         App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-    QString selectedFilter;
-
-    if (!exportInfo.filter.empty()) {
-        selectedFilter = QString::fromStdString(exportInfo.filter);
-    } else {
-        selectedFilter = QString::fromStdString(hPath->GetASCII("FileExportFilter"));
-    }
+    qsizetype selectedFilterIndex = exportInfo.filterIndex == -1 ?
+                hPath->GetInt("FileExportFilterKey") : exportInfo.filterIndex;
 
     // Create a default filename for the export
     // * If this is the first export (the ExportInfo object' fields are empty)
@@ -471,11 +467,11 @@ void StdCmdExport::activated(int iMsg)
     }
         // Launch the file selection modal dialog
     QString filename = FileDialog::getSaveFileName(getMainWindow(),
-        QObject::tr("Export file"), defaultFilename, formatList, &selectedFilter);
+        QObject::tr("Export file"), defaultFilename, filterList, &selectedFilterIndex);
     if (!filename.isEmpty()) {
-        hPath->SetASCII("FileExportFilter", selectedFilter.toLatin1().constData());
+        hPath->SetInt("FileExportFilterKey", selectedFilterIndex);
 
-        SelectModule::Dict dict = SelectModule::exportHandler(filename, selectedFilter);
+        SelectModule::Dict dict = SelectModule::exportHandler(filename, filterList[selectedFilterIndex]);
         // export the files with the associated modules
         for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
             getGuiApplication()->exportTo(it.key().toUtf8(),
@@ -495,7 +491,7 @@ void StdCmdExport::activated(int iMsg)
 
         exportInfo.filename = filename.toStdString();
         exportInfo.object = toExport;
-        exportInfo.filter = selectedFilter.toStdString();
+        exportInfo.filterIndex = selectedFilterIndex;
         exportInfo.generatedName = filenameWasGenerated;
 
         doc->setExportInfo(exportInfo);
@@ -534,7 +530,7 @@ void StdCmdMergeProjects::activated(int iMsg)
     QString exe = qApp->applicationName();
     QString project = FileDialog::getOpenFileName(Gui::getMainWindow(),
         QString::fromUtf8(QT_TR_NOOP("Merge document")), FileDialog::getWorkingDirectory(),
-        QStringList(QString::fromUtf8(QT_TR_NOOP("%1 document (*.FCStd)")).arg(exe)));
+        {{{QString::fromUtf8(QT_TR_NOOP("%1 document")).arg(exe), {"*.FCStd"}}}});
     if (!project.isEmpty()) {
         FileDialog::setWorkingDirectory(project);
         App::Document* doc = App::GetApplication().getActiveDocument();
@@ -618,8 +614,8 @@ void StdCmdExportDependencyGraph::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
     App::Document* doc = App::GetApplication().getActiveDocument();
-    QString format = QStringLiteral("%1 (*.gv)").arg(Gui::GraphvizView::tr("Graphviz format"));
-    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), Gui::GraphvizView::tr("Export graph"), QString(), QStringList(format));
+    FileFilter format{Gui::GraphvizView::tr("Graphviz format"), {"*.gv"}};
+    QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), Gui::GraphvizView::tr("Export graph"), QString(), {{format}});
     if (!fn.isEmpty()) {
         QFile file(fn);
         if (file.open(QFile::WriteOnly)) {

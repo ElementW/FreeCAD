@@ -24,6 +24,9 @@
 #ifndef GUI_FILEDIALOG_H
 #define GUI_FILEDIALOG_H
 
+#include <utility>
+#include <variant>
+
 #include <QCompleter>
 #include <QFileDialog>
 #include <QFileIconProvider>
@@ -39,6 +42,13 @@ class QHBoxLayout;
 class QLineEdit;
 class QSpacerItem;
 
+namespace App
+{
+class Importer;
+class Exporter;
+class Formats;
+} // namespace App
+
 namespace Gui {
 
 /*!
@@ -52,6 +62,79 @@ public:
     static bool dontUseNativeColorDialog();
 };
 
+class GuiExport FileFilter
+{
+public:
+    static const FileFilter AllFiles;
+
+    QString filterName;
+    QStringList patterns;
+    QStringList commonPatterns;
+    QString userData;
+
+protected:
+    std::variant<const App::Importer*, const App::Exporter*> translator;
+
+public:
+    // QList<T> requires default-constructible elements.
+    FileFilter() = default;
+
+    FileFilter(QString filterName, QStringList patterns, QString userData = {}) :
+        filterName(std::move(filterName)), patterns(std::move(patterns)), userData(std::move(userData)) {}
+    FileFilter(QString filterName, QStringList patterns, const char* userData) :
+        FileFilter(std::move(filterName), std::move(patterns), QString::fromUtf8(userData)) {}
+
+    FileFilter(QString filterName, const QList<QStringView>& patterns, QString userData = {}) :
+        filterName(filterName), userData(std::move(userData))
+    {
+        this->patterns.reserve(patterns.size());
+        for (const auto &pattern : patterns) {
+            this->patterns << pattern.toString();
+        }
+    }
+    FileFilter(QString filterName, const QList<QStringView>& patterns, const char* userData) :
+        FileFilter(std::move(filterName), patterns, QString::fromUtf8(userData)) {}
+
+    FileFilter(QString filterName, const std::initializer_list<const char*>& patterns, QString userData = {}) :
+        filterName(std::move(filterName)), userData(std::move(userData))
+    {
+        this->patterns.reserve(patterns.size());
+        for (const auto &pattern : patterns) {
+            this->patterns << QString::fromUtf8(pattern);
+        }
+    }
+    FileFilter(QString filterName, const std::initializer_list<const char*>& patterns, const char* userData) :
+        FileFilter(std::move(filterName), patterns, QString::fromUtf8(userData)) {}
+
+    bool operator==(const FileFilter& other) const
+    {
+        return filterName == other.filterName && patterns == other.patterns &&
+                commonPatterns == other.commonPatterns && translator == other.translator;
+    }
+
+    static FileFilter fromImporter(const App::Importer&, const App::Formats&);
+    const App::Importer* getImporter() const;
+    static FileFilter fromExporter(const App::Exporter&, const App::Formats&);
+    const App::Exporter* getExporter() const;
+
+private:
+    friend class FileDialog;
+    friend class FileFilterList;
+    static FileFilter fromFilterString(const QStringView&);
+    QString asFilterString() const;
+    QString asFancyFilterString() const;
+};
+
+class GuiExport FileFilterList : public QList<FileFilter>
+{
+private:
+    friend class FileDialog;
+    static FileFilterList fromFilterStringList(const QStringList&);
+    static FileFilterList fromFiltersString(const QString&);
+    QStringList asFancyFiltersStringList() const;
+    //QString asFancyFiltersString() const;
+};
+
 /**
  * The FileDialog class provides dialogs that allow users to select files or directories.
  * \author Werner Mayer
@@ -61,23 +144,23 @@ class GuiExport FileDialog : public QFileDialog
     Q_OBJECT
 
 public:
-    static QString getOpenFileName( QWidget * parent = nullptr, const QString & caption = QString(), const QString & dir = QString(),
-                                    const QStringList & filters = QStringList(), QString * selectedFilter = nullptr, Options options = Options() );
-    [[deprecated("Use getOpenFileName with a QStringList filter list instead")]]
-    static QString getOpenFileName( QWidget * parent = nullptr, const QString & caption = QString(), const QString & dir = QString(),
-                                    const QString & filter = QString(), QString * selectedFilter = nullptr, Options options = Options() );
-    static QString getSaveFileName( QWidget * parent = nullptr, const QString & caption = QString(), const QString & dir = QString(),
-                                    const QStringList & filters = QStringList(), QString * selectedFilter = nullptr, Options options = Options() );
-    [[deprecated("Use getSaveFileName with a QStringList filter list instead")]]
-    static QString getSaveFileName( QWidget * parent = nullptr, const QString & caption = QString(), const QString & dir = QString(),
-                                    const QString & filter = QString(), QString * selectedFilter = nullptr, Options options = Options() );
-    static QString getExistingDirectory( QWidget * parent = nullptr, const QString & caption = QString(), const QString & dir = QString(),
-                                         Options options = ShowDirsOnly );
-    static QStringList getOpenFileNames( QWidget * parent = nullptr, const QString & caption = QString(), const QString & dir = QString(),
-                                         const QStringList & filters = QStringList(), QString * selectedFilter = nullptr, Options options = Options() );
-    [[deprecated("Use getOpenFileNames with a QStringList filter list instead")]]
-    static QStringList getOpenFileNames( QWidget * parent = nullptr, const QString & caption = QString(), const QString & dir = QString(),
-                                         const QString & filter = QString(), QString * selectedFilter = nullptr, Options options = Options() );
+    static QString getOpenFileName(QWidget* parent = nullptr, const QString& caption = {}, const QString& dir = {},
+                                   const FileFilterList& filters = {}, qsizetype* selectedFilterIndex = nullptr, Options options = {});
+    [[deprecated("Use getOpenFileName with a FileFilterList instead")]]
+    static QString getOpenFileName(QWidget* parent = nullptr, const QString& caption = {}, const QString& dir = {},
+                                   const QString& filter = {}, QString* selectedFilter = nullptr, Options options = {});
+    static QString getSaveFileName(QWidget* parent = nullptr, const QString& caption = {}, const QString& dir = {},
+                                   const FileFilterList& filters = {}, qsizetype* selectedFilterIndex = nullptr, Options options = {});
+    [[deprecated("Use getSaveFileName with a FileFilterList instead")]]
+    static QString getSaveFileName(QWidget* parent = nullptr, const QString& caption = {}, const QString& dir = {},
+                                   const QString& filter = {}, QString * selectedFilter = nullptr, Options options = {});
+    static QString getExistingDirectory(QWidget* parent = nullptr, const QString& caption = {}, const QString& dir = {},
+                                        Options options = ShowDirsOnly );
+    static QStringList getOpenFileNames(QWidget* parent = nullptr, const QString& caption = {}, const QString& dir = {},
+                                        const FileFilterList& filters = {}, qsizetype* selectedFilterIndex = nullptr, Options options = {});
+    [[deprecated("Use getOpenFileNames with a FileFilterList instead")]]
+    static QStringList getOpenFileNames(QWidget* parent = nullptr, const QString& caption = {}, const QString& dir = {},
+                                        const QString& filter = {}, QString* selectedFilter = nullptr, Options options = {});
 
     /*! Return the last directory a file was read from or saved to. */
     static QString getWorkingDirectory();
@@ -266,10 +349,10 @@ public:
      * the file.
      */
     //@{
-    static Dict exportHandler(const QString& fileName, const QString& filter=QString());
-    static Dict exportHandler(const QStringList& fileNames, const QString& filter=QString());
-    static Dict importHandler(const QString& fileName, const QString& filter=QString());
-    static Dict importHandler(const QStringList& fileNames, const QString& filter=QString());
+    static Dict exportHandler(const QString& fileName, const FileFilter& filter = FileFilter::AllFiles);
+    static Dict exportHandler(const QStringList& fileNames, const FileFilter& filter = FileFilter::AllFiles);
+    static Dict importHandler(const QString& fileName, const FileFilter& filter = FileFilter::AllFiles);
+    static Dict importHandler(const QStringList& fileNames, const FileFilter& filter = FileFilter::AllFiles);
     //@}
 
     void accept() override;

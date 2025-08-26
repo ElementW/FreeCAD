@@ -16,7 +16,7 @@ namespace App
 struct ExportInfo {
     std::string location {};
     std::string filename {};
-    std::string filter {};
+    int filterIndex {-1};
     bool generatedName {false};
     App::DocumentObject* object {nullptr};
 };

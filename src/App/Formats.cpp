@@ -157,17 +157,12 @@ static void writeLegacyFileFilterExtensions(
     *(filter.end() - 1) = ')';
 }
 
-std::string Importer::getFileDialogFilter(const Formats& formats) const
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
+std::string Importer::getLegacyFileFilter(const Formats& formats) const
 {
     std::string filter{supportedFormatsText()};
     writeLegacyFileFilterExtensions(*this, formats, filter);
     return filter;
-}
-
-#ifndef FC_NO_LEGACY_FORMAT_HANDLING
-std::string Importer::getLegacyFileFilter(const Formats& formats) const
-{
-    return getFileDialogFilter(formats);
 }
 #endif  // FC_NO_LEGACY_FORMAT_HANDLING
 
@@ -183,17 +178,12 @@ std::string Exporter::exportFilesText(int n) const
             .replace(FcName, QString::fromStdString(Application::Config()["ExeName"])).toStdString();
 }
 
-std::string Exporter::getFileDialogFilter(const Formats& formats) const
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
+std::string Exporter::getLegacyFileFilter(const Formats& formats) const
 {
     std::string filter{supportedFormatsText()};
     writeLegacyFileFilterExtensions(*this, formats, filter);
     return filter;
-}
-
-#ifndef FC_NO_LEGACY_FORMAT_HANDLING
-std::string Exporter::getLegacyFileFilter(const Formats& formats) const
-{
-    return getFileDialogFilter(formats);
 }
 #endif  // FC_NO_LEGACY_FORMAT_HANDLING
 

@@ -85,9 +85,9 @@ void CmdRobotExportKukaCompact::activated(int)
     }
     // std::string TrakName = pcTrajectoryObject->getNameInDocument();
 
-    QStringList filter;
-    filter << QStringLiteral("%1 (*.src)").arg(QObject::tr("KRL file"));
-    filter << QStringLiteral("%1 (*.*)").arg(QObject::tr("All Files"));
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("KRL file"), {"*.src"}};
+    filter << Gui::FileFilter::AllFiles;
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
                                                   QObject::tr("Export program"),
                                                   QString(),
@@ -160,9 +160,9 @@ void CmdRobotExportKukaFull::activated(int)
     }
     // std::string TrakName = pcTrajectoryObject->getNameInDocument();
 
-    QStringList filter;
-    filter << QStringLiteral("%1 (*.src)").arg(QObject::tr("KRL file"));
-    filter << QStringLiteral("%1 (*.*)").arg(QObject::tr("All Files"));
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("KRL file"), {"*.src"}};
+    filter << Gui::FileFilter::AllFiles;
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
                                                   QObject::tr("Export program"),
                                                   QString(),

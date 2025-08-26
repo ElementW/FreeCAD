@@ -376,10 +376,9 @@ void DownloadItem::stop()
 void DownloadItem::open()
 {
     QFileInfo info(m_output);
-    QString selectedFilter;
     QStringList fileList;
     fileList << info.absoluteFilePath();
-    SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
+    SelectModule::Dict dict = SelectModule::importHandler(fileList);
 
     // load the files with the associated modules
     if (!dict.isEmpty()) {

@@ -377,7 +377,7 @@ bool EditorView::saveAs()
         this,
         QObject::tr("Save Macro"),
         QString(),
-        QStringList(QStringLiteral("%1 (*.FCMacro);;Python (*.py)").arg(tr("FreeCAD macro"))));
+        {{{tr("FreeCAD macro"), {"*.py"}}, {tr("Python"), {"*.py"}}}});
     if (fn.isEmpty()) {
         return false;
     }
@@ -510,7 +510,7 @@ void EditorView::printPdf()
         FileDialog::getSaveFileName(this,
                                     tr("Export PDF"),
                                     QString(),
-                                    QStringList(QStringLiteral("%1 (*.pdf)").arg(tr("PDF file"))));
+                                    {{{tr("PDF file"), {"*.pdf"}}}});
     if (!filename.isEmpty()) {
         QPrinter printer(QPrinter::ScreenResolution);
         // setPdfVersion sets the printed PDF Version to what is chosen in

@@ -142,8 +142,6 @@ struct AppExport Importer final : public Translator
     /// @example "Import %1 vector file(s) as geometry"
     std::string translatableImportFilesText;
 
-    /// Do not use in new code. Support for string-based filter strings will be removed.
-    std::string getFileDialogFilter(const Formats& formats) const;
 #ifndef FC_NO_LEGACY_FORMAT_HANDLING
 private:
     friend Application;
@@ -171,8 +169,6 @@ struct AppExport Exporter final : public Translator
     /// @example "Export %1 body/ies as meshe(s)"
     std::string translatableExportFilesText;
 
-    /// Do not use in new code. Support for string-based filter strings will be removed.
-    std::string getFileDialogFilter(const Formats& formats) const;
 #ifndef FC_NO_LEGACY_FORMAT_HANDLING
 private:
     friend Application;

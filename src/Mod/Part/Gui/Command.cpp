@@ -942,14 +942,14 @@ CmdPartImport::CmdPartImport()
 void CmdPartImport::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
-    QStringList filter;
-    filter << QStringLiteral("STEP (*.stp *.step)");
-    filter << QStringLiteral("STEP with colors (*.stp *.step)");
-    filter << QStringLiteral("IGES (*.igs *.iges)");
-    filter << QStringLiteral("IGES with colors (*.igs *.iges)");
-    filter << QStringLiteral("BREP (*.brp *.brep)");
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("STEP"), {"*.stp", "*.step"}};
+    filter << Gui::FileFilter{QObject::tr("STEP with colors"), {"*.stp", "*.step"}};
+    filter << Gui::FileFilter{QObject::tr("IGES"), {"*.igs", "*.iges"}};
+    filter << Gui::FileFilter{QObject::tr("IGES with colors"), {"*.igs", "*.iges"}};
+    filter << Gui::FileFilter{QObject::tr("BREP"), {"*.brp", "*.brep"}};
 
-    QString select;
+    qsizetype select = -1;
     QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString(), QString(), filter, &select);
     if (!fn.isEmpty()) {
         Gui::WaitCursor wc;
@@ -959,8 +959,8 @@ void CmdPartImport::activated(int iMsg)
 
         fn = Base::Tools::escapeEncodeFilename(fn);
         openCommand(QT_TRANSLATE_NOOP("Command", "Import Part"));
-        if (select == filter[1] ||
-            select == filter[3]) {
+        if (select == 1 ||
+            select == 3) {
             doCommand(Doc, "import ImportGui");
             doCommand(Doc, "ImportGui.insert(\"%s\",\"%s\")", (const char*)fn.toUtf8(), pDoc->getName());
         }
@@ -1006,21 +1006,21 @@ CmdPartExport::CmdPartExport()
 void CmdPartExport::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
-    QStringList filter;
-    filter << QStringLiteral("STEP (*.stp *.step)");
-    filter << QStringLiteral("STEP with colors (*.stp *.step)");
-    filter << QStringLiteral("IGES (*.igs *.iges)");
-    filter << QStringLiteral("IGES with colors (*.igs *.iges)");
-    filter << QStringLiteral("BREP (*.brp *.brep)");
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("STEP"), {"*.stp", "*.step"}};
+    filter << Gui::FileFilter{QObject::tr("STEP with colors"), {"*.stp", "*.step"}};
+    filter << Gui::FileFilter{QObject::tr("IGES"), {"*.igs", "*.iges"}};
+    filter << Gui::FileFilter{QObject::tr("IGES with colors"), {"*.igs", "*.iges"}};
+    filter << Gui::FileFilter{QObject::tr("BREP"), {"*.brp", "*.brep"}};
 
-    QString select;
+    qsizetype select = -1;
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QString(), QString(), filter, &select);
     if (!fn.isEmpty()) {
         App::Document* pDoc = getDocument();
         if (!pDoc) // no document
             return;
-        if (select == filter[1] ||
-            select == filter[3]) {
+        if (select == 1 ||
+            select == 3) {
             Gui::Application::Instance->exportTo((const char*)fn.toUtf8(),pDoc->getName(),"ImportGui");
         }
         else {
@@ -1055,14 +1055,12 @@ CmdPartImportCurveNet::CmdPartImportCurveNet()
 void CmdPartImportCurveNet::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
-    QStringList filter;
-    filter << QStringLiteral("%1 (*.stp *.step *.igs *.iges *.brp *.brep)")
-                 .arg(QObject::tr("All CAD Files"));
-    filter << QStringLiteral("STEP (*.stp *.step)");
-    filter << QStringLiteral("IGES (*.igs *.iges)");
-    filter << QStringLiteral("BREP (*.brp *.brep)");
-    filter << QStringLiteral("%1 (*.*)")
-                 .arg(QObject::tr("All Files"));
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("All CAD Files"), {"*.stp", "*.step", "*.igs", "*.iges", "*.brp", "*.brep"}};
+    filter << Gui::FileFilter{QObject::tr("STEP"), {"*.stp", "*.step"}};
+    filter << Gui::FileFilter{QObject::tr("IGES"), {"*.igs", "*.iges"}};
+    filter << Gui::FileFilter{QObject::tr("BREP"), {"*.brp", "*.brep"}};
+    filter << Gui::FileFilter::AllFiles;
 
     QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString(), QString(), filter);
     if (!fn.isEmpty()) {

@@ -39,6 +39,11 @@
 
 #include "ListModel.h"
 
+namespace Gui
+{
+class FileFilterList;
+} // namespace Gui
+
 namespace MatGui
 {
 
@@ -92,7 +97,7 @@ private:
     void showPixmap();
     void showSVG();
 
-    QString selectFile(const QStringList& filePatterns);
+    QString selectFile(const Gui::FileFilterList& fileFilters);
     void onFileSelectImage();
     void onFileSelectSVG();
 };

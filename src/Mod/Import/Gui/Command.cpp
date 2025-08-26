@@ -57,7 +57,7 @@ void FCCmdImportReadBREP::activated(int iMsg)
         Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
                                          QString(),
                                          QString(),
-                                         QStringList(QLatin1String("BREP (*.brep *.rle)")));
+                                         {{{QObject::tr("BREP"), {"*.brep", "*.rle"}}}});
     if (fn.isEmpty()) {
         abortCommand();
         return;
@@ -98,7 +98,7 @@ void ImportStep::activated(int iMsg)
         Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
                                          QString(),
                                          QString(),
-                                         QStringList(QLatin1String("STEP (*.stp *.step)")));
+                                         {{{QObject::tr("STEP"), {"*.stp", "*.step"}}}});
     if (!fn.isEmpty()) {
         openCommand(QT_TRANSLATE_NOOP("Command", "Part ImportSTEP Create"));
         doCommand(Doc, "f = App.document().addObject(\"ImportStep\",\"ImportStep\")");
@@ -144,7 +144,7 @@ void ImportIges::activated(int iMsg)
         Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
                                          QString(),
                                          QString(),
-                                         QStringList(QLatin1String("IGES (*.igs *.iges)")));
+                                         {{{QObject::tr("IGES"), {"*.igs", "*.iges"}}}});
     if (!fn.isEmpty()) {
         openCommand(QT_TRANSLATE_NOOP("Command", "ImportIGES Create"));
         doCommand(Doc, "f = App.document().addObject(\"ImportIges\",\"ImportIges\")");

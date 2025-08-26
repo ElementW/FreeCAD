@@ -1354,7 +1354,7 @@ void PythonConsole::onSaveHistoryAs()
     QString cMacroPath = QString::fromUtf8(getDefaultParameter()->GetGroup( "Macro" )->
         GetASCII("MacroPath",App::Application::getUserMacroDir().c_str()).c_str());
     QString fn = FileDialog::getSaveFileName(this, tr("Save History"), cMacroPath,
-        QStringList(QStringLiteral("%1 (*.FCMacro *.py)").arg(tr("Macro Files"))));
+        {{{tr("Macro Files"), {"*.FCMacro", "*.py"}}}});
     if (!fn.isEmpty()) {
         int dot = fn.indexOf(QLatin1Char('.'));
         if (dot != -1) {
@@ -1374,7 +1374,7 @@ void PythonConsole::onSaveHistoryAs()
 void PythonConsole::onInsertFileName()
 {
     QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), tr("Insert file name"), QString(),
-        QStringList(QStringLiteral("%1 (*.*)").arg(tr("All Files"))));
+        {{FileFilter::AllFiles}});
     if ( !fn.isEmpty() ) {
         insertPlainText(fn);
     }

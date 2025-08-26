@@ -103,15 +103,13 @@ void ViewProviderSheet::showSheetMdi()
 void ViewProviderSheet::exportAsFile()
 {
     auto* sheet = getObject<Spreadsheet::Sheet>();
-    QString selectedFilter;
-    QStringList formatList;
-    formatList << QObject::tr("CSV (*.csv *.CSV)");
-    formatList << QObject::tr("All (*)");
+    Gui::FileFilterList formatList;
+    formatList << Gui::FileFilter{QObject::tr("CSV"), {"*.csv", "*.CSV"}};
+    formatList << Gui::FileFilter::AllFiles;
     QString fileName = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
                                                         QObject::tr("Export File"),
                                                         QString(),
-                                                        formatList,
-                                                        &selectedFilter);
+                                                        formatList);
     if (!fileName.isEmpty()) {
         if (sheet) {
             char delim = '\0';

@@ -607,7 +607,7 @@ void ParameterGroup::onExportToFile()
     QString file = FileDialog::getSaveFileName(this,
                                                tr("Export parameter to file"),
                                                QString(),
-                                               QStringList(QStringLiteral("XML (*.FCParam)")));
+                                               {{{tr("XML"), {"*.FCParam"}}}});
     if (!file.isEmpty()) {
         QTreeWidgetItem* item = currentItem();
         if (item && item->isSelected()) {
@@ -623,7 +623,7 @@ void ParameterGroup::onImportFromFile()
     QString file = FileDialog::getOpenFileName(this,
                                                tr("Import parameter from file"),
                                                QString(),
-                                               QStringList(QStringLiteral("XML (*.FCParam)")));
+                                               {{{tr("XML"), {"*.FCParam"}}}});
     if (!file.isEmpty()) {
         QTreeWidgetItem* item = currentItem();
         if (item && item->isSelected()) {

@@ -283,7 +283,7 @@ void MDIView::print()
 void MDIView::printPdf()
 {
     QString filename = FileDialog::getSaveFileName(this, tr("Export PDF"), QString(),
-        QStringList(QStringLiteral("%1 (*.pdf)").arg(tr("PDF file"))));
+        {{{tr("PDF file"), {"*.pdf"}}}});
     if (!filename.isEmpty()) {
         QPrinter printer(QPrinter::ScreenResolution);
         // setPdfVersion sets the printed PDF Version to what is chosen in

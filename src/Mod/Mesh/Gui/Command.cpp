@@ -327,18 +327,17 @@ CmdMeshImport::CmdMeshImport()
 void CmdMeshImport::activated(int)
 {
     // use current path as default
-    QStringList filter;
-    filter << QStringLiteral("%1 (*.stl *.ast *.bms *.obj *.off *.iv *.ply *.nas *.bdf)")
-                  .arg(QObject::tr("All Mesh Files"));
-    filter << QStringLiteral("%1 (*.stl)").arg(QObject::tr("Binary STL"));
-    filter << QStringLiteral("%1 (*.ast)").arg(QObject::tr("ASCII STL"));
-    filter << QStringLiteral("%1 (*.bms)").arg(QObject::tr("Binary Mesh"));
-    filter << QStringLiteral("%1 (*.obj)").arg(QObject::tr("Alias Mesh"));
-    filter << QStringLiteral("%1 (*.off)").arg(QObject::tr("Object File Format"));
-    filter << QStringLiteral("%1 (*.iv)").arg(QObject::tr("Inventor V2.1 ASCII"));
-    filter << QStringLiteral("%1 (*.ply)").arg(QObject::tr("Stanford Polygon"));
-    filter << QStringLiteral("%1 (*.nas *.bdf)").arg(QObject::tr("NASTRAN"));
-    filter << QStringLiteral("%1 (*.*)").arg(QObject::tr("All Files"));
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("All Mesh Files"), {"*.stl", "*.ast", "*.bms", "*.obj", "*.off", "*.iv", "*.ply", "*.nas", "*.bdf"}};
+    filter << Gui::FileFilter{QObject::tr("Binary STL"), {"*.stl"}};
+    filter << Gui::FileFilter{QObject::tr("ASCII STL"), {"*.ast"}};
+    filter << Gui::FileFilter{QObject::tr("Binary Mesh"), {"*.bms"}};
+    filter << Gui::FileFilter{QObject::tr("Alias Mesh"), {"*.obj"}};
+    filter << Gui::FileFilter{QObject::tr("Object File Format"), {"*.off"}};
+    filter << Gui::FileFilter{QObject::tr("Inventor V2.1 ASCII"), {"*.iv"}};
+    filter << Gui::FileFilter{QObject::tr("Stanford Polygon"), {"*.ply"}};
+    filter << Gui::FileFilter{QObject::tr("NASTRAN"), {"*.nas", "*.bdf"}};
+    filter << Gui::FileFilter::AllFiles;
 
     // Allow multi selection
     QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(),
@@ -387,54 +386,39 @@ void CmdMeshExport::activated(int)
 
     App::DocumentObject* docObj = docObjs.front();
 
-    // clang-format off
     QString dir = QString::fromUtf8(docObj->Label.getValue());
-    QList<QPair<QString, QByteArray> > ext;
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.stl)").arg(QObject::tr("Binary STL")), "STL");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.stl)").arg(QObject::tr("ASCII STL")), "AST");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.ast)").arg(QObject::tr("ASCII STL")), "AST");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.bms)").arg(QObject::tr("Binary Mesh")), "BMS");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.obj)").arg(QObject::tr("Alias Mesh")), "OBJ");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.smf)").arg(QObject::tr("Simple Model Format")), "SMF");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.off)").arg(QObject::tr("Object File Format")), "OFF");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.iv)").arg(QObject::tr("Inventor V2.1 ascii")), "IV");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.x3d)").arg(QObject::tr("X3D Extensible 3D")), "X3D");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.x3dz)").arg(QObject::tr("Compressed X3D")), "X3DZ");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.xhtml)").arg(QObject::tr("WebGL/X3D")), "X3DOM");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.ply)").arg(QObject::tr("Stanford Polygon")), "PLY");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.wrl *.vrml)").arg(QObject::tr("VRML V2.0")), "VRML");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.wrz)").arg(QObject::tr("Compressed VRML 2.0")), "WRZ");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.nas *.bdf)").arg(QObject::tr("Nastran")), "NAS");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.py)").arg(QObject::tr("Python module def")), "PY");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.asy)").arg(QObject::tr("Asymptote Format")), "ASY");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.3mf)").arg(QObject::tr("3D Manufacturing Format")), "3MF");
-    ext << qMakePair<QString, QByteArray>(QStringLiteral("%1 (*.*)").arg(QObject::tr("All Files")), ""); // Undefined
-    // clang-format on
-    QStringList filter;
-    for (const auto& it : ext) {
-        filter << it.first;
-    }
+    Gui::FileFilterList filters;
+    filters << Gui::FileFilter{QObject::tr("Binary STL"), {"*.stl"}, "STL"};
+    filters << Gui::FileFilter{QObject::tr("ASCII STL"), {"*.stl"}, "AST"};
+    filters << Gui::FileFilter{QObject::tr("ASCII STL"), {"*.ast"}, "AST"};
+    filters << Gui::FileFilter{QObject::tr("Binary Mesh"), {"*.bms"}, "BMS"};
+    filters << Gui::FileFilter{QObject::tr("Alias Mesh"), {"*.obj"}, "OBJ"};
+    filters << Gui::FileFilter{QObject::tr("Simple Model Format"), {"*.smf"}, "SMF"};
+    filters << Gui::FileFilter{QObject::tr("Object File Format"), {"*.off"}, "OFF"};
+    filters << Gui::FileFilter{QObject::tr("Inventor V2.1 ascii"), {"*.iv"}, "IV"};
+    filters << Gui::FileFilter{QObject::tr("X3D Extensible 3D"), {"*.x3d"}, "X3D"};
+    filters << Gui::FileFilter{QObject::tr("Compressed X3D"), {"*.x3dz"}, "X3DZ"};
+    filters << Gui::FileFilter{QObject::tr("WebGL/X3D"), {"*.xhtml"}, "X3DOM"};
+    filters << Gui::FileFilter{QObject::tr("Stanford Polygon"), {"*.ply"}, "PLY"};
+    filters << Gui::FileFilter{QObject::tr("VRML V2.0"), {"*.wrl", "*.vrml"}, "VRML"};
+    filters << Gui::FileFilter{QObject::tr("Compressed VRML 2.0"), {"*.wrz"}, "WRZ"};
+    filters << Gui::FileFilter{QObject::tr("Nastran"), {"*.nas", "*.bdf"}, "NAS"};
+    filters << Gui::FileFilter{QObject::tr("Python module def"), {"*.py"}, "PY"};
+    filters << Gui::FileFilter{QObject::tr("Asymptote Format"), {"*.asy"}, "ASY"};
+    filters << Gui::FileFilter{QObject::tr("3D Manufacturing Format"), {"*.3mf"}, "3MF"};
+    filters << Gui::FileFilter::AllFiles;
 
-    QString format;
+    qsizetype formatIndex = -1;
     QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(),
                                                   QObject::tr("Export Mesh"),
                                                   dir,
-                                                  filter,
-                                                  &format);
+                                                  filters,
+                                                  &formatIndex);
     if (!fn.isEmpty()) {
-        QFileInfo fi(fn);
-        QByteArray extension = fi.suffix().toLatin1();
-        for (const auto& it : ext) {
-            if (it.first == format) {
-                extension = it.second;
-                break;
-            }
-        }
-
         MeshGui::ViewProviderMesh* vp = dynamic_cast<MeshGui::ViewProviderMesh*>(
             Gui::Application::Instance->getViewProvider(docObj));
         if (vp) {
-            vp->exportMesh((const char*)fn.toUtf8(), (const char*)extension);
+            vp->exportMesh((const char*)fn.toUtf8(), filters[formatIndex].userData.toUtf8());
         }
     }
 }

@@ -678,18 +678,18 @@ void CmdSandboxMeshLoaderFuture::activated(int)
 {
     // use current path as default
     QStringList filter;
-    filter << QObject::tr("All Mesh Files (*.stl *.ast *.bms *.obj)");
-    filter << QObject::tr("Binary STL (*.stl)");
-    filter << QObject::tr("ASCII STL (*.ast)");
-    filter << QObject::tr("Binary Mesh (*.bms)");
-    filter << QObject::tr("Alias Mesh (*.obj)");
-    filter << QObject::tr("Inventor V2.1 ascii (*.iv)");
+    filter << QStringLiteral("%1 (*.stl *.ast *.bms *.obj)").arg(QObject::tr("All Mesh Files"));
+    filter << QObject::tr("%1 (*.stl)").arg(QObject::tr("Binary STL"));
+    filter << QObject::tr("%1 (*.ast)").arg(QObject::tr("ASCII STL"));
+    filter << QObject::tr("%1 (*.bms)").arg(QObject::tr("Binary Mesh"));
+    filter << QObject::tr("%1 (*.obj)").arg(QObject::tr("Alias Mesh"));
+    filter << QObject::tr("%1 (*.iv)").arg(QObject::tr("Inventor V2.1 ascii"));
     //filter << "Nastran (*.nas *.bdf)";
-    filter << QObject::tr("All Files (*.*)");
+    filter << QObject::tr("%1 (*.*)").arg(QObject::tr("All Files"));
 
     // Allow multi selection
     QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(),
-        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+        QObject::tr("Import mesh"), QString(), filter);
 
     QFuture< Base::Reference<Mesh::MeshObject> > future = QtConcurrent::mapped
         (fn, loadMesh);

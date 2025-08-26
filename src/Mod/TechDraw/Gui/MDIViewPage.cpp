@@ -309,9 +309,10 @@ void MDIViewPage::fixSceneDependencies()
 /// of the COIN3d scenegraph.
 void MDIViewPage::printPdf()
 {
-    QStringList filter;
-    filter << QObject::tr("PDF (*.pdf)");
-    filter << QObject::tr("All Files (*.*)");
+
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("PDF"), {"*.pdf"}};;
+    filter << Gui::FileFilter::AllFiles;
     QString fn =
         Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export Page as PDF"),
 
@@ -485,9 +486,9 @@ void MDIViewPage::saveSVG(std::string filename)
 
 void MDIViewPage::saveSVG()
 {
-    QStringList filter;
-    filter << QStringLiteral("SVG (*.svg)");
-    filter << QObject::tr("All files (*.*)");
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("SVG"), {"*.svg"}};;
+    filter << Gui::FileFilter::AllFiles;
     QString fn =
         Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page as SVG"),
 
@@ -507,9 +508,9 @@ void MDIViewPage::saveDXF(std::string filename)
 
 void MDIViewPage::saveDXF()
 {
-    QStringList filter;
-    filter << QStringLiteral("DXF (*.dxf)");
-    filter << QObject::tr("All files (*.*)");
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("DXF"), {"*.dxf"}};;
+    filter << Gui::FileFilter::AllFiles;
     QString fn =
         Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page as DXF"),
 
@@ -532,9 +533,9 @@ void MDIViewPage::savePDF(std::string filename)
 
 void MDIViewPage::savePDF()
 {
-    QStringList filter;
-    filter << QStringLiteral("PDF (*.pdf)");
-    filter << QObject::tr("All Files (*.*)");
+    Gui::FileFilterList filter;
+    filter << Gui::FileFilter{QObject::tr("PDF"), {"*.pdf"}};;
+    filter << Gui::FileFilter::AllFiles;
     QString fn =
         Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QObject::tr("Export page as PDF"),
 
