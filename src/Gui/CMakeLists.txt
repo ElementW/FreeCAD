@@ -160,6 +160,7 @@ target_include_directories(
     ${QtNetwork_INCLUDE_DIRS}
     ${QtUiTools_INCLUDE_DIRS}
     ${QtXml_INCLUDE_DIRS}
+    ${QtConcurrent_INCLUDE_DIRS}
     ${YAML_CPP_INCLUDE_DIRS}
 )
 
@@ -173,6 +174,7 @@ list(APPEND FreeCADGui_LIBS
     ${QtSvgWidgets_LIBRARIES}
     ${QtNetwork_LIBRARIES}
     ${QtUiTools_LIBRARIES}
+    ${QtConcurrent_LIBRARIES}
 )
 
 link_directories(${YAML_CPP_LIBRARY_DIR})

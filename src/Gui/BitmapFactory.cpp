@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LGPL-2.1-or-later
 /***************************************************************************
  *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
@@ -20,21 +21,33 @@
  *                                                                         *
  ***************************************************************************/
 
+#define MEASURE_ICON_LOAD_TIME
+
+#ifdef MEASURE_ICON_LOAD_TIME
+# include <chrono>
+#endif
+#include <string>
+
+#include <QtConcurrent>
 #include <QApplication>
 #include <QBitmap>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QFuture>
 #include <QMap>
+#include <QIconEngine>
 #include <QImageReader>
 #include <QPainter>
 #include <QPalette>
+#include <QReadLocker>
+#include <QReadWriteLock>
 #include <QScreen>
 #include <QString>
-#include <QSvgRenderer>
 #include <QStyleOption>
+#include <QSvgRenderer>
+#include <QWriteLocker>
 
-#include <string>
 #include <Inventor/fields/SoSFImage.h>
 
 #include <App/Application.h>
@@ -50,11 +63,229 @@ namespace Gui
 class BitmapFactoryInstP
 {
 public:
-    QMap<std::string, QPixmap> xpmCache;
+    QReadWriteLock iconCacheLock;
+    QMap<std::string, QIcon> iconCache;
+
+    QStringList supportedFormats;
 
     bool useIconTheme;
+    bool loadIconsAsync;
 };
 }  // namespace Gui
+
+static QIcon loadIcon(BitmapFactoryInstP* d, const char* name);
+
+namespace
+{
+class AsyncLoadIconEngine: public QIconEngine
+{
+public:
+    AsyncLoadIconEngine(BitmapFactoryInstP* d, std::string name)
+        : name(std::move(name))
+    {
+        icon = QtConcurrent::run([d, pixmapName = std::string(this->name)]() -> QIcon {
+            return loadIcon(d, pixmapName.c_str());
+        });
+    }
+    ~AsyncLoadIconEngine()
+    {}
+
+    void paint(QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state) final override
+    {
+        getIcon().paint(painter, rect, Qt::AlignCenter, mode, state);
+    }
+
+    QSize actualSize(const QSize& size, QIcon::Mode mode, QIcon::State state) final override
+    {
+        return getIcon().actualSize(size, mode, state);
+    }
+
+    QPixmap pixmap(const QSize& size, QIcon::Mode mode, QIcon::State state) final override
+    {
+        return getIcon().pixmap(size, mode, state);
+    }
+
+    void addPixmap(const QPixmap& pixmap, QIcon::Mode mode, QIcon::State state) final override
+    {
+        return getIcon().addPixmap(pixmap, mode, state);
+    }
+
+    void addFile(const QString& fileName, const QSize& size, QIcon::Mode mode, QIcon::State state) final override
+    {
+        return getIcon().addFile(fileName, size, mode, state);
+    }
+
+    QString key() const final override
+    {
+        return QString::fromStdString(name);
+    }
+
+    QIconEngine* clone() const final override
+    {
+        return new AsyncLoadIconEngine(*this);
+    }
+
+    QList<QSize> availableSizes(
+        QIcon::Mode mode = QIcon::Normal,
+        QIcon::State state = QIcon::Off
+    ) final override
+    {
+        return getIcon().availableSizes(mode, state);
+    }
+
+    QString iconName() final override
+    {
+        return getIcon().name();
+    }
+
+    bool isNull() final override
+    {
+        return getIcon().isNull();
+    }
+
+private:
+    QIcon getIcon() const
+    {
+#ifdef MEASURE_ICON_LOAD_TIME
+        if (!icon.isResultReadyAt(0)) {
+            const auto begin = std::chrono::high_resolution_clock::now();
+            auto iconValue = icon.result();
+            const auto duration = std::chrono::high_resolution_clock::now() - begin;
+            const auto threadName = QThread::currentThread() == QCoreApplication::instance()->thread()
+                ? "UI"
+                : "non-UI";
+            Base::Console().log(
+                "BitmapFactory: %s thread stalled %d µs waiting for icon %s\n",
+                threadName,
+                std::chrono::duration_cast<std::chrono::microseconds>(duration).count(),
+                name.c_str()
+            );
+            return iconValue;
+        }
+#endif
+        return icon.result();
+    }
+
+    std::string name;
+    QFuture<QIcon> icon;
+};
+}  // namespace
+
+/// Loads an icon pixmap by path.
+static bool loadPixmap(const QString& filename, QPixmap& pixmap)
+{
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly)) {
+        return false;
+    }
+
+    // First check if it's an SVG since we have our own loading logic
+    if (filename.endsWith(QStringLiteral("svg"))) {
+        const QByteArray content = file.readAll();
+        pixmap = BitmapFactory().pixmapFromSvg(content, QSize(64, 64));
+    }
+    else {
+        // Try with Qt plugins
+        QImageReader reader(&file);
+        pixmap = QPixmap::fromImageReader(&reader);
+    }
+
+    return !pixmap.isNull();
+}
+
+static QPixmap fallbackPixmap()
+{
+    static constexpr int Size = 64;
+    // clang-format off
+    static constexpr const char * const Xpm[] = {
+        "2 2 2 1",
+        ". c #000000",
+        "x c #FF00FF",
+        ".x",
+        "x."
+    };
+    // clang-format on
+    return QPixmap(Xpm).scaled(Size, Size, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+}
+
+/// Loads (decodes/renders) an icon by name.
+static QIcon loadIcon(BitmapFactoryInstP* d, const char* name)
+{
+#ifdef MEASURE_ICON_LOAD_TIME
+    struct LoadTimeMeasure
+    {
+        const char* name;
+        bool isGuiThread;
+        std::chrono::high_resolution_clock::time_point begin;
+        LoadTimeMeasure(const char* name)
+            : name(name)
+            , isGuiThread(QThread::currentThread() == QCoreApplication::instance()->thread())
+            , begin(std::chrono::high_resolution_clock::now())
+        {}
+        ~LoadTimeMeasure()
+        {
+            const auto duration = std::chrono::high_resolution_clock::now() - begin;
+            Base::Console().log(
+                isGuiThread ? "BitmapFactory: UI thread took %d µs synchronously for icon %s\n"
+                            : "BitmapFactory: took %d µs off the UI thread for icon %s\n",
+                std::chrono::duration_cast<std::chrono::microseconds>(duration).count(),
+                name
+            );
+        }
+    } measure {name};
+#endif
+
+    QPixmap pixmap;
+
+    // Try whether an absolute path is given
+    QString fileName = QString::fromUtf8(name);
+    if (loadPixmap(fileName, pixmap)) {
+        return pixmap;
+    }
+
+    // Try to find it in the 'icons' search paths
+    fileName.prepend(QStringLiteral("icons:"));
+    if (loadPixmap(fileName, pixmap)) {
+        return pixmap;
+    }
+
+    // Go through supported file formats
+    for (const auto& format : d->supportedFormats) {
+        QString path = QStringLiteral("%1.%2").arg(fileName, format);
+        if (loadPixmap(path, pixmap)) {
+            return pixmap;
+        }
+    }
+
+    Base::Console().warning("Cannot find icon: %s\n", name);
+    return fallbackPixmap();
+}
+
+/// Get an icon by name from the cache or loads it if absent.
+static QIcon getIcon(BitmapFactoryInstP* d, const char* name, bool async)
+{
+    if (!name || *name == '\0') {
+        return {};
+    }
+
+    // First check in the cache.
+    {
+        QReadLocker locker(&d->iconCacheLock);
+        if (auto it = d->iconCache.find(name); it != d->iconCache.end()) {
+            return it.value();
+        }
+    }
+
+    // Otherwise load the icon and cache it.
+    QIcon icon = async ? QIcon(new AsyncLoadIconEngine(d, name)) : loadIcon(d, name);
+
+    {
+        QWriteLocker locker(&d->iconCacheLock);
+        d->iconCache.insert(name, icon);
+    }
+
+    return icon;
+}
 
 BitmapFactoryInst* BitmapFactoryInst::_pcSingleton = nullptr;
 
@@ -97,33 +328,32 @@ BitmapFactoryInst::BitmapFactoryInst()
 {
     d = new BitmapFactoryInstP;
 
-    restoreCustomPaths();
-    configureUseIconTheme();
+    auto bitmapsGroup = App::GetApplication().GetParameterGroupByPath(
+        "User parameter:BaseApp/Preferences/Bitmaps"
+    );
+    auto themeGroup = bitmapsGroup->GetGroup("Theme");
+    auto paths = bitmapsGroup->GetASCIIs("CustomPath");
+    for (auto& path : paths) {
+        addPath(QString::fromUtf8(path.c_str()));
+    }
+    d->loadIconsAsync = bitmapsGroup->GetBool("AsyncLoad", true);
+    d->useIconTheme
+        = themeGroup->GetBool("UseIconTheme", themeGroup->GetBool("ThemeSearchPaths", false));
+
+    const auto formats = QImageReader::supportedImageFormats();
+    d->supportedFormats.reserve(formats.size() + 1);
+    d->supportedFormats.append("svg");  // Check for SVG first to use special import mechanism
+    for (const auto& format : formats) {
+        const auto lower = format.toLower();
+        if (lower != "svg") {
+            d->supportedFormats.append(QString::fromLatin1(lower.constData()));
+        }
+    }
 }
 
 BitmapFactoryInst::~BitmapFactoryInst()
 {
     delete d;
-}
-
-void BitmapFactoryInst::restoreCustomPaths()
-{
-    Base::Reference<ParameterGrp> group = App::GetApplication().GetParameterGroupByPath(
-        "User parameter:BaseApp/Preferences/Bitmaps"
-    );
-    std::vector<std::string> paths = group->GetASCIIs("CustomPath");
-    for (auto& path : paths) {
-        addPath(QString::fromUtf8(path.c_str()));
-    }
-}
-
-void Gui::BitmapFactoryInst::configureUseIconTheme()
-{
-    Base::Reference<ParameterGrp> group = App::GetApplication().GetParameterGroupByPath(
-        "User parameter:BaseApp/Preferences/Bitmaps/Theme"
-    );
-
-    d->useIconTheme = group->GetBool("UseIconTheme", group->GetBool("ThemeSearchPaths", false));
 }
 
 void BitmapFactoryInst::addPath(const QString& path)
@@ -171,14 +401,16 @@ QStringList BitmapFactoryInst::findIconFiles() const
 
 void BitmapFactoryInst::addPixmapToCache(const char* name, const QPixmap& icon)
 {
-    d->xpmCache[name] = icon;
+    QWriteLocker locker(&d->iconCacheLock);
+    d->iconCache[name].addPixmap(icon);
 }
 
 bool BitmapFactoryInst::findPixmapInCache(const char* name, QPixmap& px) const
 {
-    QMap<std::string, QPixmap>::Iterator it = d->xpmCache.find(name);
-    if (it != d->xpmCache.end()) {
-        px = it.value();
+    QReadLocker locker(&d->iconCacheLock);
+    auto it = d->iconCache.find(name);
+    if (it != d->iconCache.end()) {
+        px = it.value().pixmap(it.value().availableSizes()[0]);
         return true;
     }
     return false;
@@ -186,53 +418,28 @@ bool BitmapFactoryInst::findPixmapInCache(const char* name, QPixmap& px) const
 
 QIcon BitmapFactoryInst::iconFromTheme(const char* name, const QIcon& fallback)
 {
-    if (!d->useIconTheme) {
-        return iconFromDefaultTheme(name, fallback);
-    }
-
-    QString iconName = QString::fromUtf8(name);
-    QIcon icon = QIcon::fromTheme(iconName, fallback);
-    if (icon.isNull()) {
-        QPixmap px = pixmap(name);
-        if (!px.isNull()) {
-            icon.addPixmap(px);
+    // If Qt icon themes are enabled and that icon is provided, use it
+    if (d->useIconTheme) {
+        const QString iconName = QString::fromUtf8(name);
+        if (QIcon icon = QIcon::fromTheme(iconName, fallback); !icon.isNull()) {
+            return icon;
         }
     }
 
-    return icon;
-}
-
-bool BitmapFactoryInst::loadPixmap(const QString& filename, QPixmap& icon) const
-{
-    QFileInfo fi(filename);
-    if (fi.exists()) {
-        // first check if it's an SVG because Qt's qsvg4 module shouldn't be used therefore
-        if (fi.suffix().toLower() == QLatin1String("svg")) {
-            QFile svgFile(fi.filePath());
-            if (svgFile.open(QFile::ReadOnly | QFile::Text)) {
-                QByteArray content = svgFile.readAll();
-                icon = pixmapFromSvg(content, QSize(64, 64));
-            }
-        }
-        else {
-            // try with Qt plugins
-            icon.load(fi.filePath());
-        }
-    }
-
-    return !icon.isNull();
+    // Otherwise do as if asked for the default theme icon
+    return iconFromDefaultTheme(name, fallback);
 }
 
 QIcon Gui::BitmapFactoryInst::iconFromDefaultTheme(const char* name, const QIcon& fallback)
 {
-    QIcon icon;
-    QPixmap px = pixmap(name);
-
-    if (!px.isNull()) {
-        icon.addPixmap(px);
-        return icon;
+    if (fallback.isNull()) {
+        return getIcon(d, name, d->loadIconsAsync);
     }
-    else {
+
+    // TODO: Implement async fallback
+
+    QIcon icon = getIcon(d, name, false);
+    if (icon.isNull()) {
         return fallback;
     }
 
@@ -241,49 +448,8 @@ QIcon Gui::BitmapFactoryInst::iconFromDefaultTheme(const char* name, const QIcon
 
 QPixmap BitmapFactoryInst::pixmap(const char* name) const
 {
-    if (!name || *name == '\0') {
-        return {};
-    }
-
-    // as very first test check whether the pixmap is in the cache
-    QMap<std::string, QPixmap>::Iterator it = d->xpmCache.find(name);
-    if (it != d->xpmCache.end()) {
-        return it.value();
-    }
-
-    QPixmap icon;
-
-    // Try whether an absolute path is given
-    QString fn = QString::fromUtf8(name);
-    loadPixmap(fn, icon);
-
-    // try to find it in the 'icons' search paths
-    if (icon.isNull()) {
-        QList<QByteArray> formats = QImageReader::supportedImageFormats();
-        formats.prepend("SVG");  // check first for SVG to use special import mechanism
-
-        QString fileName = QStringLiteral("icons:") + fn;
-        if (!loadPixmap(fileName, icon)) {
-            // Go through supported file formats
-            for (QList<QByteArray>::iterator fm = formats.begin(); fm != formats.end(); ++fm) {
-                QString path = QStringLiteral("%1.%2").arg(
-                    fileName,
-                    QString::fromLatin1((*fm).toLower().constData())
-                );
-                if (loadPixmap(path, icon)) {
-                    break;
-                }
-            }
-        }
-    }
-
-    if (!icon.isNull()) {
-        d->xpmCache[name] = icon;
-        return icon;
-    }
-
-    Base::Console().warning("Cannot find icon: %s\n", name);
-    return QPixmap(Gui::BitmapFactory().pixmapFromSvg("help-browser", QSize(16, 16)));
+    QIcon icon = getIcon(d, name, false);
+    return icon.pixmap(icon.availableSizes()[0]);
 }
 
 QPixmap BitmapFactoryInst::pixmapFromSvg(
@@ -368,9 +534,10 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(
 QStringList BitmapFactoryInst::pixmapNames() const
 {
     QStringList names;
-    for (QMap<std::string, QPixmap>::Iterator It = d->xpmCache.begin(); It != d->xpmCache.end();
-         ++It) {
-        QString item = QString::fromUtf8(It.key().c_str());
+    QReadLocker locker(&d->iconCacheLock);
+    names.reserve(d->iconCache.size());
+    for (auto it = d->iconCache.begin(); it != d->iconCache.end(); ++it) {
+        QString item = QString::fromUtf8(it.key().c_str());
         if (!names.contains(item)) {
             names << item;
         }
