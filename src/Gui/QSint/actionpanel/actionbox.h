@@ -8,10 +8,12 @@
 
 #pragma once
 
-#include "actionlabel.h"
-
+#include <QFrame>
+#include <QIcon>
 #include <QLabel>
 #include <QVBoxLayout>
+
+#include "actionlabel.h"
 
 
 namespace QSint
@@ -27,7 +29,7 @@ class QSINT_EXPORT ActionBox : public QFrame
 {
     Q_OBJECT
 
-    Q_PROPERTY(QPixmap icon READ icon WRITE setIcon) // clazy:exclude=qproperty-without-notify
+    Q_PROPERTY(QIcon icon READ icon WRITE setIcon) // clazy:exclude=qproperty-without-notify
     Q_PROPERTY(ActionLabel header READ header) // clazy:exclude=qproperty-without-notify
 
 public:
@@ -50,19 +52,19 @@ public:
      * @param headerText The header text.
      * @param parent The parent widget.
      */
-    explicit ActionBox(const QPixmap & icon, const QString & headerText, QWidget *parent = nullptr);
+    explicit ActionBox(const QIcon & icon, const QString & headerText, QWidget *parent = nullptr);
 
     /**
      * @brief Sets the ActionBox icon.
      * @param icon The icon.
      */
-    void setIcon(const QPixmap & icon);
+    void setIcon(const QIcon & icon);
 
     /**
      * @brief Returns the ActionBox icon.
      * @return The icon.
      */
-    QPixmap icon() const;
+    QIcon icon() const;
 
     /**
      * @brief Returns the header label.
@@ -101,7 +103,7 @@ public:
      * @param l Optional layout to add the action to.
      * @return The created ActionLabel.
      */
-    ActionLabel* createItem(const QPixmap & icon, const QString & text, QLayout * l = nullptr);
+    ActionLabel* createItem(const QIcon & icon, const QString & text, QLayout * l = nullptr);
 
     /**
      * @brief Creates and adds a spacer.
@@ -151,6 +153,7 @@ protected:
     void init(const QString &headerText = QString());
 
     QVBoxLayout *dataLayout;       ///< Default layout for actions/widgets.
+    QIcon actionIcon;
     QLabel *iconLabel;             ///< Label for the ActionBox icon.
     ActionLabel *headerLabel;      ///< Label for the header.
 };

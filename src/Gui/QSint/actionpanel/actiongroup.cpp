@@ -18,7 +18,7 @@ namespace QSint
 
 ActionGroup::ActionGroup(QWidget *parent)
     : QWidget(parent),
-      myHeader(new TaskHeader(QPixmap(), "", false, this))
+      myHeader(new TaskHeader(QIcon(), "", false, this))
 {
     myHeader->setVisible(false);
     init(false);
@@ -26,12 +26,12 @@ ActionGroup::ActionGroup(QWidget *parent)
 
 ActionGroup::ActionGroup(const QString &title, bool expandable, QWidget *parent)
     : QWidget(parent),
-      myHeader(new TaskHeader(QPixmap(), title, expandable, this))
+      myHeader(new TaskHeader(QIcon(), title, expandable, this))
 {
     init(true);
 }
 
-ActionGroup::ActionGroup(const QPixmap &icon, const QString &title, bool expandable, QWidget *parent)
+ActionGroup::ActionGroup(const QIcon &icon, const QString &title, bool expandable, QWidget *parent)
     : QWidget(parent),
       myHeader(new TaskHeader(icon, title, expandable, this))
 {
@@ -235,7 +235,7 @@ void ActionGroup::setHeaderText(const QString &headerText)
     myHeader->myTitle->setText(headerText);
 }
 
-void ActionGroup::setHeaderIcon(const QPixmap &icon)
+void ActionGroup::setHeaderIcon(const QIcon &icon)
 {
     myHeader->myTitle->setIcon(icon);
 }

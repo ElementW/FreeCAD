@@ -80,7 +80,7 @@ TaskGroup::TaskGroup(const QString& headerText, QWidget* parent)
     : QSint::ActionBox(headerText, parent)
 {}
 
-TaskGroup::TaskGroup(const QPixmap& icon, const QString& headerText, QWidget* parent)
+TaskGroup::TaskGroup(const QIcon& icon, const QString& headerText, QWidget* parent)
     : QSint::ActionBox(icon, headerText, parent)
 {}
 
@@ -129,7 +129,7 @@ TaskBox::TaskBox(const QString& title, bool expandable, QWidget* parent)
     myGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 
-TaskBox::TaskBox(const QPixmap& icon, const QString& title, bool expandable, QWidget* parent)
+TaskBox::TaskBox(const QIcon& icon, const QString& title, bool expandable, QWidget* parent)
     : QSint::ActionGroup(icon, title, expandable, parent)
     , wasShown(false)
 {

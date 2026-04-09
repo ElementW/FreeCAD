@@ -62,7 +62,7 @@ public:
      * @param expandable If `true` (default), the group can be expanded/collapsed.
      * @param parent The parent widget.
      */
-    explicit ActionGroup(const QPixmap& icon, const QString& title, bool expandable = true, QWidget *parent = nullptr);
+    explicit ActionGroup(const QIcon& icon, const QString& title, bool expandable = true, QWidget *parent = nullptr);
 
     /**
      * @brief Destroys the ActionGroup.
@@ -147,7 +147,7 @@ public:
      * @brief Sets the header icon.
      * @param icon The header icon.
      */
-    void setHeaderIcon(const QPixmap &icon);
+    void setHeaderIcon(const QIcon &icon);
 
     /**
      * @brief Returns the recommended minimum size for the group.

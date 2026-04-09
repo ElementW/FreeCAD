@@ -104,7 +104,8 @@ TaskWatcherCommands::TaskWatcherCommands(
 {
     if (commands) {
         CommandManager& mgr = Gui::Application::Instance->commandManager();
-        auto tb = new Gui::TaskView::TaskBox(BitmapFactory().pixmap(pixmap), tr(name), true, nullptr);
+        auto tb
+            = new Gui::TaskView::TaskBox(BitmapFactory().iconFromTheme(pixmap), tr(name), true, nullptr);
 
         for (const char** i = commands; *i; i++) {
             Command* c = mgr.getCommandByName(*i);

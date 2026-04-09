@@ -71,7 +71,7 @@ class GuiExport TaskGroup: public QSint::ActionBox, public TaskContent
 public:
     explicit TaskGroup(QWidget* parent = nullptr);
     explicit TaskGroup(const QString& headerText, QWidget* parent = nullptr);
-    explicit TaskGroup(const QPixmap& icon, const QString& headerText, QWidget* parent = nullptr);
+    explicit TaskGroup(const QIcon& icon, const QString& headerText, QWidget* parent = nullptr);
     ~TaskGroup() override;
 
 protected:
@@ -101,7 +101,7 @@ public:
         If \a expandable set to \a true (default), the group can be expanded/collapsed by the user.
       */
     explicit TaskBox(
-        const QPixmap& icon,
+        const QIcon& icon,
         const QString& title,
         bool expandable = true,
         QWidget* parent = nullptr

@@ -26,7 +26,7 @@ ActionBox::ActionBox(const QString & headerText, QWidget *parent)
     init(headerText);
 }
 
-ActionBox::ActionBox(const QPixmap & icon, const QString & headerText, QWidget *parent)
+ActionBox::ActionBox(const QIcon & icon, const QString & headerText, QWidget *parent)
     : QFrame(parent)
 {
     init(headerText);
@@ -54,15 +54,17 @@ void ActionBox::init(const QString &headerText)
     headerLabel->setProperty("class", "header");
 }
 
-void ActionBox::setIcon(const QPixmap & icon)
+void ActionBox::setIcon(const QIcon & icon)
 {
-    iconLabel->setPixmap(icon);
-    iconLabel->setFixedSize(icon.size());
+    actionIcon = icon;
+    auto pixmap = actionIcon.pixmap(actionIcon.availableSizes()[0]);
+    iconLabel->setPixmap(pixmap);
+    iconLabel->setFixedSize(pixmap.size());
 }
 
-QPixmap ActionBox::icon() const
+QIcon ActionBox::icon() const
 {
-    return iconLabel->pixmap(Qt::ReturnByValue);
+    return actionIcon;
 }
 
 ActionLabel* ActionBox::createItem(QAction * action, QLayout * l)
@@ -112,10 +114,10 @@ ActionLabel* ActionBox::createItem(const QString & text, QLayout * l)
     return act;
 }
 
-ActionLabel* ActionBox::createItem(const QPixmap & icon, const QString & text, QLayout * l)
+ActionLabel* ActionBox::createItem(const QIcon & icon, const QString & text, QLayout * l)
 {
     ActionLabel *act = createItem(text, l);
-    act->setIcon(QIcon(icon));
+    act->setIcon(icon);
     return act;
 }
 
