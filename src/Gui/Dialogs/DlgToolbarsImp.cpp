@@ -87,14 +87,14 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     ui->workbenchBox->addItem(QApplication::windowIcon(), tr("Global"));
     ui->workbenchBox->setItemData(0, QVariant(QStringLiteral("Global")), Qt::UserRole);
     for (const auto& workbench : workbenches) {
-        QPixmap px = Application::Instance->workbenchIcon(workbench);
+        QIcon icon = Application::Instance->workbenchIcon(workbench);
         QString mt = Application::Instance->workbenchMenuText(workbench);
         if (mt != QLatin1String("<none>")) {
-            if (px.isNull()) {
+            if (icon.isNull()) {
                 ui->workbenchBox->addItem(mt);
             }
             else {
-                ui->workbenchBox->addItem(px, mt);
+                ui->workbenchBox->addItem(icon, mt);
             }
             ui->workbenchBox->setItemData(index, QVariant(workbench), Qt::UserRole);
             index++;

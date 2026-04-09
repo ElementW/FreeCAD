@@ -435,7 +435,7 @@ MainWindow::MainWindow(QWidget* parent, Qt::WindowFlags f)
                        .GetParameterGroupByPath("User parameter:BaseApp/Preferences/General")
                        ->GetInt("ToolbarIconSize", 24);
     toggleBottomPanelsButton->setIconSize(QSize(iconSize, iconSize));
-    toggleBottomPanelsButton->setIcon(BitmapFactory().pixmap("Std_ToggleBottomPanels"));
+    toggleBottomPanelsButton->setIcon(BitmapFactory().iconFromTheme("Std_ToggleBottomPanels"));
     toggleBottomPanelsButton->setCheckable(true);
     // Starts checked because FreeCAD shows bottom panels by default on first launch. On subsequent
     // launches the command restores the persisted state, but that happens after this point, so
@@ -647,7 +647,7 @@ bool MainWindow::setupReportView()
     // Report view
     if (d->hiddenDockWindows.find("Std_ReportView") == std::string::npos) {
         auto pcReport = new ReportOutput(this);
-        pcReport->setWindowIcon(BitmapFactory().pixmap("MacroEditor"));
+        pcReport->setWindowIcon(BitmapFactory().iconFromTheme("MacroEditor"));
         pcReport->setObjectName(QStringLiteral("Report view"));
         pcReport->setWindowTitle(QDockWidget::tr("Report View"));
 

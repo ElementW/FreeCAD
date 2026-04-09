@@ -112,11 +112,7 @@ wbListItem::wbListItem(
     // 2: Workbench Icon
     auto wbIcon = Application::Instance->workbenchIcon(wbName);
     iconLabel = new QLabel(wbDisplayName, this);
-    iconLabel->setPixmap(wbIcon.scaled(
-        QSize(20, 20),
-        Qt::AspectRatioMode::KeepAspectRatio,
-        Qt::TransformationMode::SmoothTransformation
-    ));
+    iconLabel->setPixmap(wbIcon.pixmap(20, 20));
     iconLabel->setToolTip(wbTooltip);
     iconLabel->setContentsMargins(5, 0, 0, 5);  // Left, top, right, bottom
     iconLabel->setEnabled(enableCheckBox->isChecked());
@@ -660,24 +656,24 @@ void DlgSettingsWorkbenchesImp::setStartWorkbenchComboItems()
     }
 
     {  // add special workbench to selection
-        QPixmap px = Application::Instance->workbenchIcon(QStringLiteral("NoneWorkbench"));
+        QIcon icon = Application::Instance->workbenchIcon(QStringLiteral("NoneWorkbench"));
         QString key = QStringLiteral("<last>");
         QString value = QStringLiteral("$LastModule");
-        if (px.isNull()) {
+        if (icon.isNull()) {
             ui->AutoloadModuleCombo->addItem(key, QVariant(value));
         }
         else {
-            ui->AutoloadModuleCombo->addItem(px, key, QVariant(value));
+            ui->AutoloadModuleCombo->addItem(icon, key, QVariant(value));
         }
     }
 
     for (QMap<QString, QString>::Iterator it = menuText.begin(); it != menuText.end(); ++it) {
-        QPixmap px = Application::Instance->workbenchIcon(it.value());
-        if (px.isNull()) {
+        QIcon icon = Application::Instance->workbenchIcon(it.value());
+        if (icon.isNull()) {
             ui->AutoloadModuleCombo->addItem(it.key(), QVariant(it.value()));
         }
         else {
-            ui->AutoloadModuleCombo->addItem(px, it.key(), QVariant(it.value()));
+            ui->AutoloadModuleCombo->addItem(icon, it.key(), QVariant(it.value()));
         }
     }
 

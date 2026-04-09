@@ -1974,7 +1974,7 @@ bool Application::activateWorkbench(const char* name)
     return ok;
 }
 
-QPixmap Application::workbenchIcon(const QString& wb) const
+QIcon Application::workbenchIcon(const QString& wb) const
 {
     Base::PyGILStateLocker lock;
     // get the python workbench object from the dictionary
@@ -1985,9 +1985,10 @@ QPixmap Application::workbenchIcon(const QString& wb) const
         std::stringstream str;
         str << static_cast<const void*>(pcWorkbench) << std::ends;
         std::string iconName = str.str();
-        QPixmap icon;
-        if (BitmapFactory().findPixmapInCache(iconName.c_str(), icon)) {
-            return icon;
+
+        QPixmap pixmap;
+        if (BitmapFactory().findPixmapInCache(iconName.c_str(), pixmap)) {
+            return pixmap;
         }
 
         // get its Icon member if possible
@@ -2017,23 +2018,22 @@ QPixmap Application::workbenchIcon(const QString& wb) const
                             buffer.append('\n');
                         }
                     }
-                    icon.loadFromData(buffer, "XPM");
+                    pixmap.loadFromData(buffer, "XPM");
                 }
                 else {
                     // is it a file name...
-                    QString file = QString::fromUtf8(content.c_str());
-                    icon.load(file);
-                    if (icon.isNull()) {
+                    pixmap.load(QString::fromUtf8(content.c_str()));
+                    if (pixmap.isNull()) {
                         // ... or the name of another icon?
-                        icon = BitmapFactory().pixmap(file.toUtf8());
+                        return BitmapFactory().iconFromTheme(content.c_str());
                     }
                 }
 
-                if (!icon.isNull()) {
-                    BitmapFactory().addPixmapToCache(iconName.c_str(), icon);
+                if (!pixmap.isNull()) {
+                    BitmapFactory().addPixmapToCache(iconName.c_str(), pixmap);
                 }
 
-                return icon;
+                return pixmap;
             }
         }
         catch (Py::Exception& e) {
@@ -2479,7 +2479,7 @@ void setAppNameAndIcon()
     }
 #ifndef Q_OS_MACOS
     QApplication::setWindowIcon(
-        Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str())
+        Gui::BitmapFactory().iconFromTheme(App::Application::Config()["AppIcon"].c_str())
     );
 #endif
 }

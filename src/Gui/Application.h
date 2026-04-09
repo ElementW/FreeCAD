@@ -23,9 +23,10 @@
 
 #pragma once
 
-#include <QPixmap>
 #include <map>
 #include <string>
+
+#include <QIcon>
 
 #include <App/Application.h>
 
@@ -237,7 +238,7 @@ public:
     //@{
     /// Activate a named workbench
     bool activateWorkbench(const char* name);
-    QPixmap workbenchIcon(const QString&) const;
+    QIcon workbenchIcon(const QString&) const;
     QString workbenchToolTip(const QString&) const;
     QString workbenchMenuText(const QString&) const;
     QStringList workbenches() const;

@@ -721,7 +721,7 @@ void WorkbenchGroup::refreshWorkbenchList()
     int index = 0;
     for (const auto& wbName : enabledWbNames) {
         QString name = Application::Instance->workbenchMenuText(wbName);
-        QPixmap px = Application::Instance->workbenchIcon(wbName);
+        QIcon icon = Application::Instance->workbenchIcon(wbName);
         QString tip = Application::Instance->workbenchToolTip(wbName);
 
         QAction* action = getOrCreateAction(wbName);
@@ -732,7 +732,7 @@ void WorkbenchGroup::refreshWorkbenchList()
         action->setCheckable(true);
         action->setData(QVariant(index));  // set the index
         action->setObjectName(wbName);
-        action->setIcon(px);
+        action->setIcon(icon);
         action->setToolTip(tip);
         action->setStatusTip(tr("Selects the '%1' workbench").arg(name));
         if (index < 9) {
@@ -749,7 +749,7 @@ void WorkbenchGroup::refreshWorkbenchList()
     QStringList disabledWbNames = DlgSettingsWorkbenchesImp::getDisabledWorkbenches();
     for (const auto& wbName : disabledWbNames) {
         QString name = Application::Instance->workbenchMenuText(wbName);
-        QPixmap px = Application::Instance->workbenchIcon(wbName);
+        QIcon icon = Application::Instance->workbenchIcon(wbName);
         QString tip = Application::Instance->workbenchToolTip(wbName);
 
         QAction* action = getOrCreateAction(wbName);
@@ -760,7 +760,7 @@ void WorkbenchGroup::refreshWorkbenchList()
         action->setCheckable(true);
         action->setData(QVariant(index));  // set the index
         action->setObjectName(wbName);
-        action->setIcon(px);
+        action->setIcon(icon);
         action->setToolTip(tip);
         action->setStatusTip(tr("Select the '%1' workbench").arg(name));
         if (wbName.toStdString() == activeWbName) {
