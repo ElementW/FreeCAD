@@ -770,7 +770,7 @@ void CallTipsList::callTipItemActivated(QListWidgetItem* item)
          * For this we search the description for appropriate hints ...
          */
         QRegularExpression argumentMatcher(
-            QRegularExpression::escape(callTip.name) + QLatin1String(R"(\s*\(\s*\w+.*\))")
+            QRegularExpression::escape(callTip.name) + QStringLiteral(R"(\s*\(\s*\w+.*\))")
         );
         argumentMatcher.setPatternOptions(
             QRegularExpression::InvertedGreedinessOption

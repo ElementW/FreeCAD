@@ -373,7 +373,7 @@ void DlgAddProperty::addEnumEditor(PropertyItem* propertyItem)
 {
     auto* values = static_cast<PropertyStringListItem*>(PropertyStringListItem::create());
     values->setParent(propertyItem);
-    values->setPropertyName(QLatin1String(QT_TRANSLATE_NOOP("App::Property", "Enum")));
+    values->setPropertyName(QStringLiteral(QT_TRANSLATE_NOOP("App::Property", "Enum")));
     if (propertyItem->childCount() > 0) {
         auto* child = propertyItem->takeChild(0);
         delete child;

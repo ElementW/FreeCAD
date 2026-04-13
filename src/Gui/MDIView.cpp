@@ -175,13 +175,13 @@ void MDIView::onRelabel(Gui::Document* pDoc)
         // Try to separate document name and view number if there is one
         QString cap = windowTitle();
         // Either with dirty flag ...
-        QRegularExpression rx(QLatin1String(R"((\s\:\s\d+\[\*\])$)"));
+        QRegularExpression rx(QStringLiteral(R"((\s\:\s\d+\[\*\])$)"));
         QRegularExpressionMatch match;
         // int pos =
         boost::ignore_unused(cap.lastIndexOf(rx, -1, &match));
         if (!match.hasMatch()) {
             // ... or not
-            rx.setPattern(QLatin1String(R"((\s\:\s\d+)$)"));
+            rx.setPattern(QStringLiteral(R"((\s\:\s\d+)$)"));
             // pos =
             boost::ignore_unused(cap.lastIndexOf(rx, -1, &match));
         }

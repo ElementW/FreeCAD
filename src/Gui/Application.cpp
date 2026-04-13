@@ -506,7 +506,7 @@ Application::Application(bool GUIenabled)
             QMessageBox::critical(
                 0,
                 QStringLiteral("Invalid system settings"),
-                QLatin1String(
+                QStringLiteral(
                     "The system locale uses the same symbol for the decimal point and the thousands separator.\n\n"
                     "This may prevent the application from functioning correctly."
                     "Go to the system configuration panel of the OS and fix this issue."));

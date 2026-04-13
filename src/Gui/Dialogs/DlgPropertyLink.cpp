@@ -234,7 +234,7 @@ QString DlgPropertyLink::formatLinks(App::Document* ownerDoc, QList<App::SubObje
             .arg(
                 formatObject(ownerDoc, obj, nullptr),
                 list.join(QStringLiteral(", ")),
-                QLatin1String(links.size() > 3 ? " ..." : "")
+                links.size() > 3 ? QStringLiteral(" ...") : QStringLiteral("")
             );
     }
 
@@ -247,7 +247,7 @@ QString DlgPropertyLink::formatLinks(App::Document* ownerDoc, QList<App::SubObje
     }
     return QStringLiteral("[%1%2]").arg(
         list.join(QStringLiteral(", ")),
-        QLatin1String(links.size() > 3 ? " ..." : "")
+        links.size() > 3 ? QStringLiteral(" ...") : QStringLiteral("")
     );
 }
 
