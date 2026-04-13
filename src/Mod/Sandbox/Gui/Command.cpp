@@ -581,7 +581,7 @@ void CmdSandboxMeshLoader::activated(int)
 
     // Allow multi selection
     QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
-        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+        QObject::tr("Import mesh"), QString(), filter.join(QStringLiteral(";;")));
 
     Sandbox::MeshLoaderThread thread(fn);
     QObject::connect(&thread, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -639,7 +639,7 @@ void CmdSandboxMeshLoaderBoost::activated(int)
 
     // Allow multi selection
     QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(),
-        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+        QObject::tr("Import mesh"), QString(), filter.join(QStringLiteral(";;")));
 
     boost::packaged_task< Base::Reference<Mesh::MeshObject> > pt
         (boost::bind(&loadMesh, fn));
@@ -687,7 +687,7 @@ void CmdSandboxMeshLoaderFuture::activated(int)
 
     // Allow multi selection
     QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(),
-        QObject::tr("Import mesh"), QString(), filter.join(QLatin1String(";;")));
+        QObject::tr("Import mesh"), QString(), filter.join(QStringLiteral(";;")));
 
     QFuture< Base::Reference<Mesh::MeshObject> > future = QtConcurrent::mapped
         (fn, loadMesh);
@@ -1172,7 +1172,7 @@ void CmdTestCryptographicHash::activated(int)
 {
     QByteArray data = "FreeCAD";
     QByteArray hash = QCryptographicHash::hash(data, QCryptographicHash::Md5);
-    QMessageBox::information(0,QLatin1String("Hash of: FreeCAD"),QString::fromLatin1(hash));
+    QMessageBox::information(0,QStringLiteral("Hash of: FreeCAD"),QString::fromLatin1(hash));
 }
 
 //===========================================================================

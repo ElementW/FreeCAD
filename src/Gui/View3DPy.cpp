@@ -1047,7 +1047,7 @@ Py::Object View3DInventorPy::saveImage(const Py::Tuple& args)
 
     QColor bg;
     QString colname = QString::fromLatin1(cColor);
-    if (colname.compare(QLatin1String("Current"), Qt::CaseInsensitive) == 0) {
+    if (colname.compare(QStringLiteral("Current"), Qt::CaseInsensitive) == 0) {
         bg = QColor();  // assign an invalid color here
     }
     else {
@@ -1099,7 +1099,7 @@ Py::Object View3DInventorPy::saveVectorGraphic(const Py::Tuple& args)
 
     QColor bg;
     QString colname = QString::fromLatin1(name);
-    if (colname.compare(QLatin1String("Current"), Qt::CaseInsensitive) == 0) {
+    if (colname.compare(QStringLiteral("Current"), Qt::CaseInsensitive) == 0) {
         bg = getView3DInventorPtr()->getViewer()->backgroundColor();
     }
     else {

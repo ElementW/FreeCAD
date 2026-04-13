@@ -379,7 +379,7 @@ TaskPanelView::TaskPanelView(QWidget *parent)
     Ui_TaskActionBox* ui(new Ui_TaskActionBox);
     QWidget* page1 = new QWidget();
     ui->setupUi(page1);
-    tabWidget->addTab(page1, QLatin1String("Action Box"));
+    tabWidget->addTab(page1, QStringLiteral("Action Box"));
 
     // setup ActionBox 1
     ui->ActionBox1->setIcon(QPixmap(QStringLiteral(":/icons/document-open.svg")));
@@ -500,7 +500,7 @@ TaskPanelView::TaskPanelView(QWidget *parent)
     Ui_TaskGroup* ui(new Ui_TaskGroup);
     QWidget* page2 = new QWidget();
     ui->setupUi(page2);
-    tabWidget->addTab(page2, QLatin1String("Action Group"));
+    tabWidget->addTab(page2, QStringLiteral("Action Group"));
 
     this->actionGroup = ui->ActionPanel;
 

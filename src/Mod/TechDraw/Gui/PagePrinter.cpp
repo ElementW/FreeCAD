@@ -202,7 +202,7 @@ void PagePrinter::printAllPdf(QPrinter* printer, App::Document* doc)
 
     pdfWriter.setTitle(documentName);
     pdfWriter.setCreator(QString::fromStdString(App::Application::getNameWithVersion())
-                       + QLatin1String(" TechDraw"));
+                       + QStringLiteral(" TechDraw"));
 
     pdfWriter.setResolution(printer->resolution());
     QPageLayout pageLayout = printer->pageLayout();
@@ -276,7 +276,7 @@ void PagePrinter::printBannerPage(QPrinter* printer, QPainter& painter, QPageLay
     painter.setFont(painterFont);
 
     //print a header
-    QString docLine = QObject::tr("Document Name:") + QLatin1String(" ") + QString::fromUtf8(doc->getName());
+    QString docLine = QObject::tr("Document Name:") + QStringLiteral(" ") + QString::fromUtf8(doc->getName());
     int leftMargin = pageLayout.margins().left() * dpmm + 5 * dpmm; //layout margin + 5mm
     int verticalPos = pageLayout.margins().top() * dpmm + 20 * dpmm;//layout margin + 20mm
     int verticalSpacing = 2;                                        //double space
@@ -376,7 +376,7 @@ void PagePrinter::printPdf(ViewProviderPage* vpPage, const std::string& file)
     pdfWriter.setTitle(documentName);
     // default pdfWriter dpi is 1200. no need to set?
     pdfWriter.setCreator(QString::fromStdString(App::Application::getNameWithVersion())
-                       + QLatin1String(" TechDraw"));
+                       + QStringLiteral(" TechDraw"));
 
     // set up the page layout by modifying the default
     QPageLayout pageLayout = pdfWriter.pageLayout();

@@ -72,7 +72,7 @@ StartView::StartView(QWidget* parent)
     , _customFolderLabel {nullptr}
     , _showOnStartupCheckBox {nullptr}
 {
-    setObjectName(QLatin1String("StartView"));
+    setObjectName(QStringLiteral("StartView"));
     auto hGrp = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/Mod/Start"
     );
@@ -164,7 +164,7 @@ StartView::StartView(QWidget* parent)
     documentsMainLayout->addLayout(footerLayout);
 
     _openFirstStart = gsl::owner<QPushButton*>(new QPushButton());
-    _openFirstStart->setIcon(QIcon(QLatin1String(":/icons/preferences-general.svg")));
+    _openFirstStart->setIcon(QIcon(QStringLiteral(":/icons/preferences-general.svg")));
     connect(_openFirstStart, &QPushButton::clicked, this, &StartView::openFirstStartClicked);
 
     _showOnStartupCheckBox = gsl::owner<QCheckBox*>(new QCheckBox());
@@ -211,30 +211,30 @@ void StartView::configureNewFileButtons(QLayout* layout) const
     auto newEmptyFile = gsl::owner<NewFileButton*>(new NewFileButton(
         {tr("Empty File"),
          tr("Creates a new empty FreeCAD file"),
-         QLatin1String(":/icons/document-new.svg")}
+         QStringLiteral(":/icons/document-new.svg")}
     ));
     auto openFile = gsl::owner<NewFileButton*>(new NewFileButton(
         {tr("Open File"),
          tr("Opens an existing CAD file or 3D model"),
-         QLatin1String(":/icons/document-open.svg")}
+         QStringLiteral(":/icons/document-open.svg")}
     ));
     auto partDesign = gsl::owner<NewFileButton*>(new NewFileButton(
         {tr("Parametric Body"),
          tr("Creates a body with the Part Design workbench"),
-         QLatin1String(":/icons/PartDesignWorkbench.svg")}
+         QStringLiteral(":/icons/PartDesignWorkbench.svg")}
     ));
     auto assembly = gsl::owner<NewFileButton*>(new NewFileButton(
         {tr("Assembly"),
          tr("Creates an assembly project"),
-         QLatin1String(":/icons/AssemblyWorkbench.svg")}
+         QStringLiteral(":/icons/AssemblyWorkbench.svg")}
     ));
     auto draft = gsl::owner<NewFileButton*>(new NewFileButton(
-        {tr("2D Draft"), tr("Creates a 2D Draft document"), QLatin1String(":/icons/DraftWorkbench.svg")}
+        {tr("2D Draft"), tr("Creates a 2D Draft document"), QStringLiteral(":/icons/DraftWorkbench.svg")}
     ));
     auto arch = gsl::owner<NewFileButton*>(new NewFileButton(
         {tr("BIM/Architecture"),
          tr("Creates an architectural project"),
-         QLatin1String(":/icons/BIMWorkbench.svg")}
+         QStringLiteral(":/icons/BIMWorkbench.svg")}
     ));
 
     // TODO: Ensure all of the required WBs are actually available

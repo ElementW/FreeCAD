@@ -287,8 +287,8 @@ void DlgSettingsEditor::loadSettings()
         if (QFontDatabase().isFixedPitch(name)) {
             // cursor.pcf was removed to cope with a problem with the Qt Font Manager
             // See https://github.com/FreeCAD/FreeCAD/issues/10514 for details
-            if (name.compare(QLatin1String("8514oem"), Qt::CaseInsensitive) != 0
-                && name.compare(QLatin1String("cursor.pcf"), Qt::CaseInsensitive) != 0) {
+            if (name.compare(QStringLiteral("8514oem"), Qt::CaseInsensitive) != 0
+                && name.compare(QStringLiteral("cursor.pcf"), Qt::CaseInsensitive) != 0) {
                 fixedFamilyNames.append(name);
             }
         }
@@ -300,8 +300,8 @@ void DlgSettingsEditor::loadSettings()
         if (QFontDatabase::isFixedPitch(name)) {
             // cursor.pcf was removed to cope with a problem with the Qt Font Manager
             // See https://github.com/FreeCAD/FreeCAD/issues/10514 for details
-            if (name.compare(QLatin1String("8514oem"), Qt::CaseInsensitive) != 0
-                && name.compare(QLatin1String("cursor.pcf"), Qt::CaseInsensitive) != 0) {
+            if (name.compare(QStringLiteral("8514oem"), Qt::CaseInsensitive) != 0
+                && name.compare(QStringLiteral("cursor.pcf"), Qt::CaseInsensitive) != 0) {
                 fixedFamilyNames.append(name);
             }
         }

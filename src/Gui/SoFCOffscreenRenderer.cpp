@@ -162,23 +162,26 @@ void SoFCOffscreenRenderer::writeToImageFile(
             QImage img = image;
             // set keywords for PNG format
             if (file.hasExtension("PNG")) {
-                img.setText(QLatin1String("Title"), QString::fromUtf8(filename));
-                img.setText(QLatin1String("Author"), QLatin1String("FreeCAD (https://www.freecad.org)"));
+                img.setText(QStringLiteral("Title"), QString::fromUtf8(filename));
+                img.setText(
+                    QStringLiteral("Author"),
+                    QStringLiteral("FreeCAD (https://www.freecad.org)")
+                );
                 if (strcmp(comment, "") == 0) {
                     img.setText(
-                        QLatin1String("Description"),
-                        QLatin1String("Screenshot created by FreeCAD")
+                        QStringLiteral("Description"),
+                        QStringLiteral("Screenshot created by FreeCAD")
                     );
                 }
                 else if (strcmp(comment, "$MIBA") == 0) {
-                    img.setText(QLatin1String("Description"), QLatin1String(createMIBA(mat).c_str()));
+                    img.setText(QStringLiteral("Description"), QLatin1String(createMIBA(mat).c_str()));
                 }
                 else {
-                    img.setText(QLatin1String("Description"), QString::fromUtf8(comment));
+                    img.setText(QStringLiteral("Description"), QString::fromUtf8(comment));
                 }
-                img.setText(QLatin1String("Creation Time"), QDateTime::currentDateTime().toString());
+                img.setText(QStringLiteral("Creation Time"), QDateTime::currentDateTime().toString());
                 img.setText(
-                    QLatin1String("Software"),
+                    QStringLiteral("Software"),
                     QString::fromStdString(App::Application::getExecutableName())
                 );
             }
@@ -272,11 +275,11 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
     }
 
     // now add PostScript and SGI RGB
-    if (formats.indexOf(QLatin1String("EPS")) == -1) {
-        formats << QLatin1String("EPS");
+    if (formats.indexOf(QStringLiteral("EPS")) == -1) {
+        formats << QStringLiteral("EPS");
     }
-    else if (formats.indexOf(QLatin1String("SGI")) == -1) {
-        formats << QLatin1String("SGI");
+    else if (formats.indexOf(QStringLiteral("SGI")) == -1) {
+        formats << QStringLiteral("SGI");
     }
 
     formats.sort();

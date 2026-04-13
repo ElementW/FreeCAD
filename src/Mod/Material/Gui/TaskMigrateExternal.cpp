@@ -48,7 +48,7 @@ void DlgMigrateExternal::showLibraries()
 {
     auto materialLibraries = Materials::MaterialManager::getManager().getLocalLibraries();
     for (auto library : *materialLibraries) {
-        if (library->getName() != QLatin1String("User")) {
+        if (library->getName() != QStringLiteral("User")) {
             auto item = new QListWidgetItem(library->getName());
             item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
             item->setCheckState(Qt::Checked);
@@ -59,7 +59,7 @@ void DlgMigrateExternal::showLibraries()
 
     auto modelLibraries = Materials::ModelManager::getManager().getLocalLibraries();
     for (auto library : *modelLibraries) {
-        if (library->getName() != QLatin1String("User")) {
+        if (library->getName() != QStringLiteral("User")) {
             auto item = new QListWidgetItem(library->getName());
             item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
             item->setCheckState(Qt::Checked);

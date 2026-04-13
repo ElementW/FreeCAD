@@ -71,20 +71,20 @@ public:
         if (al != cfg.end()) {
             QString alt = QString::fromLatin1(al->second.c_str());
             int align = 0;
-            if (alt.startsWith(QLatin1String("VCenter"))) {
+            if (alt.startsWith(QStringLiteral("VCenter"))) {
                 align = Qt::AlignVCenter;
             }
-            else if (alt.startsWith(QLatin1String("Top"))) {
+            else if (alt.startsWith(QStringLiteral("Top"))) {
                 align = Qt::AlignTop;
             }
             else {
                 align = Qt::AlignBottom;
             }
 
-            if (alt.endsWith(QLatin1String("HCenter"))) {
+            if (alt.endsWith(QStringLiteral("HCenter"))) {
                 align += Qt::AlignHCenter;
             }
-            else if (alt.endsWith(QLatin1String("Right"))) {
+            else if (alt.endsWith(QStringLiteral("Right"))) {
                 align += Qt::AlignRight;
             }
             else {
@@ -137,7 +137,7 @@ public:
         QString msg(QString::fromStdString(text));
         QRegularExpression rx;
         // ignore 'Init:' and 'Mod:' prefixes
-        rx.setPattern(QLatin1String("^\\s*(Init:|Mod:)\\s*"));
+        rx.setPattern(QStringLiteral("^\\s*(Init:|Mod:)\\s*"));
         auto match = rx.match(msg);
         if (match.hasMatch()) {
             msg = msg.mid(match.capturedLength());
@@ -151,7 +151,7 @@ public:
             }
         }
 
-        splash->showMessage(msg.replace(QLatin1String("\n"), QString()), alignment, textColor);
+        splash->showMessage(msg.replace(QStringLiteral("\n"), QString()), alignment, textColor);
         QMutex mutex;
         QMutexLocker ml(&mutex);
         QWaitCondition().wait(&mutex, 50);
@@ -191,7 +191,7 @@ static void renderDevBuildWarning(
     const auto devWarningLine1 = QObject::tr("WARNING: This is a development version.");
     const auto devWarningLine2 = QObject::tr("Do not use it in a production environment.");
     QFontMetrics fontMetrics(painter.font());  // Try to use the existing font
-    int padding = QtTools::horizontalAdvance(fontMetrics, QLatin1String("M"));  // Arbitrary
+    int padding = QtTools::horizontalAdvance(fontMetrics, QStringLiteral("M"));  // Arbitrary
     int line1Width = QtTools::horizontalAdvance(fontMetrics, devWarningLine1);
     int line2Width = QtTools::horizontalAdvance(fontMetrics, devWarningLine2);
     int boxWidth = std::max(line1Width, line2Width) + 2 * padding;
@@ -360,7 +360,7 @@ QPixmap SplashScreen::splashImage()
         fontExe.setPointSizeF(20.0);
         QFontMetrics metricExe(fontExe);
         int l = QtTools::horizontalAdvance(metricExe, title);
-        if (title == QLatin1String("FreeCAD")) {
+        if (title == QStringLiteral("FreeCAD")) {
             l = 0.0;  // "FreeCAD" text is already part of the splashscreen, version goes below it
         }
         int w = splash_image.width();
@@ -372,7 +372,7 @@ QPixmap SplashScreen::splashImage()
         int v = QtTools::horizontalAdvance(metricVer, version);
 
         int x = -1, y = -1;
-        QRegularExpression rx(QLatin1String("(\\d+).(\\d+)"));
+        QRegularExpression rx(QStringLiteral("(\\d+).(\\d+)"));
         auto match = rx.match(position);
         if (match.hasMatch()) {
             x = match.captured(1).toInt();
@@ -387,14 +387,14 @@ QPixmap SplashScreen::splashImage()
         if (color.isValid()) {
             painter.setPen(color);
             painter.setFont(fontExe);
-            if (title != QLatin1String("FreeCAD")) {
+            if (title != QStringLiteral("FreeCAD")) {
                 // FreeCAD's Splashscreen already contains the EXE name, no need to draw it
                 painter.drawText(x, y, title);
             }
             painter.setFont(fontVer);
             painter.drawText(x + (l + 235), y - 7, version);
             QColor warningColor(QString::fromStdString(wc->second));
-            if (suffix == QLatin1String("dev") && warningColor.isValid()) {
+            if (suffix == QStringLiteral("dev") && warningColor.isValid()) {
                 fontVer.setPointSizeF(14.0);
                 painter.setFont(fontVer);
                 const int lineHeight = metricVer.lineSpacing();

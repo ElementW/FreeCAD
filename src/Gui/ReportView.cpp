@@ -55,7 +55,7 @@ using namespace Gui::DockWnd;
 ReportView::ReportView(QWidget* parent)
     : QWidget(parent)
 {
-    setObjectName(QLatin1String("ReportOutput"));
+    setObjectName(QStringLiteral("ReportOutput"));
 
     resize(529, 162);
     auto tabLayout = new QGridLayout(this);
@@ -567,7 +567,7 @@ void ReportOutput::customEvent(QEvent* ev)
         // The time code can only be set when the cursor is at the block start
         if (showTimecode && blockStart) {
             QTime time = QTime::currentTime();
-            text.prepend(time.toString(QLatin1String("hh:mm:ss  ")));
+            text.prepend(time.toString(QStringLiteral("hh:mm:ss  ")));
         }
 
         QTextCursor cursor(this->document());
@@ -747,7 +747,7 @@ void ReportOutput::onSaveAs()
     if (!fn.isEmpty()) {
         QFileInfo fi(fn);
         if (fi.completeSuffix().isEmpty()) {
-            fn += QLatin1String(".log");
+            fn += QStringLiteral(".log");
         }
         QFile f(fn);
         if (f.open(QIODevice::WriteOnly)) {
@@ -931,7 +931,7 @@ void ReportOutput::OnChange(Base::Subject<const char*>& rCaller, const char* sRe
         }
         setFont(font);
         QFontMetrics metric(font);
-        int width = QtTools::horizontalAdvance(metric, QLatin1String("0000"));
+        int width = QtTools::horizontalAdvance(metric, QStringLiteral("0000"));
         setTabStopDistance(width);
     }
     else if (strcmp(sReason, "RedirectPythonOutput") == 0) {

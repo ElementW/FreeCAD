@@ -57,7 +57,11 @@ UrlLabel::~UrlLabel()
 
 void UrlLabel::mouseReleaseEvent(QMouseEvent*)
 {
-    QMessageBox::information(this, "Browser", QString("This starts your browser with url %1").arg(_url));
+    QMessageBox::information(
+        this,
+        "Browser",
+        QStringLiteral("This starts your browser with url %1").arg(_url)
+    );
 }
 
 QString UrlLabel::url() const
@@ -468,7 +472,7 @@ QByteArray InputField::paramGrpPath() const
 void InputField::setValue(double quant)
 {
     Value = quant;
-    setText(QString("%1 %2").arg(Value).arg(UnitStr));
+    setText(QStringLiteral("%1 %2").arg(Value).arg(UnitStr));
 }
 
 /// sets the field with a quantity
@@ -516,7 +520,7 @@ void InputField::setMinimum(double m)
 void InputField::setUnitText(QString str)
 {
     UnitStr = str;
-    setText(QString("%1 %2").arg(Value).arg(UnitStr));
+    setText(QStringLiteral("%1 %2").arg(Value).arg(UnitStr));
 }
 
 QString InputField::getUnitText(void)
@@ -1216,8 +1220,8 @@ QSize QuantitySpinBox::sizeHint() const
     int h = lineEdit()->sizeHint().height();
     int w = 0;
 
-    QString s = QLatin1String("000000000000000000");
-    QString fixedContent = QLatin1String(" ");
+    QString s = QStringLiteral("000000000000000000");
+    QString fixedContent = QStringLiteral(" ");
     s += fixedContent;
 
     w = fm.horizontalAdvance(s);
@@ -1241,8 +1245,8 @@ QSize QuantitySpinBox::minimumSizeHint() const
     int h = lineEdit()->minimumSizeHint().height();
     int w = 0;
 
-    QString s = QLatin1String("000000000000000000");
-    QString fixedContent = QLatin1String(" ");
+    QString s = QStringLiteral("000000000000000000");
+    QString fixedContent = QStringLiteral(" ");
     s += fixedContent;
 
     w = fm.horizontalAdvance(s);

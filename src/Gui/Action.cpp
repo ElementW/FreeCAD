@@ -1023,7 +1023,7 @@ void RecentFilesAction::resizeList(int size)
     int diff = this->visibleItems - this->maximumItems;
     // create new items if needed
     for (int i = 0; i < diff; i++) {
-        groupAction()->addAction(QLatin1String(""))->setVisible(false);
+        groupAction()->addAction(QStringLiteral(""))->setVisible(false);
     }
     setFiles(files());
 }
@@ -1038,7 +1038,7 @@ void RecentFilesAction::restore()
 
     int count = std::max<int>(this->maximumItems, this->visibleItems);
     for (int i = 0; i < count; i++) {
-        groupAction()->addAction(QLatin1String(""))->setVisible(false);
+        groupAction()->addAction(QStringLiteral(""))->setVisible(false);
     }
     std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
     QStringList files;
@@ -1259,7 +1259,7 @@ void RecentMacrosAction::resizeList(int size)
     int diff = this->visibleItems - this->maximumItems;
     // create new items if needed
     for (int i = 0; i < diff; i++) {
-        groupAction()->addAction(QLatin1String(""))->setVisible(false);
+        groupAction()->addAction(QStringLiteral(""))->setVisible(false);
     }
     setFiles(files());
 }
@@ -1274,7 +1274,7 @@ void RecentMacrosAction::restore()
                                     ->GetGroup("RecentMacros");
 
     for (int i = groupAction()->actions().size(); i < this->maximumItems; i++) {
-        groupAction()->addAction(QLatin1String(""))->setVisible(false);
+        groupAction()->addAction(QStringLiteral(""))->setVisible(false);
     }
     resizeList(hGrp->GetInt("RecentMacros"));
 

@@ -298,7 +298,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
 
                 // this should be now a user-defined Python class
                 // http://stackoverflow.com/questions/12233103/in-python-at-runtime-determine-if-an-object-is-a-class-old-and-new-type-instan
-                if (!typestr.startsWith(QLatin1String("PySide"))
+                if (!typestr.startsWith(QStringLiteral("PySide"))
                     && Py_TYPE(obj.ptr())->tp_flags & Py_TPFLAGS_HEAPTYPE) {
                     obj = type;
                 }
@@ -393,7 +393,7 @@ bool shibokenMayCrash(void)
 Py::Object CallTipsList::getAttrWorkaround(Py::Object& obj, Py::String& name) const
 {
     QString typestr(QLatin1String(Py_TYPE(obj.ptr())->tp_name));
-    bool hasWorkingGetAttr = !(typestr == QLatin1String("Shiboken.ObjectType") && shibokenMayCrash());
+    bool hasWorkingGetAttr = !(typestr == QStringLiteral("Shiboken.ObjectType") && shibokenMayCrash());
 
     if (hasWorkingGetAttr) {
         return obj.getAttr(name.as_string());
@@ -444,7 +444,7 @@ void CallTipsList::extractTipsFromObject(Py::Object& obj, Py::List& list, QMap<Q
                 tip.type = CallTip::Member;
             }
 
-            if (str == QLatin1String("__doc__") && attr.isString()) {
+            if (str == QStringLiteral("__doc__") && attr.isString()) {
                 Py::Object help = attr;
                 if (help.isString()) {
                     Py::String doc(help);
@@ -762,7 +762,8 @@ void CallTipsList::callTipItemActivated(QListWidgetItem* item)
     // if call completion enabled and we've something callable (method or class constructor) ...
     if (this->doCallCompletion
         && (callTip.type == CallTip::Method || callTip.type == CallTip::Class)) {
-        cursor.insertText(QLatin1String("()"));  //< just append parenthesis to identifier even inserted.
+        cursor.insertText(QStringLiteral("()"));  //< just append parenthesis to identifier even
+                                                  // inserted.
 
         /**
          * Try to find out if call needs arguments.
@@ -794,7 +795,7 @@ void CallTipsList::callTipItemActivated(QListWidgetItem* item)
 QString CallTipsList::stripWhiteSpace(const QString& str) const
 {
     QString stripped = str;
-    QStringList lines = str.split(QLatin1String("\n"));
+    QStringList lines = str.split(QStringLiteral("\n"));
     int minspace = std::numeric_limits<int>::max();
     int line = 0;
     for (QStringList::iterator it = lines.begin(); it != lines.end(); ++it, ++line) {
@@ -828,7 +829,7 @@ QString CallTipsList::stripWhiteSpace(const QString& str) const
             }
         }
 
-        stripped = strippedlines.join(QLatin1String("\n"));
+        stripped = strippedlines.join(QStringLiteral("\n"));
     }
 
     return stripped;

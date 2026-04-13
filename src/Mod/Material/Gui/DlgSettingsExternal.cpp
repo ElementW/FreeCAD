@@ -59,7 +59,7 @@ QString DlgSettingsExternal::toPerCent(double value) const
 {
     QString pcString;
     pcString.setNum(int(value * 100.0));
-    pcString += QLatin1String("%");
+    pcString += QStringLiteral("%");
 
     return pcString;
 }

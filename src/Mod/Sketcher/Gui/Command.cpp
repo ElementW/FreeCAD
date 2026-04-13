@@ -1115,7 +1115,7 @@ void CmdSketcherViewSection::activated(int iMsg)
 {
     Q_UNUSED(iMsg);
     QString cmdStr =
-        QLatin1String("ActiveSketch.ViewObject.TempoVis.sketchClipPlane(ActiveSketch, Gui.ActiveDocument, None, %1)\n");
+        QStringLiteral("ActiveSketch.ViewObject.TempoVis.sketchClipPlane(ActiveSketch, Gui.ActiveDocument, None, %1)\n");
     Gui::Document* doc = getActiveGuiDocument();
 
     bool revert = false;
@@ -1126,7 +1126,7 @@ void CmdSketcherViewSection::activated(int iMsg)
             revert = vp->getViewOrientationFactor() < 0 ? true : false;
         }
     }
-    cmdStr = cmdStr.arg(revert ? QLatin1String("True") : QLatin1String("False"));
+    cmdStr = cmdStr.arg(revert ? QStringLiteral("True") : QStringLiteral("False"));
     doCommand(Doc, cmdStr.toLatin1());
 }
 

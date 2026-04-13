@@ -172,7 +172,7 @@ TaskMeasure::TaskMeasure()
     connect(modeSwitch, qOverload<int>(&QComboBox::currentIndexChanged), this, &TaskMeasure::onModeChanged);
 
     unitSwitch = new QComboBox();
-    unitSwitch->addItem(QLatin1String("-"));
+    unitSwitch->addItem(QStringLiteral("-"));
     connect(unitSwitch, qOverload<int>(&QComboBox::currentIndexChanged), this, &TaskMeasure::onUnitChanged);
 
 
@@ -359,8 +359,8 @@ void TaskMeasure::tryUpdate()
     if (!measureType) {
         QSignalBlocker unitSwitchBlocker(unitSwitch);
         unitSwitch->clear();
-        unitSwitch->addItem(QLatin1String("-"));
-        mLastUnitSelection = QLatin1String("-");
+        unitSwitch->addItem(QStringLiteral("-"));
+        mLastUnitSelection = QStringLiteral("-");
 
         // Reset measure object
         if (!explicitMode) {
@@ -443,7 +443,7 @@ void TaskMeasure::setUnitFromResultString()
     }
 
     // Only set default unit if user hasn't made a selection yet
-    if (mLastUnitSelection != QLatin1String("-") && !mLastUnitSelection.isEmpty()) {
+    if (mLastUnitSelection != QStringLiteral("-") && !mLastUnitSelection.isEmpty()) {
         return;
     }
 
@@ -483,11 +483,11 @@ void TaskMeasure::updateResultWithUnit()
 
     QString currentUnit = unitSwitch->currentText();
 
-    if (currentUnit != QLatin1String("-") && !resultString.isEmpty()) {
+    if (currentUnit != QStringLiteral("-") && !resultString.isEmpty()) {
         Base::Quantity resultQty = Base::Quantity::parse(resultString.toStdString());
         // Parse unit string like "1 mm" to get the target quantity
         Base::Quantity targetUnit = Base::Quantity::parse(
-            (QLatin1String("1 ") + currentUnit).toStdString()
+            (QStringLiteral("1 ") + currentUnit).toStdString()
         );
         double convertedValue = resultQty.getValueAs(targetUnit);
 
@@ -500,7 +500,7 @@ void TaskMeasure::updateResultWithUnit()
             formattedValue = QString::number(convertedValue, 'f', 4);
         }
 
-        QString formattedResult = formattedValue + QLatin1String(" ") + currentUnit;
+        QString formattedResult = formattedValue + QStringLiteral(" ") + currentUnit;
         valueResult->setText(formattedResult);
     }
     else {
@@ -753,7 +753,7 @@ void TaskMeasure::onModeChanged(int index)
 void TaskMeasure::onUnitChanged(int index)
 {
     const QString currentUnit = unitSwitch->itemText(index);
-    const auto dash = QLatin1String("-");
+    const auto dash = QStringLiteral("-");
 
     if (currentUnit != mLastUnitSelection && (mLastUnitSelection != dash || currentUnit != dash)) {
         updateResultWithUnit();

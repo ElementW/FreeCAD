@@ -60,44 +60,44 @@ private Q_SLOTS:
 
     void test_camelCaseSplitsTwoWords()  // NOLINT
     {
-        item->setPropertyName(QLatin1String("CamelCase"));
-        QCOMPARE(item->propertyName(), QLatin1String("Camel Case"));
+        item->setPropertyName(QStringLiteral("CamelCase"));
+        QCOMPARE(item->propertyName(), QStringLiteral("Camel Case"));
     }
 
     void test_camelCaseSplitsThreeWords()  // NOLINT
     {
-        item->setPropertyName(QLatin1String("ThreeWordProperty"));
-        QCOMPARE(item->propertyName(), QLatin1String("Three Word Property"));
+        item->setPropertyName(QStringLiteral("ThreeWordProperty"));
+        QCOMPARE(item->propertyName(), QStringLiteral("Three Word Property"));
     }
 
     void test_digitBeforeUppercaseNotSplit()  // NOLINT
     {
-        item->setPropertyName(QLatin1String("View3D"));
-        QCOMPARE(item->propertyName(), QLatin1String("View3D"));
+        item->setPropertyName(QStringLiteral("View3D"));
+        QCOMPARE(item->propertyName(), QStringLiteral("View3D"));
     }
 
     void test_camelCaseSplitButNotDigit()  // NOLINT
     {
-        item->setPropertyName(QLatin1String("MyView3D"));
-        QCOMPARE(item->propertyName(), QLatin1String("My View3D"));
+        item->setPropertyName(QStringLiteral("MyView3D"));
+        QCOMPARE(item->propertyName(), QStringLiteral("My View3D"));
     }
 
     void test_consecutiveUppercaseNotSplit()  // NOLINT
     {
-        item->setPropertyName(QLatin1String("MyABC"));
-        QCOMPARE(item->propertyName(), QLatin1String("My ABC"));
+        item->setPropertyName(QStringLiteral("MyABC"));
+        QCOMPARE(item->propertyName(), QStringLiteral("My ABC"));
     }
 
     void test_notCleverEnoughToSplitConsecutiveCaps()  // NOLINT
     {
-        item->setPropertyName(QLatin1String("MyABCOfDoom"));
-        QCOMPARE(item->propertyName(), QLatin1String("My ABCOf Doom"));
+        item->setPropertyName(QStringLiteral("MyABCOfDoom"));
+        QCOMPARE(item->propertyName(), QStringLiteral("My ABCOf Doom"));
     }
 
     void test_underscoresArentTheSameAsSpaces()  // NOLINT
     {
-        item->setPropertyName(QLatin1String("Box_Length"));
-        QCOMPARE(item->propertyName(), QLatin1String("Box_Length"));
+        item->setPropertyName(QStringLiteral("Box_Length"));
+        QCOMPARE(item->propertyName(), QStringLiteral("Box_Length"));
     }
 
 private:

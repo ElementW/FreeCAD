@@ -163,7 +163,7 @@ QList<App::SubObjectT> DlgPropertyLink::getLinksFromProperty(const App::Property
 QString DlgPropertyLink::formatObject(App::Document* ownerDoc, App::DocumentObject* obj, const char* sub)
 {
     if (!obj || !obj->isAttachedToDocument()) {
-        return QLatin1String("?");
+        return QStringLiteral("?");
     }
 
     const char* objName = obj->getNameInDocument();
@@ -214,7 +214,7 @@ QString DlgPropertyLink::formatLinks(App::Document* ownerDoc, QList<App::SubObje
 
     auto obj = links.front().getObject();
     if (!obj) {
-        return QLatin1String("?");
+        return QStringLiteral("?");
     }
 
     if (links.size() == 1 && links.front().getSubName().empty()) {
@@ -233,7 +233,7 @@ QString DlgPropertyLink::formatLinks(App::Document* ownerDoc, QList<App::SubObje
         return QStringLiteral("%1 [%2%3]")
             .arg(
                 formatObject(ownerDoc, obj, nullptr),
-                list.join(QLatin1String(", ")),
+                list.join(QStringLiteral(", ")),
                 QLatin1String(links.size() > 3 ? " ..." : "")
             );
     }
@@ -246,7 +246,7 @@ QString DlgPropertyLink::formatLinks(App::Document* ownerDoc, QList<App::SubObje
         }
     }
     return QStringLiteral("[%1%2]").arg(
-        list.join(QLatin1String(", ")),
+        list.join(QStringLiteral(", ")),
         QLatin1String(links.size() > 3 ? " ..." : "")
     );
 }
@@ -760,7 +760,7 @@ void DlgPropertyLink::onSelectionChanged(const Gui::SelectionChanges& msg)
             }
             if (list.indexOf(element) < 0) {
                 list << element;
-                item->setText(1, list.join(QLatin1String(",")));
+                item->setText(1, list.join(QStringLiteral(",")));
                 subSelections.insert(item);
             }
         }
@@ -870,7 +870,7 @@ QList<App::SubObjectT> DlgPropertyLink::originalLinks() const
 QString DlgPropertyLink::linksToPython(const QList<App::SubObjectT>& links)
 {
     if (links.isEmpty()) {
-        return QLatin1String("None");
+        return QStringLiteral("None");
     }
 
     if (links.size() == 1) {

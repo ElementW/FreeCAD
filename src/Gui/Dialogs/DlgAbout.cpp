@@ -314,7 +314,7 @@ void AboutDialog::setupLabels()
 
 void AboutDialog::showCredits()
 {
-    auto creditsFileURL = QLatin1String(":/doc/CONTRIBUTORS");
+    auto creditsFileURL = QStringLiteral(":/doc/CONTRIBUTORS");
     QFile creditsFile(creditsFileURL);
 
     if (!creditsFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -384,7 +384,7 @@ void AboutDialog::showLicenseInformation()
         textField->setHtml(licenseHTML);
     }
     else {
-        QString info(QLatin1String("SUCH DAMAGES.<hr/>"));
+        QString info(QStringLiteral("SUCH DAMAGES.<hr/>"));
         info += getAdditionalLicenseInformation();
         QString lictext = ui->textBrowserLicense->toHtml();
         lictext.replace(QStringLiteral("SUCH DAMAGES.<hr/>"), info);
@@ -428,7 +428,7 @@ void AboutDialog::showLibraryInformation()
 void AboutDialog::showCollectionInformation()
 {
     QString doc = QString::fromStdString(App::Application::getHelpDir());
-    QString path = doc + QLatin1String("Collection.html");
+    QString path = doc + QStringLiteral("Collection.html");
     if (!QFile::exists(path)) {
         return;
     }
@@ -445,7 +445,7 @@ void AboutDialog::showCollectionInformation()
 
 void AboutDialog::showPrivacyPolicy()
 {
-    auto policyFileURL = QLatin1String(":/doc/PRIVACY_POLICY");
+    auto policyFileURL = QStringLiteral(":/doc/PRIVACY_POLICY");
     QFile policyFile(policyFileURL);
 
     if (!policyFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -469,7 +469,7 @@ void AboutDialog::linkActivated(const QUrl& link)
     licenseView->show();
     QString title = tr("License");
     QString fragment = link.fragment();
-    if (fragment.startsWith(QLatin1String("_Toc"))) {
+    if (fragment.startsWith(QStringLiteral("_Toc"))) {
         QString prefix = fragment.mid(4);
         title = QStringLiteral("%1 %2").arg(prefix, title);
     }

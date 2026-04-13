@@ -119,7 +119,7 @@ private:
     // Stores if delta measures shall be shown
     bool delta = true;
     bool mAutoSave = false;
-    QString mLastUnitSelection = QLatin1String("-");
+    QString mLastUnitSelection = QStringLiteral("-");
     bool mGreedySelection = false;
     Gui::Document* mTargetDoc;
 };

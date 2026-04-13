@@ -567,7 +567,7 @@ void StdCmdFreezeViews::onRestoreViews()
 
     // get the root element
     QDomElement root = xmlDocument.documentElement();
-    if (root.tagName() != QLatin1String("FrozenViews")) {
+    if (root.tagName() != QStringLiteral("FrozenViews")) {
         std::cerr << "Unexpected XML structure" << std::endl;
         return;
     }
@@ -2206,9 +2206,9 @@ void StdViewScreenShot::activated(int iMsg)
                 // Replace newline escape sequence through '\\n' string to build one big string,
                 // otherwise Python would interpret it as an invalid command.
                 // Python does the decoding for us.
-                QStringList lines = comment.split(QLatin1String("\n"), Qt::KeepEmptyParts);
+                QStringList lines = comment.split(QStringLiteral("\n"), Qt::KeepEmptyParts);
 
-                comment = lines.join(QLatin1String("\\n"));
+                comment = lines.join(QStringLiteral("\\n"));
                 doCommand(
                     Gui,
                     "Gui.activeDocument().activeView().saveImage('%s',%d,%d,'%s','%s')",
@@ -2914,7 +2914,7 @@ public:
         qreal hotXF = hotX;
         qreal hotYF = hotY;
 #if !defined(Q_OS_WIN32) && !defined(Q_OS_MACOS)
-        if (qApp->platformName() == QLatin1String("xcb")) {
+        if (qApp->platformName() == QStringLiteral("xcb")) {
             qreal pRatio = widget->devicePixelRatioF();
             hotXF *= pRatio;
             hotYF *= pRatio;

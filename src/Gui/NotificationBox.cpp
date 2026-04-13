@@ -405,7 +405,7 @@ bool NotificationBox::showText(
             options & Options::HideIfReferenceWidgetDeactivated
         );
         NotificationLabel::instance->placeNotificationLabel(pos);
-        NotificationLabel::instance->setObjectName(QLatin1String("NotificationBox_label"));
+        NotificationLabel::instance->setObjectName(QStringLiteral("NotificationBox_label"));
 
         NotificationLabel::instance->showNormal();
     }

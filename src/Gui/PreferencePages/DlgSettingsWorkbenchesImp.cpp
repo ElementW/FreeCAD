@@ -477,7 +477,7 @@ QStringList DlgSettingsWorkbenchesImp::getEnabledWorkbenches()
     );
     wbs_ordered = QString::fromStdString(hGrp->GetASCII("Ordered", ""));
 
-    wbs_ordered_list = wbs_ordered.split(QLatin1String(","), Qt::SkipEmptyParts);
+    wbs_ordered_list = wbs_ordered.split(QStringLiteral(","), Qt::SkipEmptyParts);
 
     QStringList workbenches = Application::Instance->workbenches();
     workbenches.sort();
@@ -521,7 +521,7 @@ QStringList DlgSettingsWorkbenchesImp::getDisabledWorkbenches()
         "NoneWorkbench,TestWorkbench,InspectionWorkbench,RobotWorkbench,OpenSCADWorkbench"
     ));
 
-    unfiltered_disabled_wbs_list = disabled_wbs.split(QLatin1String(","), Qt::SkipEmptyParts);
+    unfiltered_disabled_wbs_list = disabled_wbs.split(QStringLiteral(","), Qt::SkipEmptyParts);
 
     QStringList workbenches = Application::Instance->workbenches();
 

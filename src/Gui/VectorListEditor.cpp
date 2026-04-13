@@ -218,7 +218,7 @@ void Gui::VectorTableModel::pasteFromClipboard()
         QString msg(
             tr("Unsupported format.  Must be 3 values per row separated by tabs, semicolons, or "
                "commas:")
-            + QLatin1String("\n")
+            + QStringLiteral("\n")
         );
         msg += clipboard->text();
         Base::Console().error(msg.toStdString().c_str());

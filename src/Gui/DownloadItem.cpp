@@ -310,10 +310,10 @@ QString DownloadItem::getDownloadDirectory() const
 void DownloadItem::getFileName()
 {
     QSettings settings;
-    settings.beginGroup(QLatin1String("downloadmanager"));
+    settings.beginGroup(QStringLiteral("downloadmanager"));
     QString defaultLocation = getDownloadDirectory();
     QString downloadDirectory
-        = settings.value(QLatin1String("downloadDirectory"), defaultLocation).toString();
+        = settings.value(QStringLiteral("downloadDirectory"), defaultLocation).toString();
     if (!downloadDirectory.isEmpty()) {
         downloadDirectory += QLatin1Char('/');
     }
@@ -350,7 +350,7 @@ QString DownloadItem::saveFileName(const QString& directory) const
     QString endName = info.suffix();
 
     if (baseName.isEmpty()) {
-        baseName = QLatin1String("unnamed_download");
+        baseName = QStringLiteral("unnamed_download");
         qDebug() << "DownloadManager:: downloading unknown file:" << m_url;
     }
     QString name = directory + baseName + QLatin1Char('.') + endName;
@@ -622,7 +622,7 @@ QString DownloadItem::dataString(int size) const
         size /= 1024 * 1024;
         unit = tr("MB");
     }
-    return QString(QLatin1String("%1 %2")).arg(size).arg(unit);
+    return QString(QStringLiteral("%1 %2")).arg(size).arg(unit);
 }
 
 bool DownloadItem::downloading() const

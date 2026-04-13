@@ -137,7 +137,7 @@ void StartupProcess::setLibraryPath()
 {
     QString plugin;
     plugin = QString::fromStdString(App::Application::getHomePath());
-    plugin += QLatin1String("/plugins");
+    plugin += QStringLiteral("/plugins");
     QCoreApplication::addLibraryPath(plugin);
 }
 
@@ -147,7 +147,7 @@ void StartupProcess::setStyleSheetPaths()
     QStringList qssPaths;
     qssPaths << QString::fromUtf8((App::Application::getUserAppDataDir() + "Gui/Stylesheets/").c_str())
              << QString::fromUtf8((App::Application::getResourceDir() + "Gui/Stylesheets/").c_str())
-             << QLatin1String(":/stylesheets");
+             << QStringLiteral(":/stylesheets");
     QDir::setSearchPaths(QStringLiteral("qss"), qssPaths);
     // setup the search paths for Qt overlay style sheets
     QStringList qssOverlayPaths;
@@ -163,7 +163,7 @@ void StartupProcess::setImagePaths()
     QStringList imagePaths;
     imagePaths << QString::fromUtf8((App::Application::getUserAppDataDir() + "Gui/images").c_str())
                << QString::fromUtf8((App::Application::getUserAppDataDir() + "pixmaps").c_str())
-               << QLatin1String(":/icons");
+               << QStringLiteral(":/icons");
     QDir::setSearchPaths(QStringLiteral("images"), imagePaths);
 }
 

@@ -493,7 +493,7 @@ public:
         }
 
         auto anno = group->addObject<App::AnnotationLabel>(internalname.c_str());
-        QStringList lines = s.split(QLatin1String("\n"));
+        QStringList lines = s.split(QStringLiteral("\n"));
         std::vector<std::string> text;
         for (const auto& line : lines) {
             text.emplace_back((const char*)line.toLatin1());

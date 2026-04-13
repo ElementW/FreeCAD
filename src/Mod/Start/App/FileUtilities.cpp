@@ -54,7 +54,7 @@ QString Start::getMD5Hash(const QString& path)
 
 QString Start::getPathToCachedThumbnail(const QString& path)
 {
-    const QString md5 = getMD5Hash(path) + QLatin1String(".png");
+    const QString md5 = getMD5Hash(path) + QStringLiteral(".png");
     return thumbnailsDir.absoluteFilePath(md5);
 }
 

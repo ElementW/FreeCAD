@@ -737,8 +737,8 @@ void SketcherGui::notifyConstraintSubstitutions(const QString& message)
     Gui::Dialog::DlgCheckableMessageBox::showMessage(
         QObject::tr("Sketcher Constraint Substitution"),
         message,
-        QLatin1String("User parameter:BaseApp/Preferences/Mod/Sketcher/General"),
-        QLatin1String("NotifyConstraintSubstitutions"),
+        QStringLiteral("User parameter:BaseApp/Preferences/Mod/Sketcher/General"),
+        QStringLiteral("NotifyConstraintSubstitutions"),
         true,// Default ParamEntry
         true,// checkbox state
         QObject::tr("Keep notifying about constraint substitutions"));
@@ -1481,7 +1481,7 @@ private:
         int hotX = 8;
         int hotY = 8;
         // only X11 needs hot point coordinates to be scaled
-        if (qGuiApp->platformName() == QLatin1String("xcb")) {
+        if (qGuiApp->platformName() == QStringLiteral("xcb")) {
             hotX *= pixelRatio;
             hotY *= pixelRatio;
         }
@@ -1776,7 +1776,7 @@ public:
         int hotX = 8;
         int hotY = 8;
         // only X11 needs hot point coordinates to be scaled
-        if (qGuiApp->platformName() == QLatin1String("xcb")) {
+        if (qGuiApp->platformName() == QStringLiteral("xcb")) {
             hotX *= pixelRatio;
             hotY *= pixelRatio;
         }

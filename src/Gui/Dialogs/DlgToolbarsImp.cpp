@@ -89,7 +89,7 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
     for (const auto& workbench : workbenches) {
         QPixmap px = Application::Instance->workbenchIcon(workbench);
         QString mt = Application::Instance->workbenchMenuText(workbench);
-        if (mt != QLatin1String("<none>")) {
+        if (mt != QStringLiteral("<none>")) {
             if (px.isNull()) {
                 ui->workbenchBox->addItem(mt);
             }
@@ -547,7 +547,7 @@ void DlgCustomToolbars::onModifyMacroAction(const QByteArray& macro)
 {
     QVariant data = ui->categoryBox->itemData(ui->categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == QLatin1String("Macros")) {
+    if (group == QStringLiteral("Macros")) {
         CommandManager& cCmdMgr = Application::Instance->commandManager();
         Command* pCmd = cCmdMgr.getCommandByName(macro);
         // the right side

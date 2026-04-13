@@ -156,7 +156,7 @@ void DisplayedFilesModel::addFile(const QString& filePath)
     }
 
     const auto lowercaseExtension = qfi.suffix().toLower();
-    if (lowercaseExtension == QLatin1String("fcstd")) {
+    if (lowercaseExtension == QStringLiteral("fcstd")) {
         const auto runner = new FcstdInfoSource(filePath);
         connect(
             runner->signals(),
@@ -167,11 +167,11 @@ void DisplayedFilesModel::addFile(const QString& filePath)
         QThreadPool::globalInstance()->start(runner);
     }
     const QStringList ignoredExtensions {
-        QLatin1String("fcmacro"),
-        QLatin1String("py"),
-        QLatin1String("pyi"),
-        QLatin1String("csv"),
-        QLatin1String("txt")
+        QStringLiteral("fcmacro"),
+        QStringLiteral("py"),
+        QStringLiteral("pyi"),
+        QStringLiteral("csv"),
+        QStringLiteral("txt")
     };
     if (ignoredExtensions.contains(lowercaseExtension)) {
         // Don't try to generate a thumbnail for things like this: FreeCAD can read them, but

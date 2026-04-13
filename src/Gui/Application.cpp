@@ -505,7 +505,7 @@ Application::Application(bool GUIenabled)
         if (QLocale().groupSeparator() == QLocale().decimalPoint()) {
             QMessageBox::critical(
                 0,
-                QLatin1String("Invalid system settings"),
+                QStringLiteral("Invalid system settings"),
                 QLatin1String(
                     "The system locale uses the same symbol for the decimal point and the thousands separator.\n\n"
                     "This may prevent the application from functioning correctly."
@@ -1946,7 +1946,7 @@ bool Application::activateWorkbench(const char* name)
         QString msg = QString::fromUtf8(e.what());
         QRegularExpression rx;
         // ignore '<type 'exceptions.ImportError'>' prefixes
-        rx.setPattern(QLatin1String("^\\s*<type 'exceptions.ImportError'>:\\s*"));
+        rx.setPattern(QStringLiteral("^\\s*<type 'exceptions.ImportError'>:\\s*"));
         auto match = rx.match(msg);
         while (match.hasMatch()) {
             msg = msg.mid(match.capturedLength());
@@ -2115,7 +2115,7 @@ QStringList Application::workbenches() const
         hidden = items.split(QLatin1Char(';'), Qt::SkipEmptyParts);
 
         if (hidden.isEmpty()) {
-            hidden.push_back(QLatin1String(""));
+            hidden.push_back(QStringLiteral(""));
         }
     }
     if (et != config.end()) {
@@ -2123,7 +2123,7 @@ QStringList Application::workbenches() const
 
         extra = items.split(QLatin1Char(';'), Qt::SkipEmptyParts);
         if (extra.isEmpty()) {
-            extra.push_back(QLatin1String(""));
+            extra.push_back(QStringLiteral(""));
         }
     }
 
@@ -2448,7 +2448,7 @@ bool onlySingleInstance(GUISingleApplication& mainApp)
                 fn = QDir::cleanPath(fn);
             }
 
-            fn.prepend(QLatin1String("OpenFile:"));
+            fn.prepend(QStringLiteral("OpenFile:"));
             if (!mainApp.sendMessage(fn)) {
                 qWarning("Failed to send OpenFile message to server");
                 break;
@@ -2743,7 +2743,7 @@ void Application::setStyleSheet(const QString& qssFile, bool tiledBackground)
     mw->setProperty("fc_tiledBackground", tiledBackground);
 
     QString defaultStyleSheet = [this]() {
-        QFile f(QLatin1String("qss:defaults.qss"));
+        QFile f(QStringLiteral("qss:defaults.qss"));
 
         if (!f.open(QFile::ReadOnly)) {
             return QString();
@@ -2757,7 +2757,7 @@ void Application::setStyleSheet(const QString& qssFile, bool tiledBackground)
     if (!qssFile.isEmpty()) {
         // Search for stylesheet in user-defined search paths.
         // For qss they are set-up in runApplication() with the prefix "qss"
-        QString prefix(QLatin1String("qss:"));
+        QString prefix(QStringLiteral("qss:"));
 
         QFile f;
         if (QFile::exists(qssFile)) {
@@ -2804,7 +2804,7 @@ void Application::setStyleSheet(const QString& qssFile, bool tiledBackground)
             qApp->setStyleSheet(defaultStyleSheet);
             ActionStyleEvent e(ActionStyleEvent::Restore);
             qApp->sendEvent(getMainWindow(), &e);
-            mdi->setBackground(QPixmap(QLatin1String("images:background.png")));
+            mdi->setBackground(QPixmap(QStringLiteral("images:background.png")));
         }
         else {
             qApp->setStyleSheet(defaultStyleSheet);

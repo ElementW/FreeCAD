@@ -586,7 +586,7 @@ void DlgCustomKeyboardImp::onModifyMacroAction(const QByteArray&)
 {
     QVariant data = ui->categoryBox->itemData(ui->categoryBox->currentIndex(), Qt::UserRole);
     QString group = data.toString();
-    if (group == QLatin1String("Macros")) {
+    if (group == QStringLiteral("Macros")) {
         ui->categoryBox->activated(ui->categoryBox->currentIndex());
     }
 }

@@ -41,19 +41,19 @@ PropertyMeshKernelItem::PropertyMeshKernelItem()
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_p->setParent(this);
-    m_p->setPropertyName(QLatin1String("Points"));
+    m_p->setPropertyName(QStringLiteral("Points"));
     this->appendChild(m_p);
     m_e = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_e->setParent(this);
-    m_e->setPropertyName(QLatin1String("Edges"));
+    m_e->setPropertyName(QStringLiteral("Edges"));
     this->appendChild(m_e);
     m_f = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_f->setParent(this);
-    m_f->setPropertyName(QLatin1String("Faces"));
+    m_f->setPropertyName(QStringLiteral("Faces"));
     this->appendChild(m_f);
     // NOLINTEND
 }

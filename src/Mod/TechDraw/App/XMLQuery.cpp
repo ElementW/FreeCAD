@@ -44,8 +44,8 @@ XMLQuery::XMLQuery(QDomDocument& dom)
 static bool processElements(const QDomElement& element, const QString& queryStr,
                             const std::function<bool(QDomElement&)>& process)
 {
-    bool find_tspan = queryStr.contains(QLatin1String("tspan"));
-    QDomNodeList editable = element.elementsByTagName(QString(QLatin1String("text")));
+    bool find_tspan = queryStr.contains(QStringLiteral("tspan"));
+    QDomNodeList editable = element.elementsByTagName(QString(QStringLiteral("text")));
     if (editable.count() > 0) {
         for(int i = 0; i < editable.count(); i++) {
             QDomNode node = editable.item(i);

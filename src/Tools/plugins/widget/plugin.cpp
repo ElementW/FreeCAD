@@ -80,7 +80,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Display Widgets");
+        return QStringLiteral("Display Widgets");
     }
     QIcon icon() const
     {
@@ -88,15 +88,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/Widgets.h");
+        return QStringLiteral("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Url label");
+        return QStringLiteral("Url label");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to display a url in a text label.");
+        return QStringLiteral("A widget to display a url in a text label.");
     }
     bool isContainer() const
     {
@@ -112,7 +112,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::UrlLabel");
+        return QStringLiteral("Gui::UrlLabel");
     }
 };
 
@@ -128,7 +128,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Display Widgets");
+        return QStringLiteral("Display Widgets");
     }
     QIcon icon() const
     {
@@ -136,15 +136,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/InputVector.h");
+        return QStringLiteral("Gui/InputVector.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Location");
+        return QStringLiteral("Location");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to define a location.");
+        return QStringLiteral("A widget to define a location.");
     }
     bool isContainer() const
     {
@@ -159,7 +159,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::LocationWidget");
+        return QStringLiteral("Gui::LocationWidget");
     }
 };
 
@@ -209,7 +209,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -217,15 +217,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/FileDialog.h");
+        return QStringLiteral("Gui/FileDialog.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("File Chooser");
+        return QStringLiteral("File Chooser");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to choose a file or directory.");
+        return QStringLiteral("A widget to choose a file or directory.");
     }
     bool isContainer() const
     {
@@ -241,7 +241,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::FileChooser");
+        return QStringLiteral("Gui::FileChooser");
     }
 };
 
@@ -257,7 +257,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -265,15 +265,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("File Chooser");
+        return QStringLiteral("File Chooser");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to choose a file or directory.");
+        return QStringLiteral("A widget to choose a file or directory.");
     }
     bool isContainer() const
     {
@@ -288,7 +288,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefFileChooser");
+        return QStringLiteral("Gui::PrefFileChooser");
     }
 };
 
@@ -337,7 +337,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -345,15 +345,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/Widgets.h");
+        return QStringLiteral("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Accelerator Line Edit");
+        return QStringLiteral("Accelerator Line Edit");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to specify accelerator keys.");
+        return QStringLiteral("A widget to specify accelerator keys.");
     }
     bool isContainer() const
     {
@@ -368,7 +368,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::AccelLineEdit");
+        return QStringLiteral("Gui::AccelLineEdit");
     }
 };
 
@@ -417,7 +417,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -425,15 +425,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/Widgets.h");
+        return QStringLiteral("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Action Selector");
+        return QStringLiteral("Action Selector");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to select actions.");
+        return QStringLiteral("A widget to select actions.");
     }
     bool isContainer() const
     {
@@ -448,7 +448,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::ActionSelector");
+        return QStringLiteral("Gui::ActionSelector");
     }
 };
 
@@ -497,7 +497,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -505,15 +505,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/InputField.h");
+        return QStringLiteral("Gui/InputField.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Input Field");
+        return QStringLiteral("Input Field");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to work with quantities.");
+        return QStringLiteral("A widget to work with quantities.");
     }
     bool isContainer() const
     {
@@ -531,7 +531,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::InputField");
+        return QStringLiteral("Gui::InputField");
     }
 };
 
@@ -547,7 +547,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -555,15 +555,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/InputField.h");
+        return QStringLiteral("Gui/InputField.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Expression line edit");
+        return QStringLiteral("Expression line edit");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to work with expressions.");
+        return QStringLiteral("A widget to work with expressions.");
     }
     bool isContainer() const
     {
@@ -581,7 +581,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::ExpressionLineEdit");
+        return QStringLiteral("Gui::ExpressionLineEdit");
     }
 };
 
@@ -630,7 +630,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -638,15 +638,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/QuantitySpinBox.h");
+        return QStringLiteral("Gui/QuantitySpinBox.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Quantity spin box");
+        return QStringLiteral("Quantity spin box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A widget to work with quantities.");
+        return QStringLiteral("A widget to work with quantities.");
     }
     bool isContainer() const
     {
@@ -664,7 +664,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::QuantitySpinBox");
+        return QStringLiteral("Gui::QuantitySpinBox");
     }
 };
 
@@ -680,7 +680,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -688,15 +688,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Quantity Spin Box");
+        return QStringLiteral("Quantity Spin Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Quantity Spin box widget.");
+        return QStringLiteral("Quantity Spin box widget.");
     }
     bool isContainer() const
     {
@@ -711,7 +711,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefUnitSpinBox");
+        return QStringLiteral("Gui::PrefUnitSpinBox");
     }
 };
 
@@ -727,7 +727,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -735,15 +735,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Preference Quantity Spin Box");
+        return QStringLiteral("Preference Quantity Spin Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Preference Quantity Spin Box Widget.");
+        return QStringLiteral("Preference Quantity Spin Box Widget.");
     }
     bool isContainer() const
     {
@@ -758,7 +758,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefQuantitySpinBox");
+        return QStringLiteral("Gui::PrefQuantitySpinBox");
     }
 };
 
@@ -811,7 +811,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("View Widgets");
+        return QStringLiteral("View Widgets");
     }
     QIcon icon() const
     {
@@ -819,15 +819,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/Widgets.h");
+        return QStringLiteral("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Command View");
+        return QStringLiteral("Command View");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Area with movable and labeled icons.");
+        return QStringLiteral("Area with movable and labeled icons.");
     }
     bool isContainer() const
     {
@@ -842,7 +842,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::CommandIconView");
+        return QStringLiteral("Gui::CommandIconView");
     }
 };
 
@@ -891,7 +891,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -899,15 +899,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/SpinBox.h");
+        return QStringLiteral("Gui/SpinBox.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Unsigned Spin Box");
+        return QStringLiteral("Unsigned Spin Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Spin box widget (spin button).");
+        return QStringLiteral("Spin box widget (spin button).");
     }
     bool isContainer() const
     {
@@ -922,7 +922,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::UIntSpinBox");
+        return QStringLiteral("Gui::UIntSpinBox");
     }
 };
 
@@ -938,7 +938,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -946,15 +946,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/SpinBox.h");
+        return QStringLiteral("Gui/SpinBox.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Spin Box");
+        return QStringLiteral("Spin Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Spin box widget (spin button).");
+        return QStringLiteral("Spin box widget (spin button).");
     }
     bool isContainer() const
     {
@@ -969,7 +969,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::IntSpinBox");
+        return QStringLiteral("Gui::IntSpinBox");
     }
 };
 
@@ -985,7 +985,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Input Widgets");
+        return QStringLiteral("Input Widgets");
     }
     QIcon icon() const
     {
@@ -993,15 +993,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/SpinBox.h");
+        return QStringLiteral("Gui/SpinBox.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Double Spin Box");
+        return QStringLiteral("Double Spin Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Spin box widget (spin button).");
+        return QStringLiteral("Spin box widget (spin button).");
     }
     bool isContainer() const
     {
@@ -1016,7 +1016,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::DoubleSpinBox");
+        return QStringLiteral("Gui::DoubleSpinBox");
     }
 };
 
@@ -1032,7 +1032,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1040,15 +1040,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Spin Box");
+        return QStringLiteral("Spin Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Spin box widget (spin button).");
+        return QStringLiteral("Spin box widget (spin button).");
     }
     bool isContainer() const
     {
@@ -1063,7 +1063,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefSpinBox");
+        return QStringLiteral("Gui::PrefSpinBox");
     }
 };
 
@@ -1112,7 +1112,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Buttons");
+        return QStringLiteral("Buttons");
     }
     QIcon icon() const
     {
@@ -1120,15 +1120,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/Widgets.h");
+        return QStringLiteral("Gui/Widgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Color Button");
+        return QStringLiteral("Color Button");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A button to choose a color.");
+        return QStringLiteral("A button to choose a color.");
     }
     bool isContainer() const
     {
@@ -1143,7 +1143,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::ColorButton");
+        return QStringLiteral("Gui::ColorButton");
     }
 };
 
@@ -1159,7 +1159,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1167,15 +1167,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Color Button");
+        return QStringLiteral("Color Button");
     }
     QString whatsThis() const
     {
-        return QLatin1String("A button to choose a color.");
+        return QStringLiteral("A button to choose a color.");
     }
     bool isContainer() const
     {
@@ -1190,7 +1190,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefColorButton");
+        return QStringLiteral("Gui::PrefColorButton");
     }
 };
 
@@ -1238,7 +1238,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1246,15 +1246,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Slider");
+        return QStringLiteral("Slider");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Vertical or horizontal slider.");
+        return QStringLiteral("Vertical or horizontal slider.");
     }
     bool isContainer() const
     {
@@ -1269,7 +1269,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefSlider");
+        return QStringLiteral("Gui::PrefSlider");
     }
 };
 
@@ -1316,7 +1316,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1324,15 +1324,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Radio Button");
+        return QStringLiteral("Radio Button");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Radio button with a text or pixmap label.");
+        return QStringLiteral("Radio button with a text or pixmap label.");
     }
     bool isContainer() const
     {
@@ -1347,7 +1347,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefRadioButton");
+        return QStringLiteral("Gui::PrefRadioButton");
     }
 };
 
@@ -1394,7 +1394,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1402,15 +1402,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Check Box");
+        return QStringLiteral("Check Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Checkbox with a text label.");
+        return QStringLiteral("Checkbox with a text label.");
     }
     bool isContainer() const
     {
@@ -1425,7 +1425,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefCheckBox");
+        return QStringLiteral("Gui::PrefCheckBox");
     }
 };
 
@@ -1476,7 +1476,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1484,15 +1484,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Combo Box");
+        return QStringLiteral("Combo Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Combined button and popup list.");
+        return QStringLiteral("Combined button and popup list.");
     }
     bool isContainer() const
     {
@@ -1507,7 +1507,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefComboBox");
+        return QStringLiteral("Gui::PrefComboBox");
     }
 };
 
@@ -1523,7 +1523,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1531,15 +1531,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Line Edit");
+        return QStringLiteral("Line Edit");
     }
     QString whatsThis() const
     {
-        return QLatin1String("One-line text editor.");
+        return QStringLiteral("One-line text editor.");
     }
     bool isContainer() const
     {
@@ -1554,7 +1554,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefLineEdit");
+        return QStringLiteral("Gui::PrefLineEdit");
     }
 };
 
@@ -1570,7 +1570,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1578,15 +1578,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Double Spin Box");
+        return QStringLiteral("Double Spin Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Spin box widget that can work with doubles.");
+        return QStringLiteral("Spin box widget that can work with doubles.");
     }
     bool isContainer() const
     {
@@ -1601,7 +1601,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefDoubleSpinBox");
+        return QStringLiteral("Gui::PrefDoubleSpinBox");
     }
 };
 
@@ -1653,7 +1653,7 @@ public:
     }
     QString group() const
     {
-        return QLatin1String("Preference Widgets");
+        return QStringLiteral("Preference Widgets");
     }
     QIcon icon() const
     {
@@ -1661,15 +1661,15 @@ public:
     }
     QString includeFile() const
     {
-        return QLatin1String("Gui/PrefWidgets.h");
+        return QStringLiteral("Gui/PrefWidgets.h");
     }
     QString toolTip() const
     {
-        return QLatin1String("Font Box");
+        return QStringLiteral("Font Box");
     }
     QString whatsThis() const
     {
-        return QLatin1String("Font box widget (spin button).");
+        return QStringLiteral("Font box widget (spin button).");
     }
     bool isContainer() const
     {
@@ -1684,7 +1684,7 @@ public:
     }
     QString name() const
     {
-        return QLatin1String("Gui::PrefFontBox");
+        return QStringLiteral("Gui::PrefFontBox");
     }
 };
 

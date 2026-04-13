@@ -73,7 +73,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayWheelDelay->setMaximum(99999);
     DockOverlayWheelDelay->setSingleStep(1);
     DockOverlayWheelDelay->setAlignment(Qt::AlignRight);
-    DockOverlayWheelDelay->setSuffix(QLatin1String(" ms"));
+    DockOverlayWheelDelay->setSuffix(QStringLiteral(" ms"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayAlphaRadius = new QLabel(this);
@@ -88,7 +88,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayAlphaRadius->setMaximum(100);
     DockOverlayAlphaRadius->setSingleStep(1);
     DockOverlayAlphaRadius->setAlignment(Qt::AlignRight);
-    DockOverlayAlphaRadius->setSuffix(QLatin1String(" px"));
+    DockOverlayAlphaRadius->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     DockOverlayCheckNaviCube = new Gui::PrefCheckBox(this);
@@ -110,7 +110,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintTriggerSize->setMaximum(100);
     DockOverlayHintTriggerSize->setSingleStep(1);
     DockOverlayHintTriggerSize->setAlignment(Qt::AlignRight);
-    DockOverlayHintTriggerSize->setSuffix(QLatin1String(" px"));
+    DockOverlayHintTriggerSize->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintSize = new QLabel(this);
@@ -125,7 +125,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintSize->setMaximum(100);
     DockOverlayHintSize->setSingleStep(1);
     DockOverlayHintSize->setAlignment(Qt::AlignRight);
-    DockOverlayHintSize->setSuffix(QLatin1String(" px"));
+    DockOverlayHintSize->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintLeftOffset = new QLabel(this);
@@ -140,7 +140,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintLeftOffset->setMaximum(10000);
     DockOverlayHintLeftOffset->setSingleStep(10);
     DockOverlayHintLeftOffset->setAlignment(Qt::AlignRight);
-    DockOverlayHintLeftOffset->setSuffix(QLatin1String(" px"));
+    DockOverlayHintLeftOffset->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintLeftLength = new QLabel(this);
@@ -155,7 +155,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintLeftLength->setMaximum(10000);
     DockOverlayHintLeftLength->setSingleStep(10);
     DockOverlayHintLeftLength->setAlignment(Qt::AlignRight);
-    DockOverlayHintLeftLength->setSuffix(QLatin1String(" px"));
+    DockOverlayHintLeftLength->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintRightOffset = new QLabel(this);
@@ -170,7 +170,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintRightOffset->setMaximum(10000);
     DockOverlayHintRightOffset->setSingleStep(10);
     DockOverlayHintRightOffset->setAlignment(Qt::AlignRight);
-    DockOverlayHintRightOffset->setSuffix(QLatin1String(" px"));
+    DockOverlayHintRightOffset->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintRightLength = new QLabel(this);
@@ -185,7 +185,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintRightLength->setMaximum(10000);
     DockOverlayHintRightLength->setSingleStep(10);
     DockOverlayHintRightLength->setAlignment(Qt::AlignRight);
-    DockOverlayHintRightLength->setSuffix(QLatin1String(" px"));
+    DockOverlayHintRightLength->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintTopOffset = new QLabel(this);
@@ -200,7 +200,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintTopOffset->setMaximum(10000);
     DockOverlayHintTopOffset->setSingleStep(10);
     DockOverlayHintTopOffset->setAlignment(Qt::AlignRight);
-    DockOverlayHintTopOffset->setSuffix(QLatin1String(" px"));
+    DockOverlayHintTopOffset->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintTopLength = new QLabel(this);
@@ -215,7 +215,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintTopLength->setMaximum(10000);
     DockOverlayHintTopLength->setSingleStep(10);
     DockOverlayHintTopLength->setAlignment(Qt::AlignRight);
-    DockOverlayHintTopLength->setSuffix(QLatin1String(" px"));
+    DockOverlayHintTopLength->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintBottomOffset = new QLabel(this);
@@ -230,7 +230,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintBottomOffset->setMaximum(10000);
     DockOverlayHintBottomOffset->setSingleStep(10);
     DockOverlayHintBottomOffset->setAlignment(Qt::AlignRight);
-    DockOverlayHintBottomOffset->setSuffix(QLatin1String(" px"));
+    DockOverlayHintBottomOffset->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintBottomLength = new QLabel(this);
@@ -245,7 +245,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintBottomLength->setMaximum(10000);
     DockOverlayHintBottomLength->setSingleStep(10);
     DockOverlayHintBottomLength->setAlignment(Qt::AlignRight);
-    DockOverlayHintBottomLength->setSuffix(QLatin1String(" px"));
+    DockOverlayHintBottomLength->setSuffix(QStringLiteral(" px"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayHintDelay = new QLabel(this);
@@ -260,7 +260,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayHintDelay->setMaximum(1000);
     DockOverlayHintDelay->setSingleStep(100);
     DockOverlayHintDelay->setAlignment(Qt::AlignRight);
-    DockOverlayHintDelay->setSuffix(QLatin1String(" ms"));
+    DockOverlayHintDelay->setSuffix(QStringLiteral(" ms"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlaySplitterHandleTimeout = new QLabel(this);
@@ -277,7 +277,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlaySplitterHandleTimeout->setMaximum(99999);
     DockOverlaySplitterHandleTimeout->setSingleStep(100);
     DockOverlaySplitterHandleTimeout->setAlignment(Qt::AlignRight);
-    DockOverlaySplitterHandleTimeout->setSuffix(QLatin1String(" ms"));
+    DockOverlaySplitterHandleTimeout->setSuffix(QStringLiteral(" ms"));
 
     // Auto generated code (Tools/params_utils.py:433)
     DockOverlayActivateOnHover = new Gui::PrefCheckBox(this);
@@ -299,7 +299,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayDelay->setMaximum(5000);
     DockOverlayDelay->setSingleStep(100);
     DockOverlayDelay->setAlignment(Qt::AlignRight);
-    DockOverlayDelay->setSuffix(QLatin1String(" ms"));
+    DockOverlayDelay->setSuffix(QStringLiteral(" ms"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayAnimationDuration = new QLabel(this);
@@ -314,7 +314,7 @@ DlgSettingsAdvanced::DlgSettingsAdvanced(QWidget* parent)
     DockOverlayAnimationDuration->setMaximum(5000);
     DockOverlayAnimationDuration->setSingleStep(100);
     DockOverlayAnimationDuration->setAlignment(Qt::AlignRight);
-    DockOverlayAnimationDuration->setSuffix(QLatin1String(" ms"));
+    DockOverlayAnimationDuration->setSuffix(QStringLiteral(" ms"));
 
     // Auto generated code (Tools/params_utils.py:433)
     labelDockOverlayAnimationCurve = new QLabel(this);

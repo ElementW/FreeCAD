@@ -78,8 +78,8 @@ BitmapFactoryInst& BitmapFactoryInst::instance()
         _pcSingleton->addPath(
             QStringLiteral("%1/icons").arg(QString::fromStdString(App::Application::getUserAppDataDir()))
         );
-        _pcSingleton->addPath(QLatin1String(":/icons/"));
-        _pcSingleton->addPath(QLatin1String(":/Icons/"));
+        _pcSingleton->addPath(QStringLiteral(":/icons/"));
+        _pcSingleton->addPath(QStringLiteral(":/Icons/"));
     }
 
     return *_pcSingleton;
@@ -207,7 +207,7 @@ bool BitmapFactoryInst::loadPixmap(const QString& filename, QPixmap& icon) const
     QFileInfo fi(filename);
     if (fi.exists()) {
         // first check if it's an SVG because Qt's qsvg4 module shouldn't be used therefore
-        if (fi.suffix().toLower() == QLatin1String("svg")) {
+        if (fi.suffix().toLower() == QStringLiteral("svg")) {
             QFile svgFile(fi.filePath());
             if (svgFile.open(QFile::ReadOnly | QFile::Text)) {
                 QByteArray content = svgFile.readAll();
@@ -310,7 +310,7 @@ QPixmap BitmapFactoryInst::pixmapFromSvg(
             iconPath = fi.filePath();
         }
         else {
-            fileName += QLatin1String(".svg");
+            fileName += QStringLiteral(".svg");
             fi.setFile(fileName);
             if (fi.exists()) {
                 iconPath = fi.filePath();

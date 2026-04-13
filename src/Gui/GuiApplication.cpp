@@ -198,7 +198,7 @@ bool GUIApplication::event(QEvent* ev)
 
         QString file = static_cast<QFileOpenEvent*>(ev)->file();
         QFileInfo fi(file);
-        if (fi.suffix().toLower() == QLatin1String("fcstd")) {
+        if (fi.suffix().toLower() == QStringLiteral("fcstd")) {
             QByteArray fn = file.toUtf8();
             Application::Instance->open(fn, "FreeCAD");
             return true;

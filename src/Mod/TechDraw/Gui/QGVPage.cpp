@@ -532,7 +532,7 @@ QPixmap QGVPage::prepareCursorPixmap(const char* iconName, QPoint& hotspot)
     // On XCB platform, the pixmap device pixel ratio is not taken into account for cursor hot spot,
     // therefore we must take care of the transformation ourselves...
     // Refer to QTBUG-68571 - https://bugreports.qt.io/browse/QTBUG-68571
-    if (qGuiApp->platformName() == QLatin1String("xcb")) {
+    if (qGuiApp->platformName() == QStringLiteral("xcb")) {
         floatHotspot *= Gui::BitmapFactoryInst::getMaximumDPR();
     }
 #endif

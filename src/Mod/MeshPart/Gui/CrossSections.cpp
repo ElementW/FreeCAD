@@ -367,7 +367,7 @@ void CrossSections::apply()
                     .arg(QLatin1String((*it)->getNameInDocument()))
                     .arg(planes)
                     .arg(eps)
-                    .arg(connectEdges ? QLatin1String("True") : QLatin1String("False"))
+                    .arg(connectEdges ? QStringLiteral("True") : QStringLiteral("False"))
                     .toLatin1()
             );
 

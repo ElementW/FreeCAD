@@ -51,7 +51,7 @@ GeneralSettingsWidget::GeneralSettingsWidget(QWidget* parent)
     , _unitSystemComboBox {nullptr}
     , _navigationStyleComboBox {nullptr}
 {
-    setObjectName(QLatin1String("GeneralSettingsWidget"));
+    setObjectName(QStringLiteral("GeneralSettingsWidget"));
     setupUi();
     qApp->installEventFilter(this);
 }
@@ -89,8 +89,8 @@ void GeneralSettingsWidget::createHorizontalUi()
 
 QString GeneralSettingsWidget::createLabelText(const QString& translatedText) const
 {
-    static const auto h2Start = QLatin1String("<h2>");
-    static const auto h2End = QLatin1String("</h2>");
+    static const auto h2Start = QStringLiteral("<h2>");
+    static const auto h2End = QStringLiteral("</h2>");
     return h2Start + translatedText + h2End;
 }
 

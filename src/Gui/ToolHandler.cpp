@@ -128,7 +128,7 @@ void ToolHandler::setSvgCursor(
     qreal hotX = x;
     qreal hotY = y;
 #if !defined(Q_OS_WIN32) && !defined(Q_OS_MACOS)
-    if (qGuiApp->platformName() == QLatin1String("xcb")) {
+    if (qGuiApp->platformName() == QStringLiteral("xcb")) {
         hotX *= pRatio;
         hotY *= pRatio;
     }
@@ -162,7 +162,7 @@ void ToolHandler::setCursor(const QPixmap& p, int x, int y, bool autoScale)
             qreal hotX = x;
             qreal hotY = y;
 #if !defined(Q_OS_WIN32) && !defined(Q_OS_MACOS)
-            if (qGuiApp->platformName() == QLatin1String("xcb")) {
+            if (qGuiApp->platformName() == QStringLiteral("xcb")) {
                 hotX *= pRatio;
                 hotY *= pRatio;
             }

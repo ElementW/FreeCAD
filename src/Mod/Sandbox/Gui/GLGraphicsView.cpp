@@ -419,7 +419,7 @@ GraphicsScene::setNavigationModeFile(const QUrl & url)
 {
     QString filename;
 
-    if (url.scheme()== QLatin1String("coin")) {
+    if (url.scheme()== QStringLiteral("coin")) {
         filename = url.path();
         //FIXME: This conditional needs to be implemented when the
         //CoinResources systems if working
@@ -430,7 +430,7 @@ GraphicsScene::setNavigationModeFile(const QUrl & url)
         }
         filename = url.scheme() + QLatin1Char(':') + filename;
     }
-    else if (url.scheme() == QLatin1String("file"))
+    else if (url.scheme() == QStringLiteral("file"))
         filename = url.toLocalFile();
     else if (url.isEmpty()) {
 

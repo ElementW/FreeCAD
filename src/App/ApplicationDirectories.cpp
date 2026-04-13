@@ -805,7 +805,7 @@ fs::path ApplicationDirectories::findHomePath(const char* sCall)
     //   to locate the correct home directory
     wchar_t szFileName [MAX_PATH];
     QString dll(QString::fromUtf8(sCall));
-    if (Py_IsInitialized() || dll.endsWith(QLatin1String(".dll"))) {
+    if (Py_IsInitialized() || dll.endsWith(QStringLiteral(".dll"))) {
         GetModuleFileNameW(GetModuleHandleA(sCall),szFileName, MAX_PATH-1);
     }
     else {

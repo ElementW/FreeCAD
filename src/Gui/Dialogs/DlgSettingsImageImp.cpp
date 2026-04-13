@@ -185,8 +185,8 @@ bool DlgSettingsImageImp::addWatermark() const
 void DlgSettingsImageImp::onSelectedFilter(const QString& filter)
 {
     bool ok
-        = (filter.startsWith(QLatin1String("JPG")) || filter.startsWith(QLatin1String("JPEG"))
-           || filter.startsWith(QLatin1String("PNG")));
+        = (filter.startsWith(QStringLiteral("JPG")) || filter.startsWith(QStringLiteral("JPEG"))
+           || filter.startsWith(QStringLiteral("PNG")));
     ui->buttonGroupComment->setEnabled(ok);
 }
 

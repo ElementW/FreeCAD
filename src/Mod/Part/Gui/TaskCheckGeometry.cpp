@@ -449,7 +449,7 @@ void TaskCheckGeometryResults::goCheck()
     int selectedCount(0), checkedCount(0), invalidShapes(0);
     ResultEntry* theRoot = new ResultEntry();
     reportViewStrings.clear();
-    reportViewStrings << QLatin1String("\n");
+    reportViewStrings << QStringLiteral("\n");
 
     std::string scopeName {tr("Boolean operation check…").toStdString()};
 
@@ -489,7 +489,7 @@ void TaskCheckGeometryResults::goCheck()
             entry->type = tr("Null shape");
             entry->error = tr("Skipped");
             reportViewStrings.append(
-                entry->name + QLatin1String(" | ") + entry->type + QLatin1String(" | ") + entry->error
+                entry->name + QStringLiteral(" | ") + entry->type + QStringLiteral(" | ") + entry->error
             );
             theRoot->children.push_back(entry);
             continue;
@@ -501,7 +501,7 @@ void TaskCheckGeometryResults::goCheck()
             entry->type = tr("Infinite shape");
             entry->error = tr("Skipped");
             reportViewStrings.append(
-                entry->name + QLatin1String(" | ") + entry->type + QLatin1String(" | ") + entry->error
+                entry->name + QStringLiteral(" | ") + entry->type + QStringLiteral(" | ") + entry->error
             );
             theRoot->children.push_back(entry);
             continue;
@@ -527,7 +527,7 @@ void TaskCheckGeometryResults::goCheck()
             entry->type = shapeEnumToString(shape.ShapeType());
             entry->error = tr("Invalid");
             reportViewStrings.append(
-                entry->name + QLatin1String(" | ") + entry->type + QLatin1String(" | ") + entry->error
+                entry->name + QStringLiteral(" | ") + entry->type + QStringLiteral(" | ") + entry->error
             );
             entry->viewProviderRoot = currentSeparator;
             entry->viewProviderRoot->ref();
@@ -577,7 +577,7 @@ void TaskCheckGeometryResults::goCheck()
             entry->type = shapeEnumToString(shape.ShapeType());
             entry->error = tr("No errors");
             reportViewStrings.append(
-                entry->name + QLatin1String(" | ") + entry->type + QLatin1String(" | ") + entry->error
+                entry->name + QStringLiteral(" | ") + entry->type + QStringLiteral(" | ") + entry->error
             );
             entry->viewProviderRoot = currentSeparator;
             entry->viewProviderRoot->ref();
@@ -588,15 +588,15 @@ void TaskCheckGeometryResults::goCheck()
     treeView->expandAll();
     treeView->header()->resizeSections(QHeaderView::ResizeToContents);
     QString aMessage {tr("%1 processed out of %2 selected").arg(checkedCount).arg(selectedCount)};
-    aMessage += QLatin1String("<br/>") + tr("%n invalid shapes.", "", invalidShapes);
-    aMessage += QLatin1String(" <a href=\"#report\">") + tr("to report view.")
-        + QLatin1String("</a>");
+    aMessage += QStringLiteral("<br/>") + tr("%n invalid shapes.", "", invalidShapes);
+    aMessage += QStringLiteral(" <a href=\"#report\">") + tr("to report view.")
+        + QStringLiteral("</a>");
     message->setText(aMessage);
 }
 
 void TaskCheckGeometryResults::generateReport()
 {
-    QString reportString = reportViewStrings.join(QLatin1String("\n"));
+    QString reportString = reportViewStrings.join(QStringLiteral("\n"));
     Base::Console().message(reportString.toStdString().c_str());
 }
 
@@ -619,7 +619,7 @@ void TaskCheckGeometryResults::recursiveCheck(
             entry->type = shapeEnumToString(shape.ShapeType());
             entry->error = checkStatusToString(listIt.Value());
             reportViewStrings.append(
-                entry->name + QLatin1String(" | ") + entry->type + QLatin1String(" | ") + entry->error
+                entry->name + QStringLiteral(" | ") + entry->type + QStringLiteral(" | ") + entry->error
             );
             entry->viewProviderRoot = currentSeparator;
             entry->viewProviderRoot->ref();
@@ -673,7 +673,7 @@ void TaskCheckGeometryResults::checkSub(
                     entry->type = shapeEnumToString(sub.ShapeType());
                     entry->error = checkStatusToString(itl.Value());
                     reportViewStrings.append(
-                        entry->name + QLatin1String(" | ") + entry->type + QLatin1String(" | ")
+                        entry->name + QStringLiteral(" | ") + entry->type + QStringLiteral(" | ")
                         + entry->error
                     );
                     entry->viewProviderRoot = currentSeparator;
@@ -856,7 +856,7 @@ int TaskCheckGeometryResults::goBOPSingleCheck(
     entry->type = shapeEnumToString(shapeIn.ShapeType());
     entry->error = QObject::tr("Invalid");
     reportViewStrings.append(
-        entry->name + QLatin1String(" | ") + entry->type + QLatin1String(" | ") + entry->error
+        entry->name + QStringLiteral(" | ") + entry->type + QStringLiteral(" | ") + entry->error
     );
     entry->viewProviderRoot = currentSeparator;
     entry->viewProviderRoot->ref();
@@ -879,7 +879,7 @@ int TaskCheckGeometryResults::goBOPSingleCheck(
             faultyEntry->type = shapeEnumToString(faultyShape.ShapeType());
             faultyEntry->error = getBOPCheckString(current.GetCheckStatus());
             reportViewStrings.append(
-                QLatin1String("  ") + faultyEntry->name + QLatin1String(" | ") + faultyEntry->error
+                QStringLiteral("  ") + faultyEntry->name + QStringLiteral(" | ") + faultyEntry->error
             );
             faultyEntry->viewProviderRoot = currentSeparator;
             entry->viewProviderRoot->ref();
@@ -982,7 +982,7 @@ void TaskCheckGeometryResults::currentRowChanged(const QModelIndex& current, con
                     continue;
                 }
                 // object might be "name (label)", so trim if necessary
-                int idx = object.indexOf(QLatin1String(" ("));
+                int idx = object.indexOf(QStringLiteral(" ("));
                 QString trimmed = (idx != -1) ? object.left(idx) : object;
                 Gui::Selection().addSelection(doc.toLatin1(), trimmed.toLatin1(), sub.toLatin1());
             }

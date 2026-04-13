@@ -132,7 +132,7 @@ void AbaqusHighlighter::highlightBlock(const QString& text)
             }
         }
         // Comment lines
-        else if (text.mid(i, 2) == QLatin1String("**")) {
+        else if (text.mid(i, 2) == QStringLiteral("**")) {
             QTextCharFormat commentFormat;
             commentFormat.setForeground(commentColor);
             commentFormat.setFontItalic(true);

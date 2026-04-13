@@ -490,7 +490,7 @@ Action* StdCmdWindowsMenu::createAction()
         window->setWhatsThis(QCoreApplication::translate(this->className(), getWhatsThis()));
     }
 
-    QAction* sep = pcAction->addAction(QLatin1String(""));
+    QAction* sep = pcAction->addAction(QStringLiteral(""));
     sep->setSeparator(true);
 
     return pcAction;

@@ -182,9 +182,9 @@ QVariant formatCellDisplay(QString value, const Cell* cell)
         QString formatStr = QString::fromStdString(
             hGrpSpreadsheet->GetASCII("DisplayAliasFormatString", "%V = %A")
         );
-        if (formatStr.contains(QLatin1String("%V")) || formatStr.contains(QLatin1String("%A"))) {
-            formatStr.replace(QLatin1String("%A"), QString::fromStdString(alias));
-            formatStr.replace(QLatin1String("%V"), value);
+        if (formatStr.contains(QStringLiteral("%V")) || formatStr.contains(QStringLiteral("%A"))) {
+            formatStr.replace(QStringLiteral("%A"), QString::fromStdString(alias));
+            formatStr.replace(QStringLiteral("%V"), value);
             return QVariant(formatStr);
         }
     }
@@ -364,7 +364,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                         if (!str.empty() && str[0] == '=') {
                             // If this is a real computed value, indicate that a recompute is
                             // needed before we can display it
-                            return QVariant(QLatin1String("#PENDING"));
+                            return QVariant(QStringLiteral("#PENDING"));
                         }
                         else {
                             // If it's just a simple value, display the new value, but still

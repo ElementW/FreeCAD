@@ -2490,24 +2490,24 @@ void MainWindow::loadUrls(App::Document* doc, const QList<QUrl>& urls)
                 );
             }
         }
-        else if (it.scheme().toLower() == QLatin1String("http")) {
+        else if (it.scheme().toLower() == QStringLiteral("http")) {
             Gui::Dialog::DownloadManager* dm = Gui::Dialog::DownloadManager::getInstance();
             dm->download(dm->redirectUrl(it));
         }
 
-        else if (it.scheme().toLower() == QLatin1String("https")) {
+        else if (it.scheme().toLower() == QStringLiteral("https")) {
             QUrl url = it;
             QUrlQuery urlq(url);
-            if (urlq.hasQueryItem(QLatin1String("sid"))) {
-                urlq.removeAllQueryItems(QLatin1String("sid"));
+            if (urlq.hasQueryItem(QStringLiteral("sid"))) {
+                urlq.removeAllQueryItems(QStringLiteral("sid"));
                 url.setQuery(urlq);
-                url.setScheme(QLatin1String("http"));
+                url.setScheme(QStringLiteral("http"));
             }
             Gui::Dialog::DownloadManager* dm = Gui::Dialog::DownloadManager::getInstance();
             dm->download(dm->redirectUrl(url));
         }
 
-        else if (it.scheme().toLower() == QLatin1String("ftp")) {
+        else if (it.scheme().toLower() == QStringLiteral("ftp")) {
             Gui::Dialog::DownloadManager::getInstance()->download(it);
         }
     }
@@ -2665,7 +2665,7 @@ void MainWindow::customEvent(QEvent* e)
         QString msg = ce->message();
         switch (ce->type()) {
             case MainWindow::Log: {
-                if (msg.startsWith(QLatin1String("#Inventor V2.1 ascii "))) {
+                if (msg.startsWith(QStringLiteral("#Inventor V2.1 ascii "))) {
                     Gui::Document* d = Application::Instance->activeDocument();
                     if (d) {
                         auto view = new ViewProviderExtern();

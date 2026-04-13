@@ -63,7 +63,7 @@ TextureMapping::TextureMapping(QWidget* parent, Qt::WindowFlags fl)
     ui->checkGlobal->hide();
 
     // set a dummy string which is not a valid file name
-    fileName = QLatin1String("<>");
+    fileName = QStringLiteral("<>");
 
     // add all supported QImage formats
     QStringList formats;
@@ -72,7 +72,7 @@ TextureMapping::TextureMapping(QWidget* parent, Qt::WindowFlags fl)
         formats << QStringLiteral("*.%1").arg(QLatin1String(it));
     }
 
-    ui->fileChooser->setFilter(tr("Image files (%1)").arg(formats.join(QLatin1String(" "))));
+    ui->fileChooser->setFilter(tr("Image files (%1)").arg(formats.join(QStringLiteral(" "))));
 
     this->tex = new SoTexture2();
     this->tex->ref();

@@ -34,7 +34,7 @@ ExamplesModel::ExamplesModel(QObject* parent)
     : DisplayedFilesModel(parent)
 {
     auto examplesPath = QDir(QString::fromStdString(App::Application::getResourceDir()));
-    _examplesDirectory.setPath(examplesPath.filePath(QLatin1String("examples")));
+    _examplesDirectory.setPath(examplesPath.filePath(QStringLiteral("examples")));
 }
 
 void ExamplesModel::loadExamples()

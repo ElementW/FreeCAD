@@ -34,12 +34,12 @@ protected:
 };
 
 // Define the constants
-const InputHint InputHintTest::firstHint = {QString("First hint"), {{KeySpace}}};
-const InputHint InputHintTest::secondHint = {QString("Second hint"), {{KeyEnter}}};
-const InputHint InputHintTest::firstMethodHint = {QString("First method hint"), {{KeyA}}};
-const InputHint InputHintTest::secondMethodHint = {QString("Second method hint"), {{KeyB}}};
-const InputHint InputHintTest::thirdMethodHint = {QString("Third method hint"), {{KeyC}}};
-const InputHint InputHintTest::fourthMethodHint = {QString("Fourth method hint"), {{KeyD}}};
+const InputHint InputHintTest::firstHint = {QStringLiteral("First hint"), {{KeySpace}}};
+const InputHint InputHintTest::secondHint = {QStringLiteral("Second hint"), {{KeyEnter}}};
+const InputHint InputHintTest::firstMethodHint = {QStringLiteral("First method hint"), {{KeyA}}};
+const InputHint InputHintTest::secondMethodHint = {QStringLiteral("Second method hint"), {{KeyB}}};
+const InputHint InputHintTest::thirdMethodHint = {QStringLiteral("Third method hint"), {{KeyC}}};
+const InputHint InputHintTest::fourthMethodHint = {QStringLiteral("Fourth method hint"), {{KeyD}}};
 
 TEST_F(InputHintTest, LookupHintsSimpleState)
 {

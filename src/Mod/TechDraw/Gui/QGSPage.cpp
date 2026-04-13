@@ -1116,7 +1116,7 @@ static void removeEmptyGroups(QDomElement e)
         if (e.hasChildNodes()) {
             removeEmptyGroups(e.firstChildElement());
         }
-        else if (e.tagName() == QLatin1String("g")) {
+        else if (e.tagName() == QStringLiteral("g")) {
             e.parentNode().removeChild(e);
         }
         e = next;
@@ -1194,7 +1194,7 @@ void QGSPage::postProcessXml(QTemporaryFile& temporaryFile, QString fileName, QS
     }
 
     // Obtain the drawing group element, move it under root node and set its id to "DrawingContent"
-    QDomElement drawingGroup = exportDocElem.firstChildElement(QLatin1String("g"));
+    QDomElement drawingGroup = exportDocElem.firstChildElement(QStringLiteral("g"));
     if (!drawingGroup.isNull()) {
         drawingGroup.setAttribute(QStringLiteral("id"), QStringLiteral("DrawingContent"));
         rootGroup.appendChild(drawingGroup);

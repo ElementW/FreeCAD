@@ -51,8 +51,8 @@ void MacroFile::open(const char* sName)
 
     // Convert from Utf-8
     this->macroName = QString::fromUtf8(sName);
-    if (!this->macroName.endsWith(QLatin1String(".FCMacro"))) {
-        this->macroName += QLatin1String(".FCMacro");
+    if (!this->macroName.endsWith(QStringLiteral(".FCMacro"))) {
+        this->macroName += QStringLiteral(".FCMacro");
     }
 
     this->macroInProgress.clear();
@@ -86,7 +86,7 @@ bool MacroFile::commit()
     QStringList body;
 
     for (const auto& it : std::as_const(this->macroInProgress)) {
-        if (it.startsWith(QLatin1String("import ")) || it.startsWith(QLatin1String("#import "))) {
+        if (it.startsWith(QStringLiteral("import ")) || it.startsWith(QStringLiteral("#import "))) {
             if (importCommand.indexOf(it) == -1) {
                 importCommand.push_back(it);
             }
@@ -305,8 +305,8 @@ void MacroManager::processPendingLines()
 void MacroManager::makeComment(QStringList& lines) const
 {
     for (auto& line : lines) {
-        if (!line.startsWith(QLatin1String("#"))) {
-            line.prepend(QLatin1String("# "));
+        if (!line.startsWith(QStringLiteral("#"))) {
+            line.prepend(QStringLiteral("# "));
         }
     }
 }
@@ -315,7 +315,7 @@ void MacroManager::addToOutput(LineType type, const char* line)
 {
     auto [comment, record] = option.values(type);
 
-    QStringList lines = QString::fromUtf8(line).split(QLatin1String("\n"));
+    QStringList lines = QString::fromUtf8(line).split(QStringLiteral("\n"));
     if (comment) {
         makeComment(lines);
     }

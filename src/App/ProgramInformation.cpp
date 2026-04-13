@@ -184,15 +184,15 @@ void ProgramInformation::getSystemInformation(std::stringstream& str)
     }
 
     const QString sysType = QSysInfo::productType();
-    if (sysType != QLatin1String("windows") && sysType != QLatin1String("macos")) {
+    if (sysType != QStringLiteral("windows") && sysType != QStringLiteral("macos")) {
         QString sessionType = sysenv.value(QStringLiteral("XDG_SESSION_TYPE"));
-        if (sessionType == QLatin1String("x11")) {
+        if (sessionType == QStringLiteral("x11")) {
             sessionType = QStringLiteral("xcb");
         }
         deskInfoList.append(sessionType);
     }
     if (!deskInfoList.isEmpty()) {
-        deskInfo = QLatin1String(" (") + deskInfoList.join(QLatin1String("/")) + QLatin1String(")");
+        deskInfo = QStringLiteral(" (") + deskInfoList.join(QStringLiteral("/")) + QStringLiteral(")");
     }
 
     str << "OS: " << prettyProductInfoWrapper() << deskInfo << '\n';

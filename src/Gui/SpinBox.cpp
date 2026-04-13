@@ -219,7 +219,7 @@ void ExpressionSpinBox::openFormulaDialog()
 
 bool ExpressionSpinBox::handleKeyEvent(const QString& text)
 {
-    if (text == QLatin1String("=") && isBound()) {
+    if (text == QStringLiteral("=") && isBound()) {
         openFormulaDialog();
         return true;
     }

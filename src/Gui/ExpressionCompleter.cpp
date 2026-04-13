@@ -829,7 +829,7 @@ QStringList ExpressionCompleter::splitPath(const QString& input) const
             }
             FC_TRACE(
                 "split path " << path << " -> "
-                              << resultList.join(QLatin1String("/")).toUtf8().constData()
+                              << resultList.join(QStringLiteral("/")).toUtf8().constData()
             );
             return resultList;
         }
@@ -923,14 +923,14 @@ ExpressionValidator::ExpressionValidator(QObject* parent)
 
 void ExpressionValidator::fixup(QString& input) const
 {
-    if (input.startsWith(QLatin1String("="))) {
+    if (input.startsWith(QStringLiteral("="))) {
         input = input.mid(1);
     }
 }
 
 QValidator::State ExpressionValidator::validate(QString& input, int& pos) const
 {
-    if (input.startsWith(QLatin1String("="))) {
+    if (input.startsWith(QStringLiteral("="))) {
         pos = 0;
         return QValidator::Invalid;
     }

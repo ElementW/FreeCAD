@@ -3885,13 +3885,13 @@ void ViewProviderSketch::UpdateSolverInformation()
     else if (dofs < 0 || hasConflicts) {// over-constrained sketch
         signalSetUp(
             QStringLiteral("conflicting_constraints"),
-            tr("Over-constrained:") + QLatin1String(" "),
+            tr("Over-constrained:") + QStringLiteral(" "),
             QStringLiteral("#conflicting"),
             QStringLiteral("(%1)").arg(intListHelper(getSketchObject()->getLastConflicting())));
     }
     else if (hasMalformed) {// malformed constraints
         signalSetUp(QStringLiteral("malformed_constraints"),
-                    tr("Malformed constraints:") + QLatin1String(" "),
+                    tr("Malformed constraints:") + QStringLiteral(" "),
                     QStringLiteral("#malformed"),
                     QStringLiteral("(%1)").arg(
                         intListHelper(getSketchObject()->getLastMalformedConstraints())));
@@ -3899,13 +3899,13 @@ void ViewProviderSketch::UpdateSolverInformation()
     else if (hasRedundancies) {
         signalSetUp(
             QStringLiteral("redundant_constraints"),
-            tr("Redundant constraints:") + QLatin1String(" "),
+            tr("Redundant constraints:") + QStringLiteral(" "),
             QStringLiteral("#redundant"),
             QStringLiteral("(%1)").arg(intListHelper(getSketchObject()->getLastRedundant())));
     }
     else if (hasPartiallyRedundant) {
         signalSetUp(QStringLiteral("partially_redundant_constraints"),
-                    tr("Partially redundant:") + QLatin1String(" "),
+                    tr("Partially redundant:") + QStringLiteral(" "),
                     QStringLiteral("#partiallyredundant"),
                     QStringLiteral("(%1)").arg(
                         intListHelper(getSketchObject()->getLastPartiallyRedundant())));
@@ -3918,7 +3918,7 @@ void ViewProviderSketch::UpdateSolverInformation()
     }
     else if (dofs > 0) {
         signalSetUp(QStringLiteral("under_constrained"),
-                    tr("Under-constrained:") + QLatin1String(" "),
+                    tr("Under-constrained:") + QStringLiteral(" "),
                     QStringLiteral("#dofs"),
                     tr("%n Degrees of Freedom", "", dofs));
     }
@@ -4178,7 +4178,7 @@ void ViewProviderSketch::onCameraChanged(SoCamera* cam)
 
         QString cmdStr = QStringLiteral("ActiveSketch.ViewObject.TempoVis.sketchClipPlane("
                                         "ActiveSketch, Gui.ActiveDocument, ActiveSketch.ViewObject.SectionView, %1)\n")
-                             .arg(tmpFactor < 0 ? QLatin1String("True") : QLatin1String("False"));
+                             .arg(tmpFactor < 0 ? QStringLiteral("True") : QStringLiteral("False"));
         Base::Interpreter().runStringObject(cmdStr.toLatin1());
     }
 

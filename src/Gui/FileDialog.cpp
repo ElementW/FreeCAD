@@ -613,7 +613,7 @@ QString FileDialog::getSaveFileName(
         QStringList filterSuffixes;
         getSuffixesDescription(filterSuffixes, filterToSearch);
         const QString fiSuffix = fi.suffix();
-        const QString dotSuffix = QLatin1String("*.") + fiSuffix;  // To match with filterSuffixes
+        const QString dotSuffix = QStringLiteral("*.") + fiSuffix;  // To match with filterSuffixes
         if (fiSuffix.isEmpty() || !filterSuffixes.contains(dotSuffix)) {
             // there is no suffix or not a suffix that matches the filter, so
             // default to the first suffix of the filter
@@ -1018,10 +1018,10 @@ void FileOptionsDialog::accept()
     // Fixes a bug of the default implementation when entering an asterisk
     auto filename = this->findChild<QLineEdit*>();
     QString fn = filename->text();
-    if (fn.startsWith(QLatin1String("*"))) {
+    if (fn.startsWith(QStringLiteral("*"))) {
         QFileInfo fi(fn);
         QString ext = fi.suffix();
-        ext.prepend(QLatin1String("*."));
+        ext.prepend(QStringLiteral("*."));
         QStringList filters = this->nameFilters();
         bool ok = false;
         // Compare the given suffix with the suffixes of all filters
@@ -1179,13 +1179,13 @@ QIcon FileIconProvider::icon(const QFileInfo& info) const
         return QIcon(QStringLiteral(":/icons/freecad-doc.png"));
     };
 
-    if (info.suffix().toLower() == QLatin1String("fcstd")) {
+    if (info.suffix().toLower() == QStringLiteral("fcstd")) {
         // Check if a thumbnail is available
         QString fileName = toUrl(info);
         QString thumb = urlToThumbnail(fileName);
         return iconFromFile(thumb);
     }
-    else if (info.suffix().toLower().startsWith(QLatin1String("fcstd"))) {
+    else if (info.suffix().toLower().startsWith(QStringLiteral("fcstd"))) {
         QIcon icon(QStringLiteral(":/icons/freecad-doc.png"));
         QIcon darkIcon;
         int w = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
@@ -1444,7 +1444,7 @@ SelectModule::SelectModule(const QString& type, const SelectModule::Dict& types,
         }
 
         // ignore Gui suffix in module name
-        rx.setPattern(QLatin1String("Gui$"));
+        rx.setPattern(QStringLiteral("Gui$"));
         match = rx.match(module);
         if (match.hasMatch()) {
             module = module.left(match.capturedStart());

@@ -41,43 +41,43 @@ PropertyFemMeshItem::PropertyFemMeshItem()
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_n->setParent(this);
-    m_n->setPropertyName(QLatin1String("Nodes"));
+    m_n->setPropertyName(QStringLiteral("Nodes"));
     this->appendChild(m_n);
     m_e = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_e->setParent(this);
-    m_e->setPropertyName(QLatin1String("Edges"));
+    m_e->setPropertyName(QStringLiteral("Edges"));
     this->appendChild(m_e);
     m_f = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_f->setParent(this);
-    m_f->setPropertyName(QLatin1String("Faces"));
+    m_f->setPropertyName(QStringLiteral("Faces"));
     this->appendChild(m_f);
     m_p = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_p->setParent(this);
-    m_p->setPropertyName(QLatin1String("Polygons"));
+    m_p->setPropertyName(QStringLiteral("Polygons"));
     this->appendChild(m_p);
     m_v = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_v->setParent(this);
-    m_v->setPropertyName(QLatin1String("Volumes"));
+    m_v->setPropertyName(QStringLiteral("Volumes"));
     this->appendChild(m_v);
     m_h = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_h->setParent(this);
-    m_h->setPropertyName(QLatin1String("Polyhedrons"));
+    m_h->setPropertyName(QStringLiteral("Polyhedrons"));
     this->appendChild(m_h);
     m_g = static_cast<Gui::PropertyEditor::PropertyIntegerItem*>(
         Gui::PropertyEditor::PropertyIntegerItem::create()
     );
     m_g->setParent(this);
-    m_g->setPropertyName(QLatin1String("Groups"));
+    m_g->setPropertyName(QStringLiteral("Groups"));
     this->appendChild(m_g);
 }
 

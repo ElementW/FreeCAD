@@ -296,9 +296,9 @@ void GraphvizView::updateSvgItem(const App::Document& doc)
     QStringList args, flatArgs;
     // TODO: Make -Granksep flag value variable depending on number of edges,
     // the downside is that the value affects all subgraphs
-    args << QLatin1String("-Granksep=2") << QLatin1String("-Goutputorder=edgesfirst")
-         << QLatin1String("-Gsplines=ortho") << QLatin1String("-Tsvg");
-    flatArgs << QLatin1String("-c2 -l2");
+    args << QStringLiteral("-Granksep=2") << QStringLiteral("-Goutputorder=edgesfirst")
+         << QStringLiteral("-Gsplines=ortho") << QStringLiteral("-Tsvg");
+    flatArgs << QStringLiteral("-c2 -l2");
     auto dot = QStringLiteral("dot");
     auto unflatten = QStringLiteral("unflatten");
     auto path = QString::fromUtf8(hGrp->GetASCII("Graphviz").c_str());
@@ -420,7 +420,7 @@ QByteArray GraphvizView::exportGraph(const QString& format)
     QProcess dotProc, flatProc;
     QStringList args, flatArgs;
     args << QStringLiteral("-T%1").arg(format);
-    flatArgs << QLatin1String("-c2 -l2");
+    flatArgs << QStringLiteral("-c2 -l2");
 
 #ifdef FC_OS_LINUX
     QString path = QString::fromUtf8(hGrp->GetASCII("Graphviz", "/usr/bin").c_str());
@@ -516,7 +516,7 @@ bool GraphvizView::onMsg(const char* pMsg)
                 }
             }
             QByteArray buffer;
-            if (format == QLatin1String("gv")) {
+            if (format == QStringLiteral("gv")) {
                 std::stringstream str;
                 doc.exportGraphviz(str);
                 buffer = QByteArray::fromStdString(str.str());

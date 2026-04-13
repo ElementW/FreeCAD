@@ -169,7 +169,7 @@ void ViewProviderImagePlane::setupContextMenu(QMenu* menu, QObject* receiver, co
 {
     Gui::ActionFunction* func = new Gui::ActionFunction(menu);
     QAction* action = menu->addAction(QObject::tr("Edit Image Plane"));
-    action->setIcon(QIcon(QLatin1String("images:image-scaling.svg")));
+    action->setIcon(QIcon(QStringLiteral("images:image-scaling.svg")));
     func->trigger(action, [this]() { this->manipulateImage(); });
 
     ViewProviderGeometryObject::setupContextMenu(menu, receiver, member);
@@ -270,7 +270,7 @@ QImage ViewProviderImagePlane::loadSvgOfSize(const char* filename, const QSizeF&
 bool ViewProviderImagePlane::isSvgFile(const char* filename) const
 {
     QFileInfo fi(QString::fromUtf8(filename));
-    return (fi.suffix().toLower() == QLatin1String("svg"));
+    return (fi.suffix().toLower() == QStringLiteral("svg"));
 }
 
 QSizeF ViewProviderImagePlane::defaultSizeOfSvg(const char* filename) const

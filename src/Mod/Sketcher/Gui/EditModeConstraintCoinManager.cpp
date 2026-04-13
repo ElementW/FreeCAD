@@ -2196,15 +2196,15 @@ QString EditModeConstraintCoinManager::getPresentationString(
          * %V - the value of the dimensional constraint, including any unit characters
          */
         auto sDimFmt {constraintParameters.sDimensionalStringFormat};
-        if (!sDimFmt.contains(QLatin1String("%V"))
-            && !sDimFmt.contains(QLatin1String("%N"))) {  // using default format "%N = %V"
+        if (!sDimFmt.contains(QStringLiteral("%V"))
+            && !sDimFmt.contains(QStringLiteral("%N"))) {  // using default format "%N = %V"
 
             fixedValueStr = QString::fromStdString(constraint->Name) + QString::fromLatin1(" = ")
                 + fixedValueStr;
         }
         else {
-            sDimFmt.replace(QLatin1String("%N"), QString::fromStdString(constraint->Name));
-            sDimFmt.replace(QLatin1String("%V"), fixedValueStr);
+            sDimFmt.replace(QStringLiteral("%N"), QString::fromStdString(constraint->Name));
+            sDimFmt.replace(QStringLiteral("%V"), fixedValueStr);
             fixedValueStr = sDimFmt;
         }
     }

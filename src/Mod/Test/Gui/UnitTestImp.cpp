@@ -152,7 +152,7 @@ void UnitTestDialog::onTreeViewFailureItemDoubleClicked(QTreeWidgetItem* item, i
     if (text.count(QLatin1Char('\n')) > 20) {
         QStringList lines = text.split(QLatin1Char('\n'));
         lines.erase(lines.begin() + 20, lines.end());
-        text = lines.join(QLatin1String("\n"));
+        text = lines.join(QStringLiteral("\n"));
     }
     if (text.size() > 1000) {
         text = text.left(1000);
@@ -350,7 +350,7 @@ void UnitTestDialog::setProgressFraction(float fraction, const QString& color)
         ui->progressBar->setRange(0, 100);
     }
     else {
-        if (color == QLatin1String("red")) {
+        if (color == QStringLiteral("red")) {
             setProgressColor(Qt::red);
         }
 

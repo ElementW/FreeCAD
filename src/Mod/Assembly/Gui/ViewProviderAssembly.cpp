@@ -1821,14 +1821,14 @@ void ViewProviderAssembly::UpdateSolverInformation()
     else if (dofs < 0 || /*hasConflicts*/ hasRedundancies) {  // over-constrained
         // Currently the solver does not distinguish between conflicts and redundancies.
         /*signalSetUp(QStringLiteral("conflicting_constraints"),
-                    tr("Over-constrained:") + QLatin1String(" "),
+                    tr("Over-constrained:") + QStringLiteral(" "),
                     QStringLiteral("#conflicting"),
                     QStringLiteral("(%1)").arg(objListHelper(assembly,
            assembly->getLastConflicting())));*/
         // So for now we report like follows:
         signalSetUp(
             QStringLiteral("conflicting_constraints"),
-            tr("Over-constrained:") + QLatin1String(" "),
+            tr("Over-constrained:") + QStringLiteral(" "),
             QStringLiteral("#conflicting"),
             QStringLiteral("(%1)").arg(objListHelper(assembly, assembly->getLastRedundant()))
         );
@@ -1836,7 +1836,7 @@ void ViewProviderAssembly::UpdateSolverInformation()
     else if (hasMalformed) {  // malformed joints
         signalSetUp(
             QStringLiteral("malformed_constraints"),
-            tr("Malformed joints:") + QLatin1String(" "),
+            tr("Malformed joints:") + QStringLiteral(" "),
             QStringLiteral("#malformed"),
             QStringLiteral("(%1)").arg(objListHelper(assembly, assembly->getLastMalformed()))
         );
@@ -1844,7 +1844,7 @@ void ViewProviderAssembly::UpdateSolverInformation()
     // Currently the solver does not distinguish between conflicts and redundancies.
     /* else if (hasRedundancies) {
         signalSetUp(QStringLiteral("redundant_constraints"),
-                    tr("Redundant joints:") + QLatin1String(" "),
+                    tr("Redundant joints:") + QStringLiteral(" "),
                     QStringLiteral("#redundant"),
                     QStringLiteral("(%1)").arg(objListHelper(assembly,
     assembly->getLastRedundant())));
@@ -1852,7 +1852,7 @@ void ViewProviderAssembly::UpdateSolverInformation()
     else if (hasPartiallyRedundant) {
         signalSetUp(
             QStringLiteral("partially_redundant_constraints"),
-            tr("Partially redundant:") + QLatin1String(" "),
+            tr("Partially redundant:") + QStringLiteral(" "),
             QStringLiteral("#partiallyredundant"),
             QStringLiteral("(%1)").arg(objListHelper(assembly,
     assembly->getLastPartiallyRedundant())));
@@ -1868,7 +1868,7 @@ void ViewProviderAssembly::UpdateSolverInformation()
     else if (dofs > 0) {
         signalSetUp(
             QStringLiteral("under_constrained"),
-            tr("Under-constrained:") + QLatin1String(" "),
+            tr("Under-constrained:") + QStringLiteral(" "),
             QStringLiteral("#dofs"),
             tr("%n Degrees of Freedom", "", dofs)
         );
@@ -1880,7 +1880,7 @@ void ViewProviderAssembly::UpdateSolverInformation()
 
 void ViewProviderAssembly::onWorkbenchActivated(const QString& name)
 {
-    bool isAssemblyWb = (name == QLatin1String("AssemblyWorkbench"));
+    bool isAssemblyWb = (name == QStringLiteral("AssemblyWorkbench"));
     updateTaskPanel(isAssemblyWb);
 }
 

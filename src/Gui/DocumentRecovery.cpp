@@ -260,7 +260,7 @@ void DocumentRecovery::accept()
             try {
                 QString file = info.projectFile;
                 QFileInfo fi(file);
-                if (fi.fileName() == QLatin1String("Document.xml")) {
+                if (fi.fileName() == QStringLiteral("Document.xml")) {
                     file = createProjectFile(info.projectFile);
                 }
 
@@ -328,7 +328,7 @@ void DocumentRecovery::accept()
                 QFileInfo fi(info.projectFile);
                 bool res = false;
 
-                if (fi.fileName() == QLatin1String("fc_recovery_file.fcstd")) {
+                if (fi.fileName() == QStringLiteral("fc_recovery_file.fcstd")) {
                     transDir.remove(fi.fileName());
                     res = transDir.rename(fi.absoluteFilePath(), fi.fileName());
                 }
@@ -413,15 +413,15 @@ DocumentRecoveryPrivate::Info DocumentRecoveryPrivate::getRecoveryInfo(const QFi
 
     QString file;
     QDir doc_dir(fi.absoluteFilePath());
-    QDir rec_dir(doc_dir.absoluteFilePath(QLatin1String("fc_recovery_files")));
+    QDir rec_dir(doc_dir.absoluteFilePath(QStringLiteral("fc_recovery_files")));
 
     // compressed recovery file
-    if (doc_dir.exists(QLatin1String("fc_recovery_file.fcstd"))) {
-        file = doc_dir.absoluteFilePath(QLatin1String("fc_recovery_file.fcstd"));
+    if (doc_dir.exists(QStringLiteral("fc_recovery_file.fcstd"))) {
+        file = doc_dir.absoluteFilePath(QStringLiteral("fc_recovery_file.fcstd"));
     }
     // separate files for recovery
-    else if (rec_dir.exists(QLatin1String("Document.xml"))) {
-        file = rec_dir.absoluteFilePath(QLatin1String("Document.xml"));
+    else if (rec_dir.exists(QStringLiteral("Document.xml"))) {
+        file = rec_dir.absoluteFilePath(QStringLiteral("Document.xml"));
     }
 
     info.status = DocumentRecoveryPrivate::Created;
@@ -429,8 +429,8 @@ DocumentRecoveryPrivate::Info DocumentRecoveryPrivate::getRecoveryInfo(const QFi
     info.tooltip = fi.fileName();
 
     // when the Xml meta exists get some relevant information
-    info.xmlFile = doc_dir.absoluteFilePath(QLatin1String("fc_recovery_file.xml"));
-    if (doc_dir.exists(QLatin1String("fc_recovery_file.xml"))) {
+    info.xmlFile = doc_dir.absoluteFilePath(QStringLiteral("fc_recovery_file.xml"));
+    if (doc_dir.exists(QStringLiteral("fc_recovery_file.xml"))) {
         XmlConfig cfg = readXmlFile(info.xmlFile);
 
         if (cfg.contains(QStringLiteral("Label"))) {
@@ -443,16 +443,16 @@ DocumentRecoveryPrivate::Info DocumentRecoveryPrivate::getRecoveryInfo(const QFi
 
         if (cfg.contains(QStringLiteral("Status"))) {
             QString status = cfg[QStringLiteral("Status")];
-            if (status == QLatin1String("Deprecated")) {
+            if (status == QStringLiteral("Deprecated")) {
                 info.status = DocumentRecoveryPrivate::Overage;
             }
-            if (status == QLatin1String("Corrupted")) {
+            if (status == QStringLiteral("Corrupted")) {
                 info.status = DocumentRecoveryPrivate::Corrupted;
             }
-            else if (status == QLatin1String("Success")) {
+            else if (status == QStringLiteral("Success")) {
                 info.status = DocumentRecoveryPrivate::Success;
             }
-            else if (status == QLatin1String("Failure")) {
+            else if (status == QStringLiteral("Failure")) {
                 info.status = DocumentRecoveryPrivate::Failure;
             }
         }
@@ -605,7 +605,7 @@ DocumentRecoveryPrivate::XmlConfig DocumentRecoveryPrivate::readXmlFile(const QS
 #endif
 
     QDomElement root = domDocument.documentElement();
-    if (root.tagName() != QLatin1String("AutoRecovery")) {
+    if (root.tagName() != QStringLiteral("AutoRecovery")) {
         return cfg;
     }
 
@@ -751,7 +751,7 @@ void DocumentRecoveryFinder::checkDocumentDirs(QDir& tmp, const QList<QFileInfo>
                 }
             }
             // search for the existence of a recovery file
-            else if (doc_dir.exists(QLatin1String("fc_recovery_file.xml"))) {
+            else if (doc_dir.exists(QStringLiteral("fc_recovery_file.xml"))) {
                 // store the transient directory in case it's not empty
                 restoreDocFiles << *it;
             }

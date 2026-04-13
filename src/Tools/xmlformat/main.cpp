@@ -100,20 +100,20 @@ int main(int argc, char* argv[])
 
     while (!reader.atEnd()) {
         reader.readNext();
-        if (reader.isStartElement() && reader.name() == QLatin1String("PythonExport")) {
+        if (reader.isStartElement() && reader.name() == QStringLiteral("PythonExport")) {
             QXmlStreamAttributes attr = reader.attributes();
             attr = sortAttr(attr);
 
-            writer.writeStartElement(QString("PythonExport"));
+            writer.writeStartElement(QStringLiteral("PythonExport"));
             for (int i = 0; i < attr.size(); ++i) {
                 file.write("\n       ");
                 writer.writeAttribute(attr.at(i));
             }
         }
-        else if (reader.isStartElement() && reader.name() == QLatin1String("UserDocu")) {
+        else if (reader.isStartElement() && reader.name() == QStringLiteral("UserDocu")) {
             QString text = reader.readElementText().trimmed();
             text.replace("\t", "    ");
-            writer.writeTextElement(QString("UserDocu"), text);
+            writer.writeTextElement(QStringLiteral("UserDocu"), text);
         }
         else if (!reader.isWhitespace()) {
             writer.writeCurrentToken(reader);

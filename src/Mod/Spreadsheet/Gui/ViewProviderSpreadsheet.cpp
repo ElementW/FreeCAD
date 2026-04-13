@@ -64,7 +64,7 @@ ViewProviderSheet::~ViewProviderSheet()
 
 QIcon ViewProviderSheet::getIcon() const
 {
-    return QIcon(QLatin1String(":icons/Spreadsheet.svg"));
+    return QIcon(QStringLiteral(":icons/Spreadsheet.svg"));
 }
 
 bool ViewProviderSheet::setEdit(int ModNum)

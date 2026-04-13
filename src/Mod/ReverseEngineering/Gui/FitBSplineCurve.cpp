@@ -121,7 +121,7 @@ void FitBSplineCurveWidget::tryAccept()
         arguments.append(QStringLiteral("Weight3 = %1").arg(d->ui.torsion->value()));
     }
 
-    QString argument = arguments.join(QLatin1String(", "));
+    QString argument = arguments.join(QStringLiteral(", "));
     QString command = QStringLiteral(
                           "%1.addObject(\"Part::Spline\", \"Spline\").Shape = "
                           "ReverseEngineering.approxCurve(%2).toShape()"

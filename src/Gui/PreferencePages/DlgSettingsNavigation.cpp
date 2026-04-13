@@ -312,19 +312,19 @@ void DlgSettingsNavigation::onMouseButtonClicked()
         (const char*)data.toByteArray(),
         ns->mouseButtons(NavigationStyle::SELECTION)
     );
-    descr.replace(QLatin1String("\n"), QLatin1String("<p>"));
+    descr.replace(QStringLiteral("\n"), QStringLiteral("<p>"));
     uimb.selectionLabel->setText(QStringLiteral("<b>%1</b>").arg(descr));
     descr = qApp->translate((const char*)data.toByteArray(), ns->mouseButtons(NavigationStyle::PANNING));
-    descr.replace(QLatin1String("\n"), QLatin1String("<p>"));
+    descr.replace(QStringLiteral("\n"), QStringLiteral("<p>"));
     uimb.panningLabel->setText(QStringLiteral("<b>%1</b>").arg(descr));
     descr = qApp->translate(
         (const char*)data.toByteArray(),
         ns->mouseButtons(NavigationStyle::DRAGGING)
     );
-    descr.replace(QLatin1String("\n"), QLatin1String("<p>"));
+    descr.replace(QStringLiteral("\n"), QStringLiteral("<p>"));
     uimb.rotationLabel->setText(QStringLiteral("<b>%1</b>").arg(descr));
     descr = qApp->translate((const char*)data.toByteArray(), ns->mouseButtons(NavigationStyle::ZOOMING));
-    descr.replace(QLatin1String("\n"), QLatin1String("<p>"));
+    descr.replace(QStringLiteral("\n"), QStringLiteral("<p>"));
     uimb.zoomingLabel->setText(QStringLiteral("<b>%1</b>").arg(descr));
     dlg.exec();
 }

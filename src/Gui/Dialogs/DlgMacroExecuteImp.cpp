@@ -189,7 +189,7 @@ void DlgMacroExecuteImp::setupConnections()
 
 QStringList DlgMacroExecuteImp::filterFiles(const QString& folder)
 {
-    QDir dir(folder, QLatin1String("*.FCMacro *.py"));
+    QDir dir(folder, QStringLiteral("*.FCMacro *.py"));
     QStringList unfiltered;  // all .fcmacro and .py files
     QDirIterator it(
         dir.path(),
@@ -509,8 +509,8 @@ void DlgMacroExecuteImp::onCreateButtonClicked()
 
     if (!fn.isEmpty()) {
         QString suffix = QFileInfo(fn).suffix().toLower();
-        if (suffix != QLatin1String("fcmacro") && suffix != QLatin1String("py")) {
-            fn += QLatin1String(".FCMacro");
+        if (suffix != QStringLiteral("fcmacro") && suffix != QStringLiteral("py")) {
+            fn += QStringLiteral(".FCMacro");
         }
         QDir dir(this->macroPath);
         // create the macroPath if nonexistent
@@ -923,8 +923,8 @@ void DlgMacroExecuteImp::onRenameButtonClicked()
 
     if (!fn.isEmpty() && fn != oldName) {
         QString suffix = QFileInfo(fn).suffix().toLower();
-        if (suffix != QLatin1String("fcmacro") && suffix != QLatin1String("py")) {
-            fn += QLatin1String(".FCMacro");
+        if (suffix != QStringLiteral("fcmacro") && suffix != QStringLiteral("py")) {
+            fn += QStringLiteral(".FCMacro");
         }
         QFileInfo fi(dir, fn);
         // check if new name exists
@@ -1086,8 +1086,8 @@ void DlgMacroExecuteImp::onDuplicateButtonClicked()
     }
     if (!fn.isEmpty() && fn != oldName) {
         QString suffix = QFileInfo(fn).suffix().toLower();
-        if (suffix != QLatin1String("fcmacro") && suffix != QLatin1String("py")) {
-            fn += QLatin1String(".FCMacro");
+        if (suffix != QStringLiteral("fcmacro") && suffix != QStringLiteral("py")) {
+            fn += QStringLiteral(".FCMacro");
         }
         QFileInfo fi(dir, fn);
         // check again if new name exists in case user changed it

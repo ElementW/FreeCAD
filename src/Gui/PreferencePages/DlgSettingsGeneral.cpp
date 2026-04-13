@@ -163,7 +163,7 @@ DlgSettingsGeneral::~DlgSettingsGeneral() = default;
  */
 void DlgSettingsGeneral::setRecentFileSize()
 {
-    auto recent = getMainWindow()->findChild<RecentFilesAction*>(QLatin1String("recentFiles"));
+    auto recent = getMainWindow()->findChild<RecentFilesAction*>(QStringLiteral("recentFiles"));
     if (recent) {
         ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("RecentFiles");
         recent->resizeList(hGrp->GetInt("RecentFiles", 4));

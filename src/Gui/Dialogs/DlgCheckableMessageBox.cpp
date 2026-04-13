@@ -132,7 +132,7 @@ struct DlgCheckableMessageBoxPrivate
 DlgCheckableMessageBox::DlgCheckableMessageBox(QWidget* parent)
     : QDialog(parent)
     , m_d(new DlgCheckableMessageBoxPrivate)
-    , prefPath(QLatin1String("User parameter:BaseApp/CheckMessages"))
+    , prefPath(QStringLiteral("User parameter:BaseApp/CheckMessages"))
 {
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

@@ -265,7 +265,7 @@ PyObject* MaterialManagerPy::save(PyObject* args, PyObject* kwds)
     Base::Console().log("path %s\n", path);
 
     MaterialPy* material;
-    if (QLatin1String(obj->ob_type->tp_name) == QLatin1String("Materials.Material")) {
+    if (QLatin1String(obj->ob_type->tp_name) == QStringLiteral("Materials.Material")) {
         material = static_cast<MaterialPy*>(obj);
     }
     else {

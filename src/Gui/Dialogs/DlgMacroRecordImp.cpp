@@ -119,8 +119,8 @@ void DlgMacroRecordImp::onButtonStartClicked()
 
     // search in the macro path first for an already existing macro
     QString fn = this->macroPath + ui->lineEditPath->text();
-    if (!fn.endsWith(QLatin1String(".FCMacro"))) {
-        fn += QLatin1String(".FCMacro");
+    if (!fn.endsWith(QStringLiteral(".FCMacro"))) {
+        fn += QStringLiteral(".FCMacro");
     }
 
     QFileInfo fi(fn);

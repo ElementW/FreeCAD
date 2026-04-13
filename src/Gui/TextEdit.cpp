@@ -119,7 +119,7 @@ void TextEdit::keyPressEvent(QKeyEvent* e)
         // In Qt 4.8 there is a strange behaviour because when pressing ":"
         // then key is also set to 'Period' instead of 'Colon'. So we have
         // to make sure we only handle the period.
-        if (e->text() == QLatin1String(".")) {
+        if (e->text() == QStringLiteral(".")) {
             // analyse context and show available call tips
             // TODO: idk why we need to remove the . from the input string (- 1). This shouldn't be
             // needed
@@ -195,7 +195,7 @@ void TextEdit::complete()
         return;
     }
 
-    QStringList list = toPlainText().split(QRegularExpression(QLatin1String("\\W+")));
+    QStringList list = toPlainText().split(QRegularExpression(QStringLiteral("\\W+")));
     QMap<QString, QString> map;
     QStringList::Iterator it = list.begin();
     while (it != list.end()) {
@@ -288,21 +288,21 @@ struct TextEditorP
     QMap<QString, QColor> colormap;  // Color map
     TextEditorP()
     {
-        colormap[QLatin1String("Text")] = qApp->palette().windowText().color();
-        colormap[QLatin1String("Bookmark")] = Qt::cyan;
-        colormap[QLatin1String("Breakpoint")] = Qt::red;
-        colormap[QLatin1String("Keyword")] = Qt::blue;
-        colormap[QLatin1String("Comment")] = QColor(0, 170, 0);
-        colormap[QLatin1String("Block comment")] = QColor(160, 160, 164);
-        colormap[QLatin1String("Number")] = Qt::blue;
-        colormap[QLatin1String("String")] = Qt::red;
-        colormap[QLatin1String("Character")] = Qt::red;
-        colormap[QLatin1String("Class name")] = QColor(255, 170, 0);
-        colormap[QLatin1String("Define name")] = QColor(255, 170, 0);
-        colormap[QLatin1String("Operator")] = QColor(160, 160, 164);
-        colormap[QLatin1String("Python output")] = QColor(170, 170, 127);
-        colormap[QLatin1String("Python error")] = Qt::red;
-        colormap[QLatin1String("Current line highlight")] = QColor(224, 224, 224);
+        colormap[QStringLiteral("Text")] = qApp->palette().windowText().color();
+        colormap[QStringLiteral("Bookmark")] = Qt::cyan;
+        colormap[QStringLiteral("Breakpoint")] = Qt::red;
+        colormap[QStringLiteral("Keyword")] = Qt::blue;
+        colormap[QStringLiteral("Comment")] = QColor(0, 170, 0);
+        colormap[QStringLiteral("Block comment")] = QColor(160, 160, 164);
+        colormap[QStringLiteral("Number")] = Qt::blue;
+        colormap[QStringLiteral("String")] = Qt::red;
+        colormap[QStringLiteral("Character")] = Qt::red;
+        colormap[QStringLiteral("Class name")] = QColor(255, 170, 0);
+        colormap[QStringLiteral("Define name")] = QColor(255, 170, 0);
+        colormap[QStringLiteral("Operator")] = QColor(160, 160, 164);
+        colormap[QStringLiteral("Python output")] = QColor(170, 170, 127);
+        colormap[QStringLiteral("Python error")] = Qt::red;
+        colormap[QStringLiteral("Current line highlight")] = QColor(224, 224, 224);
     }
 };
 }  // namespace Gui
@@ -368,7 +368,7 @@ bool TextEditor::isEnabledHighlightCurrentLine() const
 
 int TextEditor::lineNumberAreaWidth()
 {
-    return QtTools::horizontalAdvance(fontMetrics(), QLatin1String("0000")) + 10;
+    return QtTools::horizontalAdvance(fontMetrics(), QStringLiteral("0000")) + 10;
 }
 
 void TextEditor::updateLineNumberAreaWidth(int /* newBlockCount */)
@@ -410,7 +410,7 @@ void TextEditor::highlightCurrentLine()
 
     if (!isReadOnly() && isEnabledHighlightCurrentLine()) {
         QTextEdit::ExtraSelection selection;
-        QColor lineColor = d->colormap[QLatin1String("Current line highlight")];
+        QColor lineColor = d->colormap[QStringLiteral("Current line highlight")];
         unsigned int col = Base::Color::asPackedRGB<QColor>(lineColor);
         ParameterGrp::handle hPrefGrp = getWindowParameter();
         auto value = static_cast<unsigned long>(col);

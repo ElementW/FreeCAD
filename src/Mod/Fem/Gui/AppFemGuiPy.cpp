@@ -151,10 +151,10 @@ private:
         Gui::TextEditor* editor = new Gui::TextEditor();
         editor->setWindowIcon(Gui::BitmapFactory().pixmap(":/icons/fem-solver-inp-editor.svg"));
         Gui::EditorView* edit = new Gui::EditorView(editor, Gui::getMainWindow());
-        if (ext == QLatin1String("inp")) {
+        if (ext == QStringLiteral("inp")) {
             editor->setSyntaxHighlighter(new FemGui::AbaqusHighlighter(editor));
         }
-        else if (ext == QLatin1String("py")) {
+        else if (ext == QStringLiteral("py")) {
             editor->setSyntaxHighlighter(new Gui::PythonSyntaxHighlighter(editor));
         }
         edit->setDisplayName(Gui::EditorView::FileName);

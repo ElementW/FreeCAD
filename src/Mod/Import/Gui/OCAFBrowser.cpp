@@ -96,7 +96,7 @@ void OCAFBrowser::load(QTreeWidget* theTree)
     theTree->clear();
 
     QTreeWidgetItem* root = new QTreeWidgetItem();
-    root->setText(0, QLatin1String("0"));
+    root->setText(0, QStringLiteral("0"));
     root->setIcon(0, myGroupIcon);
     theTree->addTopLevelItem(root);
 

@@ -580,7 +580,7 @@ void PropertyItem::setPropertyName(const QString& name, const QString& realName)
         if (i.isUpper() && !display.isEmpty()) {
             QChar last = display.at(display.length() - 1);
             if (last.isLower()) {
-                display += QLatin1String(" ");
+                display += QStringLiteral(" ");
             }
         }
         display += i;
@@ -693,7 +693,7 @@ QVariant PropertyItem::dataPropertyName(int role) const
             doc = toolTip(propertyItems[0]).toString();
         }
         if (doc.size()) {
-            return type + QLatin1String("\n\n") + doc;
+            return type + QStringLiteral("\n\n") + doc;
         }
         return type;
     }
@@ -1484,15 +1484,15 @@ PropertyVectorItem::PropertyVectorItem()
 {
     m_x = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_x->setParent(this);
-    m_x->setPropertyName(QLatin1String("x"));
+    m_x->setPropertyName(QStringLiteral("x"));
     this->appendChild(m_x);
     m_y = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_y->setParent(this);
-    m_y->setPropertyName(QLatin1String("y"));
+    m_y->setPropertyName(QStringLiteral("y"));
     this->appendChild(m_y);
     m_z = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_z->setParent(this);
-    m_z->setPropertyName(QLatin1String("z"));
+    m_z->setPropertyName(QStringLiteral("z"));
     this->appendChild(m_z);
 }
 
@@ -1792,15 +1792,15 @@ PropertyVectorDistanceItem::PropertyVectorDistanceItem()
 {
     m_x = static_cast<PropertyUnitItem*>(PropertyUnitItem::create());
     m_x->setParent(this);
-    m_x->setPropertyName(QLatin1String("x"));
+    m_x->setPropertyName(QStringLiteral("x"));
     this->appendChild(m_x);
     m_y = static_cast<PropertyUnitItem*>(PropertyUnitItem::create());
     m_y->setParent(this);
-    m_y->setPropertyName(QLatin1String("y"));
+    m_y->setPropertyName(QStringLiteral("y"));
     this->appendChild(m_y);
     m_z = static_cast<PropertyUnitItem*>(PropertyUnitItem::create());
     m_z->setParent(this);
-    m_z->setPropertyName(QLatin1String("z"));
+    m_z->setPropertyName(QStringLiteral("z"));
     this->appendChild(m_z);
 }
 
@@ -1929,82 +1929,82 @@ PropertyMatrixItem::PropertyMatrixItem()
     const int decimals = highPrec;
     m_a11 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a11->setParent(this);
-    m_a11->setPropertyName(QLatin1String("A11"));
+    m_a11->setPropertyName(QStringLiteral("A11"));
     m_a11->setDecimals(decimals);
     this->appendChild(m_a11);
     m_a12 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a12->setParent(this);
-    m_a12->setPropertyName(QLatin1String("A12"));
+    m_a12->setPropertyName(QStringLiteral("A12"));
     m_a12->setDecimals(decimals);
     this->appendChild(m_a12);
     m_a13 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a13->setParent(this);
-    m_a13->setPropertyName(QLatin1String("A13"));
+    m_a13->setPropertyName(QStringLiteral("A13"));
     m_a13->setDecimals(decimals);
     this->appendChild(m_a13);
     m_a14 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a14->setParent(this);
-    m_a14->setPropertyName(QLatin1String("A14"));
+    m_a14->setPropertyName(QStringLiteral("A14"));
     m_a14->setDecimals(decimals);
     this->appendChild(m_a14);
     m_a21 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a21->setParent(this);
-    m_a21->setPropertyName(QLatin1String("A21"));
+    m_a21->setPropertyName(QStringLiteral("A21"));
     m_a21->setDecimals(decimals);
     this->appendChild(m_a21);
     m_a22 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a22->setParent(this);
-    m_a22->setPropertyName(QLatin1String("A22"));
+    m_a22->setPropertyName(QStringLiteral("A22"));
     m_a22->setDecimals(decimals);
     this->appendChild(m_a22);
     m_a23 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a23->setParent(this);
-    m_a23->setPropertyName(QLatin1String("A23"));
+    m_a23->setPropertyName(QStringLiteral("A23"));
     m_a23->setDecimals(decimals);
     this->appendChild(m_a23);
     m_a24 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a24->setParent(this);
-    m_a24->setPropertyName(QLatin1String("A24"));
+    m_a24->setPropertyName(QStringLiteral("A24"));
     m_a24->setDecimals(decimals);
     this->appendChild(m_a24);
     m_a31 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a31->setParent(this);
-    m_a31->setPropertyName(QLatin1String("A31"));
+    m_a31->setPropertyName(QStringLiteral("A31"));
     m_a31->setDecimals(decimals);
     this->appendChild(m_a31);
     m_a32 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a32->setParent(this);
-    m_a32->setPropertyName(QLatin1String("A32"));
+    m_a32->setPropertyName(QStringLiteral("A32"));
     m_a32->setDecimals(decimals);
     this->appendChild(m_a32);
     m_a33 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a33->setParent(this);
-    m_a33->setPropertyName(QLatin1String("A33"));
+    m_a33->setPropertyName(QStringLiteral("A33"));
     m_a33->setDecimals(decimals);
     this->appendChild(m_a33);
     m_a34 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a34->setParent(this);
-    m_a34->setPropertyName(QLatin1String("A34"));
+    m_a34->setPropertyName(QStringLiteral("A34"));
     m_a34->setDecimals(decimals);
     this->appendChild(m_a34);
     m_a41 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a41->setParent(this);
-    m_a41->setPropertyName(QLatin1String("A41"));
+    m_a41->setPropertyName(QStringLiteral("A41"));
     m_a41->setDecimals(decimals);
     this->appendChild(m_a41);
     m_a42 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a42->setParent(this);
-    m_a42->setPropertyName(QLatin1String("A42"));
+    m_a42->setPropertyName(QStringLiteral("A42"));
     m_a42->setDecimals(decimals);
     this->appendChild(m_a42);
     m_a43 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a43->setParent(this);
-    m_a43->setPropertyName(QLatin1String("A43"));
+    m_a43->setPropertyName(QStringLiteral("A43"));
     m_a43->setDecimals(decimals);
     this->appendChild(m_a43);
     m_a44 = static_cast<PropertyFloatItem*>(PropertyFloatItem::create());
     m_a44->setParent(this);
-    m_a44->setPropertyName(QLatin1String("A44"));
+    m_a44->setPropertyName(QStringLiteral("A44"));
     m_a44->setDecimals(decimals);
     this->appendChild(m_a44);
 }
@@ -2644,7 +2644,7 @@ PlacementEditor::PlacementEditor(QString name, QWidget* parent)
     , _task(nullptr)
     , propertyname {std::move(name)}
 {
-    propertyname.replace(QLatin1String(" "), QLatin1String(""));
+    propertyname.replace(QStringLiteral(" "), QStringLiteral(""));
 }
 
 PlacementEditor::~PlacementEditor() = default;
@@ -3572,7 +3572,7 @@ PropertyMaterialItem::PropertyMaterialItem()
     const int steps = 5;
     diffuse = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     diffuse->setParent(this);
-    diffuse->setPropertyName(QLatin1String("DiffuseColor"));
+    diffuse->setPropertyName(QStringLiteral("DiffuseColor"));
     diffuse->setNameToolTipOverride(
         tr("Defines the base color of a surface when illuminated by light. It represents how the "
            "object scatters light evenly in all directions, independent of the viewer’s angle. "
@@ -3582,7 +3582,7 @@ PropertyMaterialItem::PropertyMaterialItem()
 
     ambient = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     ambient->setParent(this);
-    ambient->setPropertyName(QLatin1String("AmbientColor"));
+    ambient->setPropertyName(QStringLiteral("AmbientColor"));
     ambient->setNameToolTipOverride(
         tr("Defines the color of a surface under indirect, uniform lighting, representing how it "
            "appears when illuminated only by ambient light in a scene, without directional light, "
@@ -3592,7 +3592,7 @@ PropertyMaterialItem::PropertyMaterialItem()
 
     specular = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     specular->setParent(this);
-    specular->setPropertyName(QLatin1String("SpecularColor"));
+    specular->setPropertyName(QStringLiteral("SpecularColor"));
     specular->setNameToolTipOverride(
         tr("Defines the color and intensity of the bright, mirror-like highlights that appear on "
            "shiny or reflective surfaces when light hits them directly. Set to bright colors for "
@@ -3602,7 +3602,7 @@ PropertyMaterialItem::PropertyMaterialItem()
 
     emissive = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     emissive->setParent(this);
-    emissive->setPropertyName(QLatin1String("EmissiveColor"));
+    emissive->setPropertyName(QStringLiteral("EmissiveColor"));
     emissive->setNameToolTipOverride(
         tr("Defines the color of a surface that appears to emit as if it were a light source, "
            "independent of external lighting, making the object look self-illuminated. Set to "
@@ -3614,7 +3614,7 @@ PropertyMaterialItem::PropertyMaterialItem()
     shininess->setRange(min, max);
     shininess->setStepSize(steps);
     shininess->setParent(this);
-    shininess->setPropertyName(QLatin1String("Shininess"));
+    shininess->setPropertyName(QStringLiteral("Shininess"));
     shininess->setNameToolTipOverride(
         tr("Defines the size and sharpness of specular highlights on a surface. Higher values "
            "produce small, sharp highlights, while lower values create broad, soft highlights. "
@@ -3626,7 +3626,7 @@ PropertyMaterialItem::PropertyMaterialItem()
     transparency->setRange(min, max);
     transparency->setStepSize(steps);
     transparency->setParent(this);
-    transparency->setPropertyName(QLatin1String("Transparency"));
+    transparency->setPropertyName(QStringLiteral("Transparency"));
     transparency->setNameToolTipOverride(
         tr("Defines how much light passes through an object, making it "
            "partially or fully see-through")
@@ -3938,7 +3938,7 @@ PropertyMaterialListItem::PropertyMaterialListItem()
     // This editor gets a list of materials but it only edits the first item.
     diffuse = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     diffuse->setParent(this);
-    diffuse->setPropertyName(QLatin1String("DiffuseColor"));
+    diffuse->setPropertyName(QStringLiteral("DiffuseColor"));
     diffuse->setNameToolTipOverride(
         tr("Defines the base color of a surface when illuminated by light. It represents how the "
            "object scatters light evenly in all directions, independent of the viewer’s angle. "
@@ -3948,7 +3948,7 @@ PropertyMaterialListItem::PropertyMaterialListItem()
 
     ambient = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     ambient->setParent(this);
-    ambient->setPropertyName(QLatin1String("AmbientColor"));
+    ambient->setPropertyName(QStringLiteral("AmbientColor"));
     ambient->setNameToolTipOverride(
         tr("Defines the color of a surface under indirect, uniform lighting, representing how it "
            "appears when illuminated only by ambient light in a scene, without directional light, "
@@ -3958,7 +3958,7 @@ PropertyMaterialListItem::PropertyMaterialListItem()
 
     specular = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     specular->setParent(this);
-    specular->setPropertyName(QLatin1String("SpecularColor"));
+    specular->setPropertyName(QStringLiteral("SpecularColor"));
     specular->setNameToolTipOverride(
         tr("Defines the color and intensity of the bright, mirror-like highlights that appear on "
            "shiny or reflective surfaces when light hits them directly. Set to bright colors for "
@@ -3968,7 +3968,7 @@ PropertyMaterialListItem::PropertyMaterialListItem()
 
     emissive = static_cast<PropertyColorItem*>(PropertyColorItem::create());
     emissive->setParent(this);
-    emissive->setPropertyName(QLatin1String("EmissiveColor"));
+    emissive->setPropertyName(QStringLiteral("EmissiveColor"));
     emissive->setNameToolTipOverride(
         tr("Defines the color of a surface that appears to emit as if it were a light source, "
            "independent of external lighting, making the object look self-illuminated. Set to "
@@ -3980,7 +3980,7 @@ PropertyMaterialListItem::PropertyMaterialListItem()
     shininess->setRange(min, max);
     shininess->setStepSize(steps);
     shininess->setParent(this);
-    shininess->setPropertyName(QLatin1String("Shininess"));
+    shininess->setPropertyName(QStringLiteral("Shininess"));
     shininess->setNameToolTipOverride(
         tr("Defines the size and sharpness of specular highlights on a surface. Higher values "
            "produce small, sharp highlights, while lower values create broad, soft highlights. "
@@ -3992,7 +3992,7 @@ PropertyMaterialListItem::PropertyMaterialListItem()
     transparency->setRange(min, max);
     transparency->setStepSize(steps);
     transparency->setParent(this);
-    transparency->setPropertyName(QLatin1String("Transparency"));
+    transparency->setPropertyName(QStringLiteral("Transparency"));
     transparency->setNameToolTipOverride(
         tr("Defines how much light passes through an object, making it "
            "partially or fully see-through")

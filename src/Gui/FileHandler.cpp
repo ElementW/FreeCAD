@@ -126,21 +126,21 @@ bool FileHandler::openInternal()
         return suffixes.contains(ext);
     };
 
-    if (hasExtension(QStringList() << QLatin1String("iv"))) {
+    if (hasExtension(QStringList() << QStringLiteral("iv"))) {
         openInventor();
         return true;
     }
 
     if (hasExtension(
-            QStringList() << QLatin1String("wrl") << QLatin1String("wrz") << QLatin1String("vrml")
+            QStringList() << QStringLiteral("wrl") << QStringLiteral("wrz") << QStringLiteral("vrml")
         )) {
         openVRML();
         return true;
     }
 
     if (hasExtension(
-            QStringList() << QLatin1String("py") << QLatin1String("fcmacro")
-                          << QLatin1String("fcscript")
+            QStringList() << QStringLiteral("py") << QStringLiteral("fcmacro")
+                          << QStringLiteral("fcscript")
         )) {
         openPython();
         return true;

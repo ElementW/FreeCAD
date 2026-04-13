@@ -126,9 +126,9 @@ DlgProjectInformationImp::DlgProjectInformationImp(App::Document* doc, QWidget* 
     // See also accept().
     QString comment = QString::fromUtf8(doc->Comment.getValue());
 
-    QStringList lines = comment.split(QLatin1String("\\n"), Qt::KeepEmptyParts);
+    QStringList lines = comment.split(QStringLiteral("\\n"), Qt::KeepEmptyParts);
 
-    QString text = lines.join(QLatin1String("\n"));
+    QString text = lines.join(QStringLiteral("\n"));
     ui->textEditComment->setPlainText(text);
     connect(ui->pushButtonOpenURL, &QPushButton::clicked, this, &DlgProjectInformationImp::open_url);
     connect(
@@ -167,9 +167,9 @@ void DlgProjectInformationImp::accept()
 
     // Replace newline escape sequence through '\\n' string
     QStringList lines
-        = ui->textEditComment->toPlainText().split(QLatin1String("\n"), Qt::KeepEmptyParts);
+        = ui->textEditComment->toPlainText().split(QStringLiteral("\n"), Qt::KeepEmptyParts);
 
-    QString text = lines.join(QLatin1String("\\n"));
+    QString text = lines.join(QStringLiteral("\\n"));
     _doc->Comment.setValue(text.isEmpty() ? QByteArray() : text.toUtf8());
 
     QDialog::accept();

@@ -64,7 +64,7 @@ void DlgPartImportIgesImp::OnApply()
 void DlgPartImportIgesImp::onChooseFileName()
 {
     QStringList filterList;
-    filterList << QStringLiteral("%1 (*.igs *.iges)").arg(QLatin1String("IGES"));
+    filterList << QStringLiteral("%1 (*.igs *.iges)").arg(QStringLiteral("IGES"));
     filterList << QStringLiteral("%1 (*.*)").arg(tr("All Files"));
     QString fn
         = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString(), QString(), filterList);

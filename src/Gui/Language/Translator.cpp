@@ -429,10 +429,10 @@ QStringList Translator::directories() const
         list.push_back(QString::fromStdString(dir));
     }
     QDir home(QString::fromUtf8(App::Application::getUserAppDataDir().c_str()));
-    list.push_back(home.absoluteFilePath(QLatin1String("translations")));
+    list.push_back(home.absoluteFilePath(QStringLiteral("translations")));
     QDir resc(QString::fromUtf8(App::Application::getResourceDir().c_str()));
-    list.push_back(resc.absoluteFilePath(QLatin1String("translations")));
-    list.push_back(QLatin1String(":/translations"));
+    list.push_back(resc.absoluteFilePath(QStringLiteral("translations")));
+    list.push_back(QStringLiteral(":/translations"));
 
     return list;
 }

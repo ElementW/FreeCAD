@@ -65,14 +65,14 @@ DlgCustomActionsImp::DlgCustomActionsImp(QWidget* parent)
                                  .GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")
                                  ->GetASCII("MacroPath", App::Application::getUserMacroDir().c_str());
 
-    QDir d(QString::fromUtf8(cMacroPath.c_str()), QLatin1String("*.FCMacro *.py"));
+    QDir d(QString::fromUtf8(cMacroPath.c_str()), QStringLiteral("*.FCMacro *.py"));
     for (unsigned int i = 0; i < d.count(); i++) {
         ui->actionMacros->insertItem(0, d[i], QVariant(false));
     }
 
     QString systemMacroDirStr = QString::fromStdString(App::Application::getHomePath())
         + QStringLiteral("Macro");
-    d = QDir(systemMacroDirStr, QLatin1String("*.FCMacro *.py"));
+    d = QDir(systemMacroDirStr, QStringLiteral("*.FCMacro *.py"));
     if (d.exists()) {
         for (unsigned int i = 0; i < d.count(); i++) {
             ui->actionMacros->insertItem(0, d[i], QVariant(true));

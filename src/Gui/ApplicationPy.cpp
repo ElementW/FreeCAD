@@ -848,9 +848,10 @@ PyObject* ApplicationPy::sExport(PyObject* /*self*/, PyObject* args)
         QFileInfo fi;
         fi.setFile(fileName);
         QString ext = fi.suffix().toLower();
-        if (ext == QLatin1String("iv") || ext == QLatin1String("wrl") || ext == QLatin1String("vrml")
-            || ext == QLatin1String("wrz") || ext == QLatin1String("x3d")
-            || ext == QLatin1String("x3dz") || ext == QLatin1String("xhtml")) {
+        if (ext == QStringLiteral("iv") || ext == QStringLiteral("wrl")
+            || ext == QStringLiteral("vrml") || ext == QStringLiteral("wrz")
+            || ext == QStringLiteral("x3d") || ext == QStringLiteral("x3dz")
+            || ext == QStringLiteral("xhtml")) {
 
             // build up the graph
             auto sep = new SoSeparator();
@@ -888,7 +889,7 @@ PyObject* ApplicationPy::sExport(PyObject* /*self*/, PyObject* args)
             SoFCDB::writeToFile(sep, Utf8Name.c_str(), binary);
             sep->unref();
         }
-        else if (ext == QLatin1String("pdf")) {
+        else if (ext == QStringLiteral("pdf")) {
             // get the view that belongs to the found document
             Gui::Document* gui_doc = Application::Instance->getDocument(doc);
             if (gui_doc) {

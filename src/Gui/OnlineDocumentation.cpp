@@ -74,11 +74,11 @@ PythonOnlineHelp::~PythonOnlineHelp() = default;
 
 QByteArray PythonOnlineHelp::loadResource(const QString& filename) const
 {
-    if (filename == QLatin1String("/favicon.ico")) {
+    if (filename == QStringLiteral("/favicon.ico")) {
         return loadFavicon();
     }
 
-    if (filename == QLatin1String("/")) {
+    if (filename == QStringLiteral("/")) {
         return loadIndexPage();
     }
 
@@ -191,7 +191,7 @@ QByteArray PythonOnlineHelp::fileNotFound() const
 
     QString header = QStringLiteral("content-type: %1\r\n").arg(contentType);
 
-    QString http(QLatin1String("HTTP/1.1 %1 %2\r\n%3\r\n"));
+    QString http(QStringLiteral("HTTP/1.1 %1 %2\r\n%3\r\n"));
     QString httpResponseHeader = http.arg(pageNotFound).arg(QStringLiteral("File not found"), header);
 
     QByteArray res = httpResponseHeader.toLatin1();
@@ -225,7 +225,7 @@ QByteArray PythonOnlineHelp::loadFailed(const QString& error) const
 
     QString header = QStringLiteral("content-type: %1\r\n").arg(contentType);
 
-    QString http(QLatin1String("HTTP/1.1 %1 %2\r\n%3\r\n"));
+    QString http(QStringLiteral("HTTP/1.1 %1 %2\r\n%3\r\n"));
     QString httpResponseHeader = http.arg(pageNotFound).arg(QStringLiteral("File not found"), header);
 
     QByteArray res = httpResponseHeader.toLatin1();
@@ -276,7 +276,7 @@ void HttpServer::readClient()
     if (socket && socket->canReadLine()) {
         // NOLINTBEGIN
         QString httpRequestHeader = QString::fromLatin1(socket->readLine());
-        QStringList lst = httpRequestHeader.simplified().split(QLatin1String(" "));
+        QStringList lst = httpRequestHeader.simplified().split(QStringLiteral(" "));
         QString method;
         QString path;
         if (lst.count() > 0) {
@@ -285,7 +285,7 @@ void HttpServer::readClient()
                 QString p = lst[1];
                 if (lst.count() > 2) {
                     QString v = lst[2];
-                    if (v.length() >= 8 && v.left(5) == QLatin1String("HTTP/") && v[5].isDigit()
+                    if (v.length() >= 8 && v.left(5) == QStringLiteral("HTTP/") && v[5].isDigit()
                         && v[6] == QLatin1Char('.') && v[7].isDigit()) {
                         method = m;
                         path = p;
@@ -295,7 +295,7 @@ void HttpServer::readClient()
         }
         // NOLINTEND
 
-        if (method == QLatin1String("GET")) {
+        if (method == QStringLiteral("GET")) {
             socket->write(help.loadResource(path));
             socket->close();
             if (socket->state() == QTcpSocket::UnconnectedState) {

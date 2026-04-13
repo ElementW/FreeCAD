@@ -186,14 +186,14 @@ void GmshWidget::accept()
         // ./gmsh - -bin -2 /tmp/mesh.geo -o /tmp/best.stl
         QString proc = d->ui.fileChooser->fileName();
         if (proc.isEmpty()) {
-            proc = QLatin1String("gmsh");
+            proc = QStringLiteral("gmsh");
         }
         QStringList args;
-        args << QLatin1String("-")
-             << QLatin1String("-bin")
-             << QLatin1String("-2")
+        args << QStringLiteral("-")
+             << QStringLiteral("-bin")
+             << QStringLiteral("-2")
              << inpFile
-             << QLatin1String("-o")
+             << QStringLiteral("-o")
              << outFile;
         d->gmsh.start(proc, args);
 

@@ -1680,7 +1680,7 @@ bool TaskSketcherConstraints::doSetVirtualSpace(const std::vector<int>& constrId
         sketchView->getDocument()->abortCommand();
 
         Gui::TranslatedUserError(
-            sketch, tr("Error"), tr("Impossible to update visibility tracking:") + QLatin1String(" ") + QLatin1String(e.what()));
+            sketch, tr("Error"), tr("Impossible to update visibility tracking:") + QStringLiteral(" ") + QLatin1String(e.what()));
         return false;
     }
     return true;
@@ -1709,7 +1709,7 @@ bool TaskSketcherConstraints::doSetVisible(const std::vector<int>& constrIds, bo
     }
     catch (const Base::Exception& e) {
         Gui::TranslatedUserError(
-            sketch, tr("Error"), tr("Impossible to update visibility:") + QLatin1String(" ") + QLatin1String(e.what()));
+            sketch, tr("Error"), tr("Impossible to update visibility:") + QStringLiteral(" ") + QLatin1String(e.what()));
         return false;
     }
     return true;

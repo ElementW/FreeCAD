@@ -106,7 +106,7 @@ void StdCmdOpen::activated(int iMsg)
         allSupportedFormats += QStringLiteral(" *.");
         allSupportedFormats += QString::fromStdString(type);
     }
-    allSupportedFormats += QLatin1String(" *.FCBak)");
+    allSupportedFormats += QStringLiteral(" *.FCBak)");
     formatList += allSupportedFormats;
 
     const auto importFilters = App::GetApplication().getImportFilters();
@@ -435,9 +435,9 @@ QString createDefaultExportBasename()
     }
 
     // Finally, clean the string so it's valid for all operating systems:
-    QString invalidCharacters = QLatin1String("/\\?%*:|\"<>");
+    QString invalidCharacters = QStringLiteral("/\\?%*:|\"<>");
     for (const auto& c : invalidCharacters) {
-        defaultFilename.replace(c, QLatin1String("_"));
+        defaultFilename.replace(c, QStringLiteral("_"));
     }
 
     return defaultFilename;
@@ -522,7 +522,7 @@ void StdCmdExport::activated(int iMsg)
             if (!exportInfo.filename.empty()) {
                 QFileInfo lastExportFile(QString::fromStdString(exportInfo.filename));
                 if (!lastExportFile.suffix().isEmpty()) {
-                    defaultFilename += QLatin1String(".") + lastExportFile.suffix();
+                    defaultFilename += QStringLiteral(".") + lastExportFile.suffix();
                 }
             }
             filenameWasGenerated = true;
@@ -1790,7 +1790,7 @@ void StdCmdPlacement::activated(int iMsg)
                 [](App::DocumentObject* obj) { return Gui::SelectionObject(obj); }
             );
 
-            plm->setPropertyName(QLatin1String("Placement"));
+            plm->setPropertyName(QStringLiteral("Placement"));
             plm->setSelection(selection);
             plm->bindObject();
             plm->clearSelection();
@@ -2249,7 +2249,9 @@ protected:
         pcActionCopyAll->setEnabled(true);
         pcActionCopySel->setEnabled(Selection().hasSelection());
 
-        pcActionPaste->setEnabled(QApplication::clipboard()->text().startsWith(QLatin1String("##@@ ")));
+        pcActionPaste->setEnabled(
+            QApplication::clipboard()->text().startsWith(QStringLiteral("##@@ "))
+        );
         return true;
     }
 

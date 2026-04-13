@@ -312,7 +312,7 @@ void DlgParameterImp::closeEvent(QCloseEvent*)
             parent = parent->parent();
         }
 
-        QString path = paths.join(QLatin1String("."));
+        QString path = paths.join(QStringLiteral("."));
         hGrp->SetASCII("LastParameterGroup", (const char*)path.toUtf8());
         // save geometry of window
         const QRect& r = this->geometry();
@@ -408,7 +408,7 @@ void DlgParameterImp::onChangeParameterSet(int itemPos)
         = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
     hGrp = hGrp->GetGroup("ParameterEditor");
     QString path = QString::fromUtf8(hGrp->GetASCII("LastParameterGroup").c_str());
-    QStringList paths = path.split(QLatin1String("."), Qt::SkipEmptyParts);
+    QStringList paths = path.split(QStringLiteral("."), Qt::SkipEmptyParts);
 
     QTreeWidgetItem* parent = nullptr;
     for (int index = 0; index < paramGroup->topLevelItemCount() && !paths.empty(); index++) {
@@ -1436,7 +1436,7 @@ void ParameterBool::replace(const QString& oldName, const QString& newName)
 
 void ParameterBool::appendToGroup()
 {
-    bool val = (text(2) == QLatin1String("true") ? true : false);
+    bool val = (text(2) == QStringLiteral("true") ? true : false);
     _hcGrp->SetBool(text(0).toLatin1(), val);
 }
 
