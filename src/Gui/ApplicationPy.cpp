@@ -781,7 +781,7 @@ PyObject* ApplicationPy::sOpen(PyObject* /*self*/, PyObject* args)
     PyMem_Free(Name);
     PY_TRY
     {
-        QString fileName = QString::fromUtf8(Utf8Name.c_str());
+        QString fileName = QString::fromStdString(Utf8Name);
         FileHandler handler(fileName);
         if (!handler.openFile()) {
             QString ext = handler.extension();
@@ -806,7 +806,7 @@ PyObject* ApplicationPy::sInsert(PyObject* /*self*/, PyObject* args)
 
     PY_TRY
     {
-        QString fileName = QString::fromUtf8(Utf8Name.c_str());
+        QString fileName = QString::fromStdString(Utf8Name);
         FileHandler handler(fileName);
         if (!handler.importFile(std::string(DocName ? DocName : ""))) {
             QString ext = handler.extension();
@@ -844,7 +844,7 @@ PyObject* ApplicationPy::sExport(PyObject* /*self*/, PyObject* args)
             }
         }
 
-        QString fileName = QString::fromUtf8(Utf8Name.c_str());
+        QString fileName = QString::fromStdString(Utf8Name);
         QFileInfo fi;
         fi.setFile(fileName);
         QString ext = fi.suffix().toLower();

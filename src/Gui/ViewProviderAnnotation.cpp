@@ -461,7 +461,7 @@ void ViewProviderAnnotationLabel::drawImage(const std::vector<std::string>& s)
 
     QStringList lines;
     for (const auto& it : s) {
-        QString line = QString::fromUtf8(it.c_str());
+        QString line = QString::fromStdString(it);
         w = std::max<int>(w, QtTools::horizontalAdvance(fm, line));
         lines << line;
     }

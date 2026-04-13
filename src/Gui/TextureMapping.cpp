@@ -81,7 +81,7 @@ TextureMapping::TextureMapping(QWidget* parent, Qt::WindowFlags fl)
 
     std::string path = App::GetApplication().Config()["TextureImage"];
     if (!path.empty()) {
-        QString file = QString::fromUtf8(path.c_str());
+        QString file = QString::fromStdString(path);
         ui->fileChooser->setFileName(file);
         onFileChooserFileNameSelected(file);
     }

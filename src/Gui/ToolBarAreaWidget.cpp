@@ -142,7 +142,7 @@ void ToolBarAreaWidget::restoreState(const std::map<int, QToolBar*>& toolbars)
     }
 
     for (const auto& [name, visible] : _hParam->GetBoolMap()) {
-        auto widget = findChild<QWidget*>(QString::fromUtf8(name.c_str()));
+        auto widget = findChild<QWidget*>(QString::fromStdString(name));
 
         if (widget) {
             widget->setVisible(visible);

@@ -1119,7 +1119,7 @@ void TaskMassProperties::tryUpdate()
             else {
                 text = Base::UnitsApi::schemaTranslate(q);
             }
-            edit->setText(QString::fromUtf8(text.c_str()) + suffix);
+            edit->setText(QString::fromStdString(text) + suffix);
             edit->setCursorPosition(0);
         };
 

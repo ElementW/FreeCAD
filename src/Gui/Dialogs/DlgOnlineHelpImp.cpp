@@ -67,7 +67,7 @@ DlgOnlineHelpImp::~DlgOnlineHelpImp() = default;
  */
 QString DlgOnlineHelpImp::getStartpage()
 {
-    QDir docdir = QDir(QString::fromUtf8(App::Application::getHelpDir().c_str()));
+    QDir docdir = QDir(QString::fromStdString(App::Application::getHelpDir()));
     return docdir.absoluteFilePath(QStringLiteral("Start_Page.html"));
 }
 

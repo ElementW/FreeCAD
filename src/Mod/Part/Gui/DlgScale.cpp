@@ -213,7 +213,7 @@ void DlgScale::apply()
             QMessageBox::critical(
                 this,
                 windowTitle(),
-                tr("The document '%1' doesn't exist.").arg(QString::fromUtf8(m_label.c_str()))
+                tr("The document '%1' doesn't exist.").arg(QString::fromStdString(m_label))
             );
             return;
         }

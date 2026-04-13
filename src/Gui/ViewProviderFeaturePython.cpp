@@ -114,7 +114,7 @@ QIcon ViewProviderFeaturePythonImp::getIcon() const
             }
 
             // Check if the passed string is a filename, otherwise treat as xpm data
-            QFileInfo fi(QString::fromUtf8(content.c_str()));
+            QFileInfo fi(QString::fromStdString(content));
             if (fi.isFile() && fi.exists()) {
                 icon.load(fi.absoluteFilePath());
             }

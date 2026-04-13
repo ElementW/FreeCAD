@@ -1173,7 +1173,7 @@ void QGSPage::postProcessXml(QTemporaryFile& temporaryFile, QString fileName, QS
                 QDomElement templateGroup = exportDoc.createElement(QStringLiteral("g"));
                 Base::FileInfo fi(drawTemplate->PageResult.getValue());
                 templateGroup.setAttribute(QStringLiteral("id"),
-                                           QString::fromUtf8(fi.fileName().c_str()));
+                                           QString::fromStdString(fi.fileName()));
                 templateGroup.setAttribute(QStringLiteral("style"),
                                            QStringLiteral("stroke: none;"));
 

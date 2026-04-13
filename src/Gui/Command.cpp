@@ -1297,7 +1297,7 @@ void MacroCommand::activated(int iMsg)
                          .GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")
                          ->GetASCII("MacroPath", App::Application::getUserMacroDir().c_str());
 
-        d = QDir(QString::fromUtf8(cMacroPath.c_str()));
+        d = QDir(QString::fromStdString(cMacroPath));
     }
     else {
         QString dirstr = QString::fromStdString(App::Application::getHomePath())

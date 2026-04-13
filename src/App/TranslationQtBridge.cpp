@@ -96,7 +96,7 @@ bool installTranslatorImpl(const std::string& filename)
     }
 
     auto translator = std::make_unique<QTranslator>(nullptr);
-    if (!translator->load(QString::fromUtf8(filename.c_str()))) {
+    if (!translator->load(QString::fromStdString(filename))) {
         return false;
     }
 

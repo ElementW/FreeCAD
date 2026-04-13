@@ -226,7 +226,7 @@ QTreeWidgetItem* DlgObjectSelection::getItem(
             font.setItalic(true);
             item->setFont(0, font);
         }
-        item->setToolTip(0, QString::fromUtf8(objT.getObjectFullName().c_str()));
+        item->setToolTip(0, QString::fromStdString(objT.getObjectFullName()));
         item->setData(0, Qt::UserRole, QVariant::fromValue(objT));
         item->setChildIndicatorPolicy(
             obj->getOutList().empty() ? QTreeWidgetItem::DontShowIndicator
@@ -616,7 +616,7 @@ QTreeWidgetItem* DlgObjectSelection::createDepItem(QTreeWidget* parent, App::Doc
         item->setIcon(0, vp->getIcon());
     }
     item->setData(0, Qt::UserRole, QVariant::fromValue(objT));
-    item->setToolTip(0, QString::fromUtf8(objT.getObjectFullName().c_str()));
+    item->setToolTip(0, QString::fromStdString(objT.getObjectFullName()));
     item->setText(0, QString::fromUtf8((obj)->Label.getValue()));
     if (std::binary_search(initSels.begin(), initSels.end(), obj)) {
         QFont font = item->font(0);

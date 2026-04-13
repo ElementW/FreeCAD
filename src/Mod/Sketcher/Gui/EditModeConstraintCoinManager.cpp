@@ -2499,7 +2499,7 @@ void EditModeConstraintCoinManager::drawConstraintIcons(const GeoListFacade& geo
                 thisIcon.label = QString::number(constrId + 1);
             }
             else {
-                thisIcon.label = QString::fromUtf8(constraint->Name.c_str());
+                thisIcon.label = QString::fromStdString(constraint->Name);
             }
             iconQueue.push_back(thisIcon);
 
@@ -2532,7 +2532,7 @@ void EditModeConstraintCoinManager::drawConstraintIcons(const GeoListFacade& geo
                 thisIcon.label = QString();
             }
             else {
-                thisIcon.label = QString::fromUtf8(constraint->Name.c_str());
+                thisIcon.label = QString::fromStdString(constraint->Name);
             }
         }
 

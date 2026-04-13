@@ -601,7 +601,7 @@ Py::Object UiLoaderPy::load(const Py::Tuple& args)
         QIODevice* device = nullptr;
         QWidget* parent = nullptr;
         if (wrap.toCString(args[0], fn)) {
-            file.setFileName(QString::fromUtf8(fn.c_str()));
+            file.setFileName(QString::fromStdString(fn));
             if (!file.open(QFile::ReadOnly)) {
                 throw Py::RuntimeError("Cannot open file");
             }
@@ -609,7 +609,7 @@ Py::Object UiLoaderPy::load(const Py::Tuple& args)
         }
         else if (args[0].isString()) {
             fn = static_cast<std::string>(Py::String(args[0]));
-            file.setFileName(QString::fromUtf8(fn.c_str()));
+            file.setFileName(QString::fromStdString(fn));
             if (!file.open(QFile::ReadOnly)) {
                 throw Py::RuntimeError("Cannot open file");
             }

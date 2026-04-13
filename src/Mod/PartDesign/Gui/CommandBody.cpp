@@ -1178,7 +1178,7 @@ void CmdPartDesignMoveFeatureInTree::activated(int iMsg)
             nullptr,
             QObject::tr("Dependency violation"),
             QObject::tr("Early feature must not depend on later feature.\n\n")
-                + QString::fromUtf8(ss.str().c_str())
+                + QString::fromStdString(ss.str())
         );
         abortCommand();
         return;

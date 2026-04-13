@@ -185,11 +185,11 @@ QString PreferencesGui::weldingDirectory()
     if (symbolDir.empty()) {
         symbolDir = defaultDir;
     }
-    QString qSymbolDir = QString::fromUtf8(symbolDir.c_str());
+    QString qSymbolDir = QString::fromStdString(symbolDir);
     Base::FileInfo fi(symbolDir);
     if (!fi.isReadable()) {
         Base::Console().warning("Welding Directory: %s is not readable\n", symbolDir.c_str());
-        qSymbolDir = QString::fromUtf8(defaultDir.c_str());
+        qSymbolDir = QString::fromStdString(defaultDir);
     }
     return qSymbolDir;
 }

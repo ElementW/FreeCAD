@@ -335,7 +335,7 @@ void DlgParameterImp::onGroupSelected(QTreeWidgetItem* item)
         for (const auto& It2 : mcTextMap) {
             (void)new ParameterText(
                 paramValue,
-                QString::fromUtf8(It2.first.c_str()),
+                QString::fromStdString(It2.first),
                 It2.second.c_str(),
                 _hcGrp
             );
@@ -344,25 +344,25 @@ void DlgParameterImp::onGroupSelected(QTreeWidgetItem* item)
         // filling up Int nodes
         std::vector<std::pair<std::string, long>> mcIntMap = _hcGrp->GetIntMap();
         for (const auto& It3 : mcIntMap) {
-            (void)new ParameterInt(paramValue, QString::fromUtf8(It3.first.c_str()), It3.second, _hcGrp);
+            (void)new ParameterInt(paramValue, QString::fromStdString(It3.first), It3.second, _hcGrp);
         }
 
         // filling up Float nodes
         std::vector<std::pair<std::string, double>> mcFloatMap = _hcGrp->GetFloatMap();
         for (const auto& It4 : mcFloatMap) {
-            (void)new ParameterFloat(paramValue, QString::fromUtf8(It4.first.c_str()), It4.second, _hcGrp);
+            (void)new ParameterFloat(paramValue, QString::fromStdString(It4.first), It4.second, _hcGrp);
         }
 
         // filling up bool nodes
         std::vector<std::pair<std::string, bool>> mcBoolMap = _hcGrp->GetBoolMap();
         for (const auto& It5 : mcBoolMap) {
-            (void)new ParameterBool(paramValue, QString::fromUtf8(It5.first.c_str()), It5.second, _hcGrp);
+            (void)new ParameterBool(paramValue, QString::fromStdString(It5.first), It5.second, _hcGrp);
         }
 
         // filling up UInt nodes
         std::vector<std::pair<std::string, unsigned long>> mcUIntMap = _hcGrp->GetUnsignedMap();
         for (const auto& It6 : mcUIntMap) {
-            (void)new ParameterUInt(paramValue, QString::fromUtf8(It6.first.c_str()), It6.second, _hcGrp);
+            (void)new ParameterUInt(paramValue, QString::fromStdString(It6.first), It6.second, _hcGrp);
         }
         paramValue->setSortingEnabled(sortingEnabled);
     }
@@ -407,7 +407,7 @@ void DlgParameterImp::onChangeParameterSet(int itemPos)
     ParameterGrp::handle hGrp
         = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
     hGrp = hGrp->GetGroup("ParameterEditor");
-    QString path = QString::fromUtf8(hGrp->GetASCII("LastParameterGroup").c_str());
+    QString path = QString::fromStdString(hGrp->GetASCII("LastParameterGroup"));
     QStringList paths = path.split(QStringLiteral("."), Qt::SkipEmptyParts);
 
     QTreeWidgetItem* parent = nullptr;

@@ -225,7 +225,7 @@ QString DlgPropertyLink::formatLinks(App::Document* ownerDoc, QList<App::SubObje
     if (isLinkSub(links)) {
         int i = 0;
         for (auto& link : links) {
-            list << QString::fromUtf8(link.getSubName().c_str());
+            list << QString::fromStdString(link.getSubName());
             if (++i >= 3) {
                 break;
             }
@@ -751,7 +751,7 @@ void DlgPropertyLink::onSelectionChanged(const Gui::SelectionChanges& msg)
 
     ui->treeWidget->scrollToItem(item);
     if (allowSubObject) {
-        QString element = QString::fromUtf8(msg.Object.getOldElementName().c_str());
+        QString element = QString::fromStdString(msg.Object.getOldElementName());
         if (element.size()) {
             QStringList list;
             QString text = item->text(1);
@@ -874,7 +874,7 @@ QString DlgPropertyLink::linksToPython(const QList<App::SubObjectT>& links)
     }
 
     if (links.size() == 1) {
-        return QString::fromUtf8(links.front().getSubObjectPython(false).c_str());
+        return QString::fromStdString(links.front().getSubObjectPython(false));
     }
 
     std::ostringstream ss;
@@ -897,7 +897,7 @@ QString DlgPropertyLink::linksToPython(const QList<App::SubObjectT>& links)
         ss << ']';
     }
 
-    return QString::fromUtf8(ss.str().c_str());
+    return QString::fromStdString(ss.str());
 }
 
 void DlgPropertyLink::filterObjects()

@@ -146,31 +146,31 @@ bool DlgParameterFind::matches(QTreeWidgetItem* item, const Options& opt) const
         if (opt.name) {
             if (opt.match) {
                 for (const auto& it : boolMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.compare(opt.text, Qt::CaseInsensitive) == 0) {
                         return true;
                     }
                 }
                 for (const auto& it : intMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.compare(opt.text, Qt::CaseInsensitive) == 0) {
                         return true;
                     }
                 }
                 for (const auto& it : uintMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.compare(opt.text, Qt::CaseInsensitive) == 0) {
                         return true;
                     }
                 }
                 for (const auto& it : floatMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.compare(opt.text, Qt::CaseInsensitive) == 0) {
                         return true;
                     }
                 }
                 for (const auto& it : asciiMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.compare(opt.text, Qt::CaseInsensitive) == 0) {
                         return true;
                     }
@@ -178,31 +178,31 @@ bool DlgParameterFind::matches(QTreeWidgetItem* item, const Options& opt) const
             }
             else {
                 for (const auto& it : boolMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.indexOf(opt.text, 0, Qt::CaseInsensitive) >= 0) {
                         return true;
                     }
                 }
                 for (const auto& it : intMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.indexOf(opt.text, 0, Qt::CaseInsensitive) >= 0) {
                         return true;
                     }
                 }
                 for (const auto& it : uintMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.indexOf(opt.text, 0, Qt::CaseInsensitive) >= 0) {
                         return true;
                     }
                 }
                 for (const auto& it : floatMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.indexOf(opt.text, 0, Qt::CaseInsensitive) >= 0) {
                         return true;
                     }
                 }
                 for (const auto& it : asciiMap) {
-                    QString text = QString::fromUtf8(it.first.c_str());
+                    QString text = QString::fromStdString(it.first);
                     if (text.indexOf(opt.text, 0, Qt::CaseInsensitive) >= 0) {
                         return true;
                     }
@@ -214,7 +214,7 @@ bool DlgParameterFind::matches(QTreeWidgetItem* item, const Options& opt) const
         if (opt.value) {
             if (opt.match) {
                 for (const auto& it : asciiMap) {
-                    QString text = QString::fromUtf8(it.second.c_str());
+                    QString text = QString::fromStdString(it.second);
                     if (text.compare(opt.text, Qt::CaseInsensitive) == 0) {
                         return true;
                     }
@@ -222,7 +222,7 @@ bool DlgParameterFind::matches(QTreeWidgetItem* item, const Options& opt) const
             }
             else {
                 for (const auto& it : asciiMap) {
-                    QString text = QString::fromUtf8(it.second.c_str());
+                    QString text = QString::fromStdString(it.second);
                     if (text.indexOf(opt.text, 0, Qt::CaseInsensitive) >= 0) {
                         return true;
                     }

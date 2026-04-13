@@ -367,8 +367,8 @@ bool RemeshGmsh::writeProject(QString& inpFile, QString& outFile)
             << "Volume(1) = {1};\n";
         geoOut.close();
 
-        inpFile = QString::fromUtf8(d->geoFile.c_str());
-        outFile = QString::fromUtf8(d->stlFile.c_str());
+        inpFile = QString::fromStdString(d->geoFile);
+        outFile = QString::fromStdString(d->stlFile);
 
         return true;
     }

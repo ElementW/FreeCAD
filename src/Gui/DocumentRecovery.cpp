@@ -304,7 +304,7 @@ void DocumentRecovery::accept()
 
                 if (item) {
                     item->setText(1, tr("Failed to recover"));
-                    item->setToolTip(1, QString::fromUtf8(errs[i].c_str()));
+                    item->setToolTip(1, QString::fromStdString(errs[i]));
                     item->setForeground(1, QColor(170, 0, 0));
                 }
                 // write back current status
@@ -660,7 +660,7 @@ void DocumentRecovery::onDeleteSection()
     }
 
     QList<QTreeWidgetItem*> items = d_ptr->ui.treeWidget->selectedItems();
-    QDir tmp = QString::fromUtf8(App::Application::getUserCachePath().c_str());
+    QDir tmp = QString::fromStdString(App::Application::getUserCachePath());
     for (QList<QTreeWidgetItem*>::iterator it = items.begin(); it != items.end(); ++it) {
         int index = d_ptr->ui.treeWidget->indexOfTopLevelItem(*it);
         QTreeWidgetItem* item = d_ptr->ui.treeWidget->takeTopLevelItem(index);
@@ -797,7 +797,7 @@ void DocumentRecoveryHandler::checkForPreviousCrashes(
     const std::function<void(QDir&, const QList<QFileInfo>&, const QString&)>& callableFunc
 ) const
 {
-    QDir tmp = QString::fromUtf8(App::Application::getUserCachePath().c_str());
+    QDir tmp = QString::fromStdString(App::Application::getUserCachePath());
     tmp.setNameFilters(QStringList() << QStringLiteral("*.lock"));
     tmp.setFilter(QDir::Files);
 

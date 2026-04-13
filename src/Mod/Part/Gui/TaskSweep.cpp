@@ -391,7 +391,7 @@ bool SweepWidget::accept()
             QMessageBox::critical(
                 this,
                 tr("Wrong selection"),
-                tr("'%1' cannot be used as profile and path.").arg(QString::fromUtf8(spineLabel.c_str()))
+                tr("'%1' cannot be used as profile and path.").arg(QString::fromStdString(spineLabel))
             );
             return false;
         }

@@ -64,7 +64,7 @@ DlgSheetConf::DlgSheetConf(Sheet* sheet, Range range, QWidget* parent)
     ObjectIdentifier path;
     auto prop = prepare(from, to, rangeConf, path, true);
     if (prop) {
-        ui->lineEditProp->setText(QString::fromUtf8(path.toString().c_str()));
+        ui->lineEditProp->setText(QString::fromStdString(path.toString()));
         if (auto group = prop->getGroup()) {
             ui->lineEditGroup->setText(QString::fromUtf8(group));
         }

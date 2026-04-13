@@ -2126,14 +2126,14 @@ bool _checkSel(Gui::Command* cmd, std::vector<Gui::SelectionObject>& selection,
     selection = cmd->getSelection().getSelectionEx();
     if (selection.empty()) {
         // message is translated in caller
-        QMessageBox::warning(Gui::getMainWindow(), QString::fromUtf8(message.c_str()),
+        QMessageBox::warning(Gui::getMainWindow(), QString::fromStdString(message),
                              QObject::tr("Selection is empty"));
         return false;
     }
 
     objFeat = dynamic_cast<TechDraw::DrawViewPart*>(selection[0].getObject());
     if (!objFeat) {
-        QMessageBox::warning(Gui::getMainWindow(), QString::fromUtf8(message.c_str()),
+        QMessageBox::warning(Gui::getMainWindow(), QString::fromStdString(message),
                              QObject::tr("No object selected"));
         return false;
     }

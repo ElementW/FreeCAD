@@ -372,7 +372,7 @@ std::vector<QString> InputField::getHistory()
             snprintf(hist, 20, "Hist%i", i);
             tmp = _handle->GetASCII(hist, "");
             if (!tmp.empty()) {
-                res.push_back(QString::fromUtf8(tmp.c_str()));
+                res.push_back(QString::fromStdString(tmp));
             }
             else {
                 break;  // end of history reached
@@ -426,7 +426,7 @@ std::vector<QString> InputField::getSavedValues()
             snprintf(hist, 20, "Save%i", i);
             tmp = _handle->GetASCII(hist, "");
             if (!tmp.empty()) {
-                res.push_back(QString::fromUtf8(tmp.c_str()));
+                res.push_back(QString::fromStdString(tmp));
             }
             else {
                 break;  // end of history reached

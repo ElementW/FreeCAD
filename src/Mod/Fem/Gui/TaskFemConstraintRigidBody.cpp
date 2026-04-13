@@ -233,7 +233,7 @@ TaskFemConstraintRigidBody::TaskFemConstraintRigidBody(
 
     App::PropertyEnumeration* transMode = &pcConstraint->TranslationalModeX;
     for (auto item : transMode->getEnumVector()) {
-        modeList << QString::fromUtf8(item.c_str());
+        modeList << QString::fromStdString(item);
     }
     ui->cb_x_trans_mode->addItems(modeList);
     ui->cb_y_trans_mode->addItems(modeList);
@@ -245,7 +245,7 @@ TaskFemConstraintRigidBody::TaskFemConstraintRigidBody(
     modeList.clear();
     App::PropertyEnumeration* rotMode = &pcConstraint->RotationalModeX;
     for (auto item : rotMode->getEnumVector()) {
-        modeList << QString::fromUtf8(item.c_str());
+        modeList << QString::fromStdString(item);
     }
     ui->cb_x_rot_mode->addItems(modeList);
     ui->cb_y_rot_mode->addItems(modeList);

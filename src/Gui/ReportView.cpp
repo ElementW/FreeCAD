@@ -533,12 +533,12 @@ void ReportOutput::sendLog(
 
     if (!notifiername.empty()) {
         qMsg = QStringLiteral("%1: %2").arg(
-            QString::fromUtf8(notifiername.c_str()),
-            QString::fromUtf8(msg.c_str())
+            QString::fromStdString(notifiername),
+            QString::fromStdString(msg)
         );
     }
     else {
-        qMsg = QString::fromUtf8(msg.c_str());
+        qMsg = QString::fromStdString(msg);
     }
 
     // This truncates log messages that are too long

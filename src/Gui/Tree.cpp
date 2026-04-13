@@ -2691,7 +2691,7 @@ bool TreeWidget::dropInDocument(
         QMessageBox::critical(
             getMainWindow(),
             QObject::tr("Drag & drop failed"),
-            QString::fromUtf8(errMsg.c_str())
+            QString::fromStdString(errMsg)
         );
         return false;
     }
@@ -3088,7 +3088,7 @@ bool TreeWidget::dropInObject(
         QMessageBox::critical(
             getMainWindow(),
             QObject::tr("Drag & drop failed"),
-            QString::fromUtf8(errMsg.c_str())
+            QString::fromStdString(errMsg)
         );
         return false;
     }
@@ -4498,11 +4498,11 @@ bool DocumentItem::createNewItem(
         parent->insertChild(index, item);
     }
     assert(item->parent() == parent);
-    item->setText(0, QString::fromUtf8(data->label.c_str()));
+    item->setText(0, QString::fromStdString(data->label));
     if (!data->label2.empty()) {
-        item->setText(1, QString::fromUtf8(data->label2.c_str()));
+        item->setText(1, QString::fromStdString(data->label2));
     }
-    item->setText(2, QString::fromUtf8(data->internalName.c_str()));
+    item->setText(2, QString::fromStdString(data->internalName));
     if (!obj.showInTree() && !showHidden()) {
         item->setHidden(true);
     }

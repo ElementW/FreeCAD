@@ -1024,7 +1024,7 @@ int QGIView::exactFontSize(std::string fontFamily, double nominalSize)
 {
     double sceneSize = Rez::guiX(nominalSize);      //desired height in scene units
     QFont font;
-    font.setFamily(QString::fromUtf8(fontFamily.c_str()));
+    font.setFamily(QString::fromStdString(fontFamily));
     font.setPixelSize(sceneSize);
 
     QFontMetricsF fm(font);

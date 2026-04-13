@@ -80,7 +80,7 @@ TrajectorySimulate::TrajectorySimulate(
                 ui->trajectoryTable->setItem(i, 0, new QTableWidgetItem(QStringLiteral("UNDEF")));
                 break;
         }
-        ui->trajectoryTable->setItem(i, 1, new QTableWidgetItem(QString::fromUtf8(pt.Name.c_str())));
+        ui->trajectoryTable->setItem(i, 1, new QTableWidgetItem(QString::fromStdString(pt.Name)));
         if (pt.Cont) {
             ui->trajectoryTable->setItem(i, 2, new QTableWidgetItem(QStringLiteral("|")));
         }

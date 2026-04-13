@@ -969,11 +969,11 @@ QString FileDialog::restoreLocation()
                                               ->GetGroup("Preferences")
                                               ->GetGroup("General");
     std::string dir = hPath->GetASCII("FileOpenSavePath", path.c_str());
-    QFileInfo fi(QString::fromUtf8(dir.c_str()));
+    QFileInfo fi(QString::fromStdString(dir));
     if (!fi.exists()) {
         dir = path;
     }
-    return QString::fromUtf8(dir.c_str());
+    return QString::fromStdString(dir);
 }
 
 /*!
@@ -1548,7 +1548,7 @@ SelectModule::Dict SelectModule::exportHandler(const QStringList& fileNames, con
 
         fileExtension[ext].push_back(fileName);
         for (const auto& filter : filters) {
-            filetypeHandler[ext][QString::fromUtf8(filter.first.c_str())] = QString::fromLatin1(
+            filetypeHandler[ext][QString::fromStdString(filter.first)] = QString::fromLatin1(
                 filter.second.c_str()
             );
         }
@@ -1618,7 +1618,7 @@ SelectModule::Dict SelectModule::importHandler(const QStringList& fileNames, con
 
         fileExtension[ext].push_back(fileName);
         for (const auto& filter : filters) {
-            filetypeHandler[ext][QString::fromUtf8(filter.first.c_str())] = QString::fromLatin1(
+            filetypeHandler[ext][QString::fromStdString(filter.first)] = QString::fromLatin1(
                 filter.second.c_str()
             );
         }

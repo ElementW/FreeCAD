@@ -489,14 +489,14 @@ void QGIDatumLabel::setToleranceString()
         m_tolTextUnder->hide();
     }
     else {
-        m_tolTextUnder->setPlainText(QString::fromUtf8(labelTexts.first.c_str()));
+        m_tolTextUnder->setPlainText(QString::fromStdString(labelTexts.first));
         m_tolTextUnder->show();
     }
     if (labelTexts.second.empty()) {
         m_tolTextOver->hide();
     }
     else {
-        m_tolTextOver->setPlainText(QString::fromUtf8(labelTexts.second.c_str()));
+        m_tolTextOver->setPlainText(QString::fromStdString(labelTexts.second));
         m_tolTextOver->show();
     }
 

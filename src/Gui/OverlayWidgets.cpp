@@ -810,7 +810,7 @@ void OverlayTabWidget::restore(ParameterGrp::handle handle)
     std::string widgets
         = handle->GetASCII("Widgets", getDockArea() == Qt::RightDockWidgetArea ? "Tasks," : "");
 
-    for (auto& name : QString::fromUtf8(widgets.c_str()).split(QLatin1Char(','))) {
+    for (auto& name : QString::fromStdString(widgets).split(QLatin1Char(','))) {
         if (name.isEmpty()) {
             continue;
         }
@@ -880,7 +880,7 @@ void OverlayTabWidget::restore(ParameterGrp::handle handle)
     std::string savedSizes = handle->GetASCII("Sizes", "");
     QList<int> sizes;
     int idx = 0;
-    for (auto& size : QString::fromUtf8(savedSizes.c_str()).split(QLatin1Char(','))) {
+    for (auto& size : QString::fromStdString(savedSizes).split(QLatin1Char(','))) {
         sizes.append(size.toInt());
         _sizemap[dockWidget(idx++)] = sizes.back();
     }

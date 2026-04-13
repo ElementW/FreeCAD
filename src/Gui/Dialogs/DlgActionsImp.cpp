@@ -456,7 +456,7 @@ void IconDialog::onAddIconPath()
     std::vector<std::string> paths = group->GetASCIIs("CustomPath");
     QStringList pathList;
     for (const auto& path : paths) {
-        pathList << QString::fromUtf8(path.c_str());
+        pathList << QString::fromStdString(path);
     }
 
     IconFolders dlg(pathList, this);

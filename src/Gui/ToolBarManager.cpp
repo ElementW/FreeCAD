@@ -694,7 +694,7 @@ void ToolBarManager::setup(ToolBarItem* toolBarItems)
 
     for (ToolBarItem* it : items) {
         // search for the toolbar
-        QString name = QString::fromUtf8(it->command().c_str());
+        QString name = QString::fromStdString(it->command());
         this->toolbarNames << name;
         ToolBar* toolbar = findToolBar(toolbars, name);
         std::string toolbarName = it->command();

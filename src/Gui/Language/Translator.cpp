@@ -428,9 +428,9 @@ QStringList Translator::directories() const
     if (!dir.empty()) {
         list.push_back(QString::fromStdString(dir));
     }
-    QDir home(QString::fromUtf8(App::Application::getUserAppDataDir().c_str()));
+    QDir home(QString::fromStdString(App::Application::getUserAppDataDir()));
     list.push_back(home.absoluteFilePath(QStringLiteral("translations")));
-    QDir resc(QString::fromUtf8(App::Application::getResourceDir().c_str()));
+    QDir resc(QString::fromStdString(App::Application::getResourceDir()));
     list.push_back(resc.absoluteFilePath(QStringLiteral("translations")));
     list.push_back(QStringLiteral(":/translations"));
 

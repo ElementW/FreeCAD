@@ -785,7 +785,7 @@ void Application::open(const char* FileName, const char* Module)
             }
 
             // the original file name is required
-            QString filename = QString::fromUtf8(File.filePath().c_str());
+            QString filename = QString::fromStdString(File.filePath());
             getMainWindow()->appendRecentFile(filename);
             FileDialog::setWorkingDirectory(filename);
         }
@@ -882,7 +882,7 @@ void Application::importFrom(const char* FileName, const char* DocName, const ch
             }
 
             // the original file name is required
-            QString filename = QString::fromUtf8(File.filePath().c_str());
+            QString filename = QString::fromStdString(File.filePath());
             auto parameterGroup = App::GetApplication().GetParameterGroupByPath(
                 "User parameter:BaseApp/Preferences/General"
             );
@@ -970,7 +970,7 @@ void Application::exportTo(const char* FileName, const char* DocName, const char
                 std::map<std::string, std::string> importMap
                     = App::GetApplication().getImportFilters(te.c_str());
                 if (!importMap.empty()) {
-                    getMainWindow()->appendRecentFile(QString::fromUtf8(File.filePath().c_str()));
+                    getMainWindow()->appendRecentFile(QString::fromStdString(File.filePath()));
                 }
             }
             // allow exporters to pass _objs__ to submodules before deleting it
@@ -2022,7 +2022,7 @@ QPixmap Application::workbenchIcon(const QString& wb) const
                 }
                 else {
                     // is it a file name...
-                    QString file = QString::fromUtf8(content.c_str());
+                    QString file = QString::fromStdString(content);
                     icon.load(file);
                     if (icon.isNull()) {
                         // ... or the name of another icon?
@@ -2065,7 +2065,7 @@ QString Application::workbenchToolTip(const QString& wb) const
             Py::Object member = handler.getAttr(std::string("ToolTip"));
             if (member.isString()) {
                 Py::String tip(member);
-                return QString::fromUtf8(tip.as_std_string("utf-8").c_str());
+                return QString::fromStdString(tip.as_std_string("utf-8"));
             }
         }
         catch (Py::Exception& e) {
@@ -2090,7 +2090,7 @@ QString Application::workbenchMenuText(const QString& wb) const
             Py::Object member = handler.getAttr(std::string("MenuText"));
             if (member.isString()) {
                 Py::String tip(member);
-                return QString::fromUtf8(tip.as_std_string("utf-8").c_str());
+                return QString::fromStdString(tip.as_std_string("utf-8"));
             }
         }
         catch (Py::Exception& e) {
@@ -2468,7 +2468,7 @@ void setAppNameAndIcon()
     // set application icon and window title
     auto it = cfg.find("Application");
     if (it != cfg.end()) {
-        QApplication::setApplicationName(QString::fromUtf8(it->second.c_str()));
+        QApplication::setApplicationName(QString::fromStdString(it->second));
     }
     else {
         QApplication::setApplicationName(QString::fromStdString(App::Application::getExecutableName()));

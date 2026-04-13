@@ -2822,7 +2822,7 @@ void StatusBarObserver::sendLog(
     }
 
     // Send the event to the main window to allow thread-safety. Qt will delete it when done.
-    auto ev = new CustomMessageEvent(messageType, QString::fromUtf8(msg.c_str()));
+    auto ev = new CustomMessageEvent(messageType, QString::fromStdString(msg));
     QApplication::postEvent(getMainWindow(), ev);
 }
 

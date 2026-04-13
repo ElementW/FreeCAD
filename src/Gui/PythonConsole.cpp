@@ -106,8 +106,8 @@ struct PythonConsoleP
     {
         type = Normal;
         interactive = false;
-        historyFile = QString::fromUtf8(
-            (App::Application::getUserAppDataDir() + "PythonHistory.log").c_str()
+        historyFile = QString::fromStdString(
+            App::Application::getUserAppDataDir() + "PythonHistory.log"
         );
     }
 };
@@ -1396,11 +1396,11 @@ void PythonConsole::onClearConsole()
 
 void PythonConsole::onSaveHistoryAs()
 {
-    QString cMacroPath = QString::fromUtf8(
-        getDefaultParameter()
-            ->GetGroup("Macro")
-            ->GetASCII("MacroPath", App::Application::getUserMacroDir().c_str())
-            .c_str()
+    QString cMacroPath = QString::fromStdString(
+        getDefaultParameter()->GetGroup("Macro")->GetASCII(
+            "MacroPath",
+            App::Application::getUserMacroDir().c_str()
+        )
     );
     QString fn = FileDialog::getSaveFileName(
         this,

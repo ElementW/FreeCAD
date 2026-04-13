@@ -145,15 +145,15 @@ void StartupProcess::setStyleSheetPaths()
 {
     // setup the search paths for Qt style sheets
     QStringList qssPaths;
-    qssPaths << QString::fromUtf8((App::Application::getUserAppDataDir() + "Gui/Stylesheets/").c_str())
-             << QString::fromUtf8((App::Application::getResourceDir() + "Gui/Stylesheets/").c_str())
+    qssPaths << QString::fromStdString(App::Application::getUserAppDataDir() + "Gui/Stylesheets/")
+             << QString::fromStdString(App::Application::getResourceDir() + "Gui/Stylesheets/")
              << QStringLiteral(":/stylesheets");
     QDir::setSearchPaths(QStringLiteral("qss"), qssPaths);
     // setup the search paths for Qt overlay style sheets
     QStringList qssOverlayPaths;
-    qssOverlayPaths << QString::fromUtf8(
-        (App::Application::getUserAppDataDir() + "Gui/Stylesheets/overlay").c_str()
-    ) << QString::fromUtf8((App::Application::getResourceDir() + "Gui/Stylesheets/overlay").c_str());
+    qssOverlayPaths << QString::fromStdString(
+        App::Application::getUserAppDataDir() + "Gui/Stylesheets/overlay"
+    ) << QString::fromStdString(App::Application::getResourceDir() + "Gui/Stylesheets/overlay");
     QDir::setSearchPaths(QStringLiteral("overlay"), qssOverlayPaths);
 }
 
@@ -161,8 +161,8 @@ void StartupProcess::setImagePaths()
 {
     // set search paths for images
     QStringList imagePaths;
-    imagePaths << QString::fromUtf8((App::Application::getUserAppDataDir() + "Gui/images").c_str())
-               << QString::fromUtf8((App::Application::getUserAppDataDir() + "pixmaps").c_str())
+    imagePaths << QString::fromStdString(App::Application::getUserAppDataDir() + "Gui/images")
+               << QString::fromStdString(App::Application::getUserAppDataDir() + "pixmaps")
                << QStringLiteral(":/icons");
     QDir::setSearchPaths(QStringLiteral("images"), imagePaths);
 }
@@ -186,7 +186,7 @@ void StartupProcess::setThemePaths()
     std::string searchpath = hTheme->GetASCII("SearchPath");
     if (!searchpath.empty()) {
         QStringList searchPaths = QIcon::themeSearchPaths();
-        searchPaths.prepend(QString::fromUtf8(searchpath.c_str()));
+        searchPaths.prepend(QString::fromStdString(searchpath));
         QIcon::setThemeSearchPaths(searchPaths);
     }
 
@@ -411,12 +411,12 @@ void StartupPostProcess::setBranding()
     std::map<std::string, std::string>::const_iterator it;
     it = cfg.find("WindowTitle");
     if (it != cfg.end()) {
-        QString title = QString::fromUtf8(it->second.c_str());
+        QString title = QString::fromStdString(it->second);
         mainWindow->setWindowTitle(title);
     }
     it = cfg.find("WindowIcon");
     if (it != cfg.end()) {
-        QString path = QString::fromUtf8(it->second.c_str());
+        QString path = QString::fromStdString(it->second);
         if (QDir(path).isRelative()) {
             path = QFileInfo(QDir(home), path).absoluteFilePath();
         }
@@ -424,7 +424,7 @@ void StartupPostProcess::setBranding()
     }
     it = cfg.find("ProgramLogo");
     if (it != cfg.end()) {
-        QString path = QString::fromUtf8(it->second.c_str());
+        QString path = QString::fromStdString(it->second);
         if (QDir(path).isRelative()) {
             path = QFileInfo(QDir(home), path).absoluteFilePath();
         }

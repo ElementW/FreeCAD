@@ -89,7 +89,7 @@ PyObject* MaterialManagerPy::getMaterialByPath(PyObject* args)
     if (!libPath.isEmpty()) {
         try {
             auto material =
-                getMaterialManagerPtr()->getMaterialByPath(QString::fromUtf8(utf8Path.c_str()),
+                getMaterialManagerPtr()->getMaterialByPath(QString::fromStdString(utf8Path),
                                                            libPath);
             return new MaterialPy(new Material(*material));
         }
@@ -105,7 +105,7 @@ PyObject* MaterialManagerPy::getMaterialByPath(PyObject* args)
 
     try {
         auto material =
-            getMaterialManagerPtr()->getMaterialByPath(QString::fromUtf8(utf8Path.c_str()));
+            getMaterialManagerPtr()->getMaterialByPath(QString::fromStdString(utf8Path));
         return new MaterialPy(new Material(*material));
     }
     catch (const MaterialNotFound&) {

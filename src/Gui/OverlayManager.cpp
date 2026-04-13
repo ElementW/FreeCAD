@@ -148,10 +148,8 @@ public:
 private:
     QString detectOverlayStyleSheetFileName() const
     {
-        QString mainStyleSheet = QString::fromUtf8(handle->GetASCII("StyleSheet").c_str());
-        QString overlayStyleSheet = QString::fromUtf8(
-            handle->GetASCII("OverlayActiveStyleSheet").c_str()
-        );
+        QString mainStyleSheet = QString::fromStdString(handle->GetASCII("StyleSheet"));
+        QString overlayStyleSheet = QString::fromStdString(handle->GetASCII("OverlayActiveStyleSheet"));
 
         if (overlayStyleSheet.isEmpty()) {
             // User did not choose any stylesheet, we need to choose one based on main stylesheet

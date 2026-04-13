@@ -277,7 +277,7 @@ void QGIWeldSymbol::drawTailText()
 
     m_tailText->setFont(m_font);
     m_tailText->setPlainText(
-                QString::fromUtf8(tText.c_str()));
+                QString::fromStdString(tText));
     m_tailText->setColor(getCurrentColor());
     m_tailText->setZValue(ZVALUE::DIMENSION);
 

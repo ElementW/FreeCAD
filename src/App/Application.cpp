@@ -740,7 +740,7 @@ Document *Application::getDocumentByPath(const char *path, PathMatchMode checkCa
             if (checkCanonical == PathMatchMode::MatchCanonical) {
                 return v.second;
             }
-            const bool samePath = (canonicalPath == QString::fromUtf8(filepath.c_str()));
+            const bool samePath = (canonicalPath == QString::fromStdString(filepath));
             FC_WARN("Identical physical path '" << canonicalPath.toUtf8().constData() << "'\n"
                     << (samePath?"":"  for file '") << (samePath?"":filepath.c_str()) << (samePath?"":"'\n")
                     << "  with existing document '" << v.second->Label.getValue()
@@ -2540,7 +2540,7 @@ void Application::initConfig(int argc, char ** argv)
 
     // Now it's time to read-in the file branding.xml if it exists
     Branding brand;
-    QString binDir = QString::fromUtf8((mConfig["AppHomePath"] + "bin").c_str());
+    QString binDir = QString::fromStdString(mConfig["AppHomePath"] + "bin");
     QFileInfo fi(binDir, QStringLiteral("branding.xml"));
     if (fi.exists() && brand.readFile(fi.absoluteFilePath())) {
         Branding::XmlConfig cfg = brand.getUserDefines();
@@ -3018,9 +3018,9 @@ void Application::LoadParameters()
             // this will be used.
             const auto it = mConfig.find("UserParameterTemplate");
             if (it != mConfig.end()) {
-                QString path = QString::fromUtf8(it->second.c_str());
+                QString path = QString::fromStdString(it->second);
                 if (QDir(path).isRelative()) {
-                    const QString home = QString::fromUtf8(mConfig["AppHomePath"].c_str());
+                    const QString home = QString::fromStdString(mConfig["AppHomePath"]);
                     path = QFileInfo(QDir(home), path).absoluteFilePath();
                 }
                 const QFileInfo fi(path);

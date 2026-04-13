@@ -66,7 +66,7 @@ BitmapFactoryInst& BitmapFactoryInst::instance()
         it = App::GetApplication().Config().find("ProgramIcons");
         if (it != App::GetApplication().Config().end()) {
             QString home = QString::fromStdString(App::Application::getHomePath());
-            QString path = QString::fromUtf8(it->second.c_str());
+            QString path = QString::fromStdString(it->second);
             if (QDir(path).isRelative()) {
                 path = QFileInfo(QDir(home), path).absoluteFilePath();
             }
@@ -113,7 +113,7 @@ void BitmapFactoryInst::restoreCustomPaths()
     );
     std::vector<std::string> paths = group->GetASCIIs("CustomPath");
     for (auto& path : paths) {
-        addPath(QString::fromUtf8(path.c_str()));
+        addPath(QString::fromStdString(path));
     }
 }
 
@@ -370,7 +370,7 @@ QStringList BitmapFactoryInst::pixmapNames() const
     QStringList names;
     for (QMap<std::string, QPixmap>::Iterator It = d->xpmCache.begin(); It != d->xpmCache.end();
          ++It) {
-        QString item = QString::fromUtf8(It.key().c_str());
+        QString item = QString::fromStdString(It.key());
         if (!names.contains(item)) {
             names << item;
         }

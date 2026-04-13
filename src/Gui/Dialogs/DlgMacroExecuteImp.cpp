@@ -115,7 +115,7 @@ DlgMacroExecuteImp::DlgMacroExecuteImp(QWidget* parent, Qt::WindowFlags fl)
             "MacroPath",
             App::Application::getUserMacroDir().c_str()
         );
-        this->macroPath = QString::fromUtf8(path.c_str());
+        this->macroPath = QString::fromStdString(path);
         ui->fileChooser->setFileName(this->macroPath);
     }
 

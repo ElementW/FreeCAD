@@ -1577,7 +1577,7 @@ bool ExpLineEdit::apply(const std::string& propName)
 
     if (!ExpressionBinding::apply(propName)) {
         if (!autoClose) {
-            QString val = QString::fromUtf8(Base::Interpreter().strToPython(text().toUtf8()).c_str());
+            QString val = QString::fromStdString(Base::Interpreter().strToPython(text().toUtf8()));
             Gui::Command::doCommand(
                 Gui::Command::Doc,
                 "%s = \"%s\"",
@@ -1626,11 +1626,11 @@ void ExpLineEdit::onChange()
         std::unique_ptr<Expression> result(getExpression()->eval());
         if (result->isDerivedFrom<App::StringExpression>()) {
             setText(
-                QString::fromUtf8(static_cast<App::StringExpression*>(result.get())->getText().c_str())
+                QString::fromStdString(static_cast<App::StringExpression*>(result.get())->getText())
             );
         }
         else {
-            setText(QString::fromUtf8(result->toString().c_str()));
+            setText(QString::fromStdString(result->toString()));
         }
         setReadOnly(true);
         iconLabel->setPixmap(getIcon(":/icons/bound-expression.svg", QSize(iconHeight, iconHeight)));

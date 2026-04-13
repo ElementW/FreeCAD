@@ -413,7 +413,7 @@ QString PropertyItem::asSequence(const Py::Object& pyobj) const
         ss << "...";
     }
     ss << ']';
-    return QString::fromUtf8(ss.str().c_str());
+    return QString::fromStdString(ss.str());
 }
 
 QString PropertyItem::asMapping(const Py::Object& pyobj) const
@@ -438,7 +438,7 @@ QString PropertyItem::asMapping(const Py::Object& pyobj) const
         ss << "...";
     }
     ss << '}';
-    return QString::fromUtf8(ss.str().c_str());
+    return QString::fromStdString(ss.str());
 }
 
 QString PropertyItem::toString(const Py::Object& pyobj) const
@@ -486,7 +486,7 @@ QString PropertyItem::toString(const QVariant& prop) const
         ss << "ERR!";
     }
 
-    return {QString::fromUtf8(ss.str().c_str())};
+    return {QString::fromStdString(ss.str())};
 }
 
 QVariant PropertyItem::value(const App::Property* /*prop*/) const
@@ -837,7 +837,7 @@ QVariant PropertyStringItem::value(const App::Property* prop) const
     assert(prop && prop->isDerivedFrom<App::PropertyString>());
 
     std::string value = static_cast<const App::PropertyString*>(prop)->getValue();
-    return {QString::fromUtf8(value.c_str())};
+    return {QString::fromStdString(value)};
 }
 
 void PropertyStringItem::setValue(const QVariant& value)
@@ -897,7 +897,7 @@ QVariant PropertyFontItem::value(const App::Property* prop) const
     assert(prop && prop->isDerivedFrom<App::PropertyFont>());
 
     std::string value = static_cast<const App::PropertyFont*>(prop)->getValue();
-    return {QString::fromUtf8(value.c_str())};
+    return {QString::fromStdString(value)};
 }
 
 void PropertyFontItem::setValue(const QVariant& value)
@@ -3176,13 +3176,13 @@ QStringList PropertyEnumItem::getCommonModes() const
             const std::vector<std::string>& value = prop->getEnumVector();
             if (it == items.begin()) {
                 for (const auto& jt : value) {
-                    commonModes << QString::fromUtf8(jt.c_str());
+                    commonModes << QString::fromStdString(jt);
                 }
             }
             else {
                 for (const auto& jt : value) {
-                    if (commonModes.contains(QString::fromUtf8(jt.c_str()))) {
-                        modes << QString::fromUtf8(jt.c_str());
+                    if (commonModes.contains(QString::fromStdString(jt))) {
+                        modes << QString::fromStdString(jt);
                     }
                 }
 
@@ -3305,7 +3305,7 @@ QVariant PropertyStringListItem::value(const App::Property* prop) const
     const std::vector<std::string>& value
         = (static_cast<const App::PropertyStringList*>(prop))->getValues();
     for (const auto& jt : value) {
-        list << QString::fromUtf8(jt.c_str());
+        list << QString::fromStdString(jt);
     }
 
     return {list};
@@ -4492,7 +4492,7 @@ QVariant PropertyFileItem::value(const App::Property* prop) const
     assert(prop && prop->isDerivedFrom<App::PropertyFile>());
 
     std::string value = static_cast<const App::PropertyFile*>(prop)->getValue();
-    return {QString::fromUtf8(value.c_str())};
+    return {QString::fromStdString(value)};
 }
 
 void PropertyFileItem::setValue(const QVariant& value)
@@ -4546,7 +4546,7 @@ QVariant PropertyPathItem::value(const App::Property* prop) const
     assert(prop && prop->isDerivedFrom<App::PropertyPath>());
 
     std::string value = static_cast<const App::PropertyPath*>(prop)->getValue().string();
-    return {QString::fromUtf8(value.c_str())};
+    return {QString::fromStdString(value)};
 }
 
 void PropertyPathItem::setValue(const QVariant& value)
@@ -4594,7 +4594,7 @@ QVariant PropertyTransientFileItem::value(const App::Property* prop) const
     assert(prop && prop->isDerivedFrom<App::PropertyFileIncluded>());
 
     std::string value = static_cast<const App::PropertyFileIncluded*>(prop)->getValue();
-    return {QString::fromUtf8(value.c_str())};
+    return {QString::fromStdString(value)};
 }
 
 void PropertyTransientFileItem::setValue(const QVariant& value)
@@ -4726,7 +4726,7 @@ void LinkLabel::updatePropertyLink()
                        .arg(
                            QString::fromStdString(sobj.getDocumentName()),
                            QString::fromStdString(sobj.getObjectName()),
-                           QString::fromUtf8(sobj.getSubName().c_str()),
+                           QString::fromStdString(sobj.getSubName()),
                            linkcolor,
                            DlgPropertyLink::formatObject(
                                owner->getDocument(),

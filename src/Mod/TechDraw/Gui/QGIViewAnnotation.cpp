@@ -163,7 +163,7 @@ void QGIViewAnnotation::drawAnnotation()
 
     prepareGeometryChange();
     m_textItem->setTextWidth(Rez::guiX(viewAnno->MaxWidth.getValue()));
-    QString qs = QString::fromUtf8(ss.str().c_str());
+    QString qs = QString::fromStdString(ss.str());
     m_textItem->setHtml(qs);
     m_textItem->centerAt(0., 0.);
 }

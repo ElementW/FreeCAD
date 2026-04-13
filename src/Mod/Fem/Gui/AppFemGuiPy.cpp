@@ -136,7 +136,7 @@ private:
         std::string EncodedName = std::string(Name);
         PyMem_Free(Name);
 
-        QString fileName = QString::fromUtf8(EncodedName.c_str());
+        QString fileName = QString::fromStdString(EncodedName);
         QFileInfo fi;
         fi.setFile(fileName);
         QString ext = fi.completeSuffix().toLower();

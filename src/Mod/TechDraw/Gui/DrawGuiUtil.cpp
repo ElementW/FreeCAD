@@ -97,7 +97,7 @@ void DrawGuiUtil::loadArrowBox(QComboBox* qcb)
     for (; i < ArrowPropEnum::ArrowCount; i++) {
         qcb->addItem(
             QCoreApplication::translate("ArrowPropEnum", ArrowPropEnum::ArrowTypeEnums[i]));
-        QIcon itemIcon(QString::fromUtf8(ArrowPropEnum::ArrowTypeIcons[i].c_str()));
+        QIcon itemIcon(QString::fromStdString(ArrowPropEnum::ArrowTypeIcons[i]));
         if (isStyleSheetDark(curStyleSheet)) {
             QColor textColor = Preferences::lightTextColor().asValue<QColor>();
             QSize iconSize(48, 48);
@@ -123,7 +123,7 @@ void DrawGuiUtil::loadBalloonShapeBox(QComboBox* qballooncb)
     for (; i < BalloonPropEnum::BalloonCount; i++) {
         qballooncb->addItem(
             QCoreApplication::translate("BalloonPropEnum", BalloonPropEnum::BalloonTypeEnums[i]));
-        QIcon itemIcon(QString::fromUtf8(BalloonPropEnum::BalloonTypeIcons[i].c_str()));
+        QIcon itemIcon(QString::fromStdString(BalloonPropEnum::BalloonTypeIcons[i]));
         if (isStyleSheetDark(curStyleSheet)) {
             QColor textColor = Preferences::lightTextColor().asValue<QColor>();
             QSize iconSize(48, 48);
@@ -148,7 +148,7 @@ void DrawGuiUtil::loadMattingStyleBox(QComboBox* qmattingcb)
     for (; i < MattingPropEnum::MattingCount; i++) {
         qmattingcb->addItem(
             QCoreApplication::translate("MattingPropEnum", MattingPropEnum::MattingTypeEnums[i]));
-        QIcon itemIcon(QString::fromUtf8(MattingPropEnum::MattingTypeIcons[i].c_str()));
+        QIcon itemIcon(QString::fromStdString(MattingPropEnum::MattingTypeIcons[i]));
         if (isStyleSheetDark(curStyleSheet)) {
             QColor textColor = Preferences::lightTextColor().asValue<QColor>();
             QSize iconSize(48, 48);

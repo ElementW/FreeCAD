@@ -503,7 +503,7 @@ void DlgExtrusion::apply()
             QMessageBox::critical(
                 this,
                 windowTitle(),
-                tr("The document '%1' doesn't exist.").arg(QString::fromUtf8(this->label.c_str()))
+                tr("The document '%1' doesn't exist.").arg(QString::fromStdString(this->label))
             );
             return;
         }

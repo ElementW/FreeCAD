@@ -814,7 +814,7 @@ void SelectionMenu::buildMenuStructure(
             continue;
         }
 
-        subMenuInfo.menu = addMenu(QString::fromUtf8(elementType.c_str()));
+        subMenuInfo.menu = addMenu(QString::fromStdString(elementType));
 
         // for "Object" type, and "Other", always use flat menu (no submenus for individual objects)
         bool groupMenu = (elementType != "Object" && elementType != "Other")
@@ -1133,9 +1133,9 @@ void SelectionMenu::createFlatMenu(
 {
     for (int idx : elementInfo.indices) {
         const auto& sel = selections[idx];
-        QString text = QString::fromUtf8(label.c_str());
+        QString text = QString::fromStdString(label);
         if (!sel.element.empty()) {
-            text += QStringLiteral(" (%1)").arg(QString::fromUtf8(sel.element.c_str()));
+            text += QStringLiteral(" (%1)").arg(QString::fromStdString(sel.element));
         }
         else if (!sel.subName.empty() && elementType != "Object" && elementType != "Other") {
             // For link objects, extract element name from subName
@@ -1143,7 +1143,7 @@ void SelectionMenu::createFlatMenu(
             std::string subName = sel.subName;
             std::size_t lastDot = subName.find_last_of('.');
             if (lastDot != std::string::npos && lastDot + 1 < subName.length()) {
-                QString elementName = QString::fromUtf8(subName.substr(lastDot + 1).c_str());
+                QString elementName = QString::fromStdString(subName.substr(lastDot + 1));
                 text += QStringLiteral(" (%1)").arg(elementName);
             }
         }
@@ -1163,14 +1163,14 @@ void SelectionMenu::createGroupedMenu(
 )
 {
     if (!elementInfo.menu) {
-        elementInfo.menu = parentMenu->addMenu(elementInfo.icon, QString::fromUtf8(label.c_str()));
+        elementInfo.menu = parentMenu->addMenu(elementInfo.icon, QString::fromStdString(label));
     }
 
     for (int idx : elementInfo.indices) {
         const auto& sel = selections[idx];
         QString text;
         if (!sel.element.empty()) {
-            text = QString::fromUtf8(sel.element.c_str());
+            text = QString::fromStdString(sel.element);
         }
         else if (elementType == "Object" && !sel.subName.empty() && sel.subName.back() == '.') {
             text = tr("Whole Object");
@@ -1181,14 +1181,14 @@ void SelectionMenu::createGroupedMenu(
             std::string subName = sel.subName;
             std::size_t lastDot = subName.find_last_of('.');
             if (lastDot != std::string::npos && lastDot + 1 < subName.length()) {
-                text = QString::fromUtf8(subName.substr(lastDot + 1).c_str());
+                text = QString::fromStdString(subName.substr(lastDot + 1));
             }
             else {
-                text = QString::fromUtf8(sel.subName.c_str());
+                text = QString::fromStdString(sel.subName);
             }
         }
         else {
-            text = QString::fromUtf8(sel.subName.c_str());
+            text = QString::fromStdString(sel.subName);
         }
 
         QAction* action = elementInfo.menu->addAction(text);

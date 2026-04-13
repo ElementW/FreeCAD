@@ -225,7 +225,7 @@ void DlgCustomToolbars::importCustomToolbars(const QByteArray& name)
                 item->setSizeHint(0, QSize(32, 32));
             }
             else if (it2.first == "Name") {
-                QString toolbarName = QString::fromUtf8(it2.second.c_str());
+                QString toolbarName = QString::fromStdString(it2.second);
                 toplevel->setText(0, toolbarName);
             }
             else {

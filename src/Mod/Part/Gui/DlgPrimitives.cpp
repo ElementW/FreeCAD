@@ -189,7 +189,7 @@ public:
         Handle(Geom_TrimmedCurve) trim = arc.Value();
         Handle(Geom_Circle) circle = Handle(Geom_Circle)::DownCast(trim->BasisCurve());
 
-        QString name = QString::fromUtf8(doc->getUniqueObjectName("Circle").c_str());
+        QString name = QString::fromStdString(doc->getUniqueObjectName("Circle"));
         return QStringLiteral(
                    "App.ActiveDocument.addObject(\"Part::Circle\",\"%1\")\n"
                    "App.ActiveDocument.%1.Radius=%2\n"
@@ -2301,7 +2301,7 @@ void DlgPrimitives::tryCreatePrimitive(const QString& placement)
     }
 
     std::shared_ptr<AbstractPrimitive> primitive = getPrimitive(ui->PrimitiveTypeCB->currentIndex());
-    name = QString::fromUtf8(doc->getUniqueObjectName(primitive->getDefaultName()).c_str());
+    name = QString::fromStdString(doc->getUniqueObjectName(primitive->getDefaultName()));
     cmd = primitive->create(name, placement);
 
     // Execute the Python block

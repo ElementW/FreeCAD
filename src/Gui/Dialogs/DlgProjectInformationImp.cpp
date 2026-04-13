@@ -84,7 +84,7 @@ DlgProjectInformationImp::DlgProjectInformationImp(App::Document* doc, QWidget* 
     ui->setupUi(this);
     ui->lineEditName->setText(QString::fromUtf8(doc->Label.getValue()));
     ui->lineEditPath->setText(QString::fromUtf8(doc->FileName.getValue()));
-    ui->lineEditUuid->setText(QString::fromUtf8(doc->Uid.getValueStr().c_str()));
+    ui->lineEditUuid->setText(QString::fromStdString(doc->Uid.getValueStr()));
     ui->lineEditProgramVersion->setText(QString::fromUtf8(doc->getProgramVersion()));
     ui->lineEditCreator->setText(QString::fromUtf8(doc->CreatedBy.getValue()));
     ui->lineEditDate->setText(convertISODate(doc->CreationDate.getValue()));

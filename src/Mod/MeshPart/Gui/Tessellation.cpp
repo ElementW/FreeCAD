@@ -318,8 +318,8 @@ void Tessellation::process(int method, App::Document* doc, const std::list<App::
 
         doc->openTransaction("Meshing");
         for (auto& info : shapeObjects) {
-            QString subname = QString::fromUtf8(info.getSubName().c_str());
-            QString objname = QString::fromUtf8(info.getObjectName().c_str());
+            QString subname = QString::fromStdString(info.getSubName());
+            QString objname = QString::fromStdString(info.getObjectName());
 
             auto obj = info.getObject();
             if (!obj) {
@@ -644,8 +644,8 @@ bool Mesh2ShapeGmsh::writeProject(QString& inpFile, QString& outFile)
                    << "Coherence Mesh; // Remove duplicate vertices\n";
             geoOut.close();
 
-            inpFile = QString::fromUtf8(d->geoFile.c_str());
-            outFile = QString::fromUtf8(d->stlFile.c_str());
+            inpFile = QString::fromStdString(d->geoFile);
+            outFile = QString::fromStdString(d->stlFile);
 
             return true;
         }

@@ -2118,7 +2118,7 @@ protected:
                 }
             }
         }
-        QApplication::clipboard()->setText(QString::fromUtf8(ss.str().c_str()));
+        QApplication::clipboard()->setText(QString::fromStdString(ss.str()));
     }
 
     void pasteExpressions()

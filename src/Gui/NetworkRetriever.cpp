@@ -489,7 +489,7 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
         ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath(
             "User parameter:BaseApp/Preferences/OnlineHelp"
         );
-        path = QString::fromUtf8(hURLGrp->GetASCII("DownloadLocation", path.toLatin1()).c_str());
+        path = QString::fromStdString(hURLGrp->GetASCII("DownloadLocation", path.toLatin1()));
 
         while (loop > 0) {
             loop--;

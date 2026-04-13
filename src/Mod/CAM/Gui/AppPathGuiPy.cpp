@@ -84,12 +84,12 @@ private:
         try {
             std::string path = App::Application::getHomePath();
             path += "Mod/CAM/Path/Post/scripts/";
-            QDir dir1(QString::fromUtf8(path.c_str()), QStringLiteral("*_pre.py"));
+            QDir dir1(QString::fromStdString(path), QStringLiteral("*_pre.py"));
             std::string cMacroPath
                 = App::GetApplication()
                       .GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")
                       ->GetASCII("MacroPath", App::Application::getUserMacroDir().c_str());
-            QDir dir2(QString::fromUtf8(cMacroPath.c_str()), QStringLiteral("*_pre.py"));
+            QDir dir2(QString::fromStdString(cMacroPath), QStringLiteral("*_pre.py"));
             QFileInfoList list = dir1.entryInfoList();
             list << dir2.entryInfoList();
             std::vector<std::string> scripts;
@@ -157,12 +157,12 @@ private:
         try {
             std::string path = App::Application::getHomePath();
             path += "Mod/CAM/Path/Post/scripts/";
-            QDir dir1(QString::fromUtf8(path.c_str()), QStringLiteral("*_pre.py"));
+            QDir dir1(QString::fromStdString(path), QStringLiteral("*_pre.py"));
             std::string cMacroPath
                 = App::GetApplication()
                       .GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")
                       ->GetASCII("MacroPath", App::Application::getUserMacroDir().c_str());
-            QDir dir2(QString::fromUtf8(cMacroPath.c_str()), QStringLiteral("*_pre.py"));
+            QDir dir2(QString::fromStdString(cMacroPath), QStringLiteral("*_pre.py"));
             QFileInfoList list = dir1.entryInfoList();
             list << dir2.entryInfoList();
             std::vector<std::string> scripts;
@@ -242,12 +242,12 @@ private:
 
             std::string path = App::Application::getHomePath();
             path += "Mod/CAM/Path/Post/scripts/";
-            QDir dir1(QString::fromUtf8(path.c_str()), QStringLiteral("*_post.py"));
+            QDir dir1(QString::fromStdString(path), QStringLiteral("*_post.py"));
             std::string cMacroPath
                 = App::GetApplication()
                       .GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro")
                       ->GetASCII("MacroPath", App::Application::getUserMacroDir().c_str());
-            QDir dir2(QString::fromUtf8(cMacroPath.c_str()), QStringLiteral("*_post.py"));
+            QDir dir2(QString::fromStdString(cMacroPath), QStringLiteral("*_post.py"));
             QFileInfoList list = dir1.entryInfoList();
             list << dir2.entryInfoList();
             std::vector<std::string> scripts;

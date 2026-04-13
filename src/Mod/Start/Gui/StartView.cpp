@@ -529,13 +529,13 @@ void StartView::retranslateUi()
     std::string customFolder(hGrp->GetASCII("CustomFolder", ""));
     if (!customFolder.empty() && _customFolderLabel) {
         if (hGrp->GetBool("ShortCustomFolder", true)) {
-            _customFolderLabel->setToolTip(QString::fromUtf8(customFolder.c_str()));
+            _customFolderLabel->setToolTip(QString::fromStdString(customFolder));
             customFolder = customFolder.substr(customFolder.find_last_of("/\\") + 1);
         }
-        _customFolderLabel->setText(h1Start + QString::fromUtf8(customFolder.c_str()) + h1End);
+        _customFolderLabel->setText(h1Start + QString::fromStdString(customFolder) + h1End);
     }
 
-    QString application = QString::fromUtf8(App::Application::Config()["ExeName"].c_str());
+    QString application = QString::fromStdString(App::Application::Config()["ExeName"]);
     _openFirstStart->setText(tr("Open First Start Setup"));
     _showOnStartupCheckBox->setText(tr("Do not show this Start page again (start with blank screen)"));
 }

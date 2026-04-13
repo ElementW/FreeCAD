@@ -192,17 +192,17 @@ void QGITile::setTileScale(double s)
 
 void QGITile::setTileTextLeft(const std::string& text)
 {
-    m_textL = QString::fromUtf8(text.c_str());
+    m_textL = QString::fromStdString(text);
 }
 
 void QGITile::setTileTextRight(const std::string& text)
 {
-    m_textR = QString::fromUtf8(text.c_str());
+    m_textR = QString::fromStdString(text);
 }
 
 void QGITile::setTileTextCenter(const std::string& text)
 {
-    m_textC = QString::fromUtf8(text.c_str());
+    m_textC = QString::fromStdString(text);
 }
 
 void QGITile::setFont(const QFont& font, double fSizePx)
@@ -223,7 +223,7 @@ void QGITile::setFont(const std::string &fName, double fSizePx)
 void QGITile::setSymbolFile(const std::string &fileSpec)
 {
     if (!fileSpec.empty()) {
-        m_svgPath = QString::fromUtf8(fileSpec.c_str());
+        m_svgPath = QString::fromStdString(fileSpec);
     }
 }
 

@@ -159,7 +159,7 @@ void TaskFemConstraint::onButtonReference(const bool pressed)
 
 const QString TaskFemConstraint::makeRefText(const std::string& objName, const std::string& subName) const
 {
-    return QString::fromUtf8((objName + ":" + subName).c_str());
+    return QString::fromStdString(objName + ":" + subName);
 }
 
 const QString TaskFemConstraint::makeRefText(
@@ -167,7 +167,7 @@ const QString TaskFemConstraint::makeRefText(
     const std::string& subName
 ) const
 {
-    return QString::fromUtf8((std::string(obj->getNameInDocument()) + ":" + subName).c_str());
+    return QString::fromStdString(std::string(obj->getNameInDocument()) + ":" + subName);
 }
 
 void TaskFemConstraint::createActions(QListWidget* parentList)

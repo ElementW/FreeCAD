@@ -74,7 +74,7 @@ TaskFemConstraintTemperature::TaskFemConstraintTemperature(
     App::PropertyEnumeration* constrType = &pcConstraint->ConstraintType;
     QStringList qTypeList;
     for (auto item : constrType->getEnumVector()) {
-        qTypeList << QString::fromUtf8(item.c_str());
+        qTypeList << QString::fromStdString(item);
     }
 
     ui->cb_constr_type->addItems(qTypeList);

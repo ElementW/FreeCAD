@@ -286,7 +286,7 @@ qint64 ApplicationCache::size() const
 void ApplicationCache::clearDirectory(const QString& path)
 {
     // Add the transient directories and the lock files to the ignore list
-    QDir tmp = QString::fromUtf8(App::Application::getUserCachePath().c_str());
+    QDir tmp = QString::fromStdString(App::Application::getUserCachePath());
     tmp.setNameFilters(QStringList() << QStringLiteral("*.lock"));
     tmp.setFilter(QDir::Files);
 

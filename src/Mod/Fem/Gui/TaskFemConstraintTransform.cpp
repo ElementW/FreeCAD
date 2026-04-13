@@ -220,7 +220,7 @@ TaskFemConstraintTransform::~TaskFemConstraintTransform() = default;
 
 const QString TaskFemConstraintTransform::makeText(const App::DocumentObject* obj) const
 {
-    return QString::fromUtf8((std::string(obj->getNameInDocument())).c_str());
+    return QString::fromStdString(std::string(obj->getNameInDocument()));
 }
 
 void TaskFemConstraintTransform::updateUI()

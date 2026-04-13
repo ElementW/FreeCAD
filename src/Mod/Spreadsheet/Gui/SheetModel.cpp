@@ -253,7 +253,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
 #else
                 std::string str;
                 if (cell->getStringContent(str)) {
-                    return QVariant::fromValue(QString::fromUtf8(str.c_str()));
+                    return QVariant::fromValue(QString::fromStdString(str));
                 }
                 return QVariant::fromValue(QStringLiteral("#ERR"));
 #endif
@@ -370,7 +370,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                             // If it's just a simple value, display the new value, but still
                             // format it as a pending value to indicate to the user that
                             // a recompute is needed
-                            return QVariant(QString::fromUtf8(str.c_str()));
+                            return QVariant(QString::fromStdString(str));
                         }
                     }
                 }
@@ -597,7 +597,7 @@ QVariant SheetModel::data(const QModelIndex& index, int role) const
                 catch (...) {
                     value = "#ERR: unknown exception";
                 }
-                QString v = QString::fromUtf8(value.c_str());
+                QString v = QString::fromStdString(value);
                 return formatCellDisplay(v, cell);
             }
             default:

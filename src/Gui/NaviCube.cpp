@@ -617,7 +617,7 @@ void NaviCubeImplementation::createCubeFaceTextures()
     vector<PickId> mains
         = {PickId::Front, PickId::Top, PickId::Right, PickId::Rear, PickId::Bottom, PickId::Left};
     for (PickId pickId : mains) {
-        auto t = QString::fromUtf8(m_LabelTextures[pickId].label.c_str());
+        auto t = QString::fromStdString(m_LabelTextures[pickId].label);
         QRect br = fm.boundingRect(t);
         float scale = (float)texSize / max(br.width(), br.height());
         m_LabelTextures[pickId].fontSize = texSize * scale;
@@ -642,7 +642,7 @@ void NaviCubeImplementation::createCubeFaceTextures()
                 QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform
             );
             paint.setPen(Qt::white);
-            QString text = QString::fromUtf8(m_LabelTextures[pickId].label.c_str());
+            QString text = QString::fromStdString(m_LabelTextures[pickId].label);
             paint.setFont(font);
             paint.drawText(QRect(0, 0, texSize, texSize), Qt::AlignCenter, text);
             int offset = imageVerticalBalance(image, font.pointSize());

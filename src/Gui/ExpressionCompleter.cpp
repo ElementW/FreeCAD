@@ -413,7 +413,7 @@ public:
                     // the object has been resolved, use the saved idx to figure out quotation or
                     // not.
                     if (idx & 1) {
-                        res = QString::fromUtf8(quote(obj->Label.getStrValue()).c_str());
+                        res = QString::fromStdString(quote(obj->Label.getStrValue()));
                     }
                     else {
                         res = QString::fromLatin1(obj->getNameInDocument());
@@ -426,7 +426,7 @@ public:
                     // the document has been resolved, use the saved idx to figure out quotation or
                     // not.
                     if (idx & 1) {
-                        res = QString::fromUtf8(quote(doc->Label.getStrValue()).c_str());
+                        res = QString::fromStdString(quote(doc->Label.getStrValue()));
                     }
                     else {
                         res = QString::fromUtf8(doc->getName());
@@ -462,7 +462,7 @@ public:
                     // resolve the name
                     QString res;
                     if (idx & 1) {
-                        res = QString::fromUtf8(quote(obj->Label.getStrValue()).c_str());
+                        res = QString::fromStdString(quote(obj->Label.getStrValue()));
                     }
                     else {
                         res = QString::fromLatin1(obj->getNameInDocument());

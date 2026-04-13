@@ -329,7 +329,7 @@ void SheetView::updateContentLine()
         if (const auto* cell = sheet->getCell(CellAddress(i.row(), i.column()))) {
             (void)cell->getStringContent(str);
         }
-        ui->cellContent->setText(QString::fromUtf8(str.c_str()));
+        ui->cellContent->setText(QString::fromStdString(str));
         ui->cellContent->setEnabled(true);
 
         // Update completer model; for the time being, we do this by setting the document object of
@@ -347,7 +347,7 @@ void SheetView::updateAliasLine()
         if (const auto* cell = sheet->getCell(CellAddress(i.row(), i.column()))) {
             (void)cell->getAlias(str);
         }
-        ui->cellAlias->setText(QString::fromUtf8(str.c_str()));
+        ui->cellAlias->setText(QString::fromStdString(str));
         ui->cellAlias->setEnabled(true);
 
         // Update completer model; for the time being, we do this by setting the document object of
@@ -447,7 +447,7 @@ void SheetView::confirmAliasChanged(const QString& text)
             // same string
             std::string current_alias;
             (void)cell->getAlias(current_alias);
-            if (text != QString::fromUtf8(current_alias.c_str())) {
+            if (text != QString::fromStdString(current_alias)) {
                 Base::Console().error("Unable to set alias: %s\n", text.toStdString().c_str());
             }
         }

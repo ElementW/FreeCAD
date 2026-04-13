@@ -296,7 +296,7 @@ QString DownloadItem::getDownloadDirectory() const
                                               ->GetGroup("General");
     std::string dir = hPath->GetASCII("DownloadPath", "");
     if (!dir.empty()) {
-        dirPath = QString::fromUtf8(dir.c_str());
+        dirPath = QString::fromStdString(dir);
     }
 
     if (QFileInfo::exists(dirPath) || QDir().mkpath(dirPath)) {

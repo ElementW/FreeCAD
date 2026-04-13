@@ -1043,7 +1043,7 @@ void RecentFilesAction::restore()
     std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
     QStringList files;
     for (const auto& it : MRU) {
-        auto filePath = QString::fromUtf8(it.c_str());
+        auto filePath = QString::fromStdString(it);
         if (QFileInfo::exists(filePath)) {
             files.append(filePath);
         }
@@ -1281,7 +1281,7 @@ void RecentMacrosAction::restore()
     std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
     QStringList files;
     for (auto& filename : MRU) {
-        files.append(QString::fromUtf8(filename.c_str()));
+        files.append(QString::fromStdString(filename));
     }
     setFiles(files);
 }
