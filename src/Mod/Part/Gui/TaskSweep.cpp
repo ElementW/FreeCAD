@@ -387,7 +387,7 @@ bool SweepWidget::accept()
     for (int i = 0; i < count; i++) {
         QTreeWidgetItem* child = d->ui.selector->selectedTreeWidget()->topLevelItem(i);
         QString name = child->data(0, Qt::UserRole).toString();
-        if (name == QLatin1String(spineObject.c_str())) {
+        if (name == QString::fromStdString(spineObject)) {
             QMessageBox::critical(
                 this,
                 tr("Wrong selection"),
@@ -410,7 +410,7 @@ bool SweepWidget::accept()
         )
                   .arg(
                       list,
-                      QLatin1String(selection.c_str()),
+                      QString::fromStdString(selection),
                       solid,
                       frenet,
                       QString::fromLatin1(d->document.c_str())

@@ -328,7 +328,7 @@ bool CrossSections::apply()
                     "slice.purgeTouched()\n"
                     "del slice,comp,wires,shape"
                 )
-                    .arg(QLatin1String(doc->getName()), QLatin1String(s.c_str()))
+                    .arg(QLatin1String(doc->getName()), QString::fromStdString(s))
                     .toLatin1()
             );
         }

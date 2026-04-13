@@ -1545,7 +1545,7 @@ void StdCmdDelete::activated(int iMsg)
                             autoDeletion = false;
                             QString label;
                             if (parent->getDocument() != obj->getDocument()) {
-                                label = QLatin1String(parent->getFullName().c_str());
+                                label = QString::fromStdString(parent->getFullName());
                             }
                             else {
                                 label = QLatin1String(parent->getNameInDocument());

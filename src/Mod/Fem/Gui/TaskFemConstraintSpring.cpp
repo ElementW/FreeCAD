@@ -87,7 +87,7 @@ TaskFemConstraintSpring::TaskFemConstraintSpring(
     auto stiffnesses = pcConstraint->ElmerStiffness.getEnumVector();
     QStringList stiffnessesList;
     for (auto item : stiffnesses) {
-        stiffnessesList << QLatin1String(item.c_str());
+        stiffnessesList << QString::fromStdString(item);
     }
     ui->cb_elmer_stiffness->addItems(stiffnessesList);
     ui->cb_elmer_stiffness->setCurrentIndex(pcConstraint->ElmerStiffness.getValue());

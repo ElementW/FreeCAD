@@ -258,7 +258,7 @@ void Mirroring::onSelectionChanged(const Gui::SelectionChanges& msg)
             std::string subName(msg.pSubName);
             std::stringstream refStr;
             refStr << objName << " : [" << subName << "]";
-            ui->referenceLineEdit->setText(QLatin1String(refStr.str().c_str()));
+            ui->referenceLineEdit->setText(QString::fromStdString(refStr.str()));
             ui->comboBox->setCurrentIndex(3);
         }
     }

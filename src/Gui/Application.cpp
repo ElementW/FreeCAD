@@ -799,7 +799,7 @@ void Application::open(const char* FileName, const char* Module)
         QMessageBox::warning(
             getMainWindow(),
             QObject::tr("Unknown filetype"),
-            QObject::tr("Cannot open unknown filetype: %1").arg(QLatin1String(te.c_str()))
+            QObject::tr("Cannot open unknown filetype: %1").arg(QString::fromStdString(te))
         );
         wc.setWaitCursor();
         return;
@@ -906,7 +906,7 @@ void Application::importFrom(const char* FileName, const char* DocName, const ch
         QMessageBox::warning(
             getMainWindow(),
             QObject::tr("Unknown filetype"),
-            QObject::tr("Cannot open unknown filetype: %1").arg(QLatin1String(te.c_str()))
+            QObject::tr("Cannot open unknown filetype: %1").arg(QString::fromStdString(te))
         );
         wc.setWaitCursor();
     }
@@ -993,7 +993,7 @@ void Application::exportTo(const char* FileName, const char* DocName, const char
         QMessageBox::warning(
             getMainWindow(),
             QObject::tr("Unknown filetype"),
-            QObject::tr("Cannot save to unknown filetype: %1").arg(QLatin1String(te.c_str()))
+            QObject::tr("Cannot save to unknown filetype: %1").arg(QString::fromStdString(te))
         );
         wc.setWaitCursor();
     }

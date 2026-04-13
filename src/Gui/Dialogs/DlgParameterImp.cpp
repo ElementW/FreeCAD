@@ -823,7 +823,7 @@ void ParameterValue::onCreateTextItem()
 
     std::vector<std::pair<std::string, std::string>> smap = _hcGrp->GetASCIIMap();
     for (const auto& it : smap) {
-        if (name == QLatin1String(it.first.c_str())) {
+        if (name == QString::fromStdString(it.first)) {
             QMessageBox::critical(
                 this,
                 tr("Existing Item"),
@@ -868,7 +868,7 @@ void ParameterValue::onCreateIntItem()
 
     std::vector<std::pair<std::string, long>> lmap = _hcGrp->GetIntMap();
     for (const auto& it : lmap) {
-        if (name == QLatin1String(it.first.c_str())) {
+        if (name == QString::fromStdString(it.first)) {
             QMessageBox::critical(
                 this,
                 tr("Existing Item"),
@@ -916,7 +916,7 @@ void ParameterValue::onCreateUIntItem()
 
     std::vector<std::pair<std::string, unsigned long>> lmap = _hcGrp->GetUnsignedMap();
     for (const auto& it : lmap) {
-        if (name == QLatin1String(it.first.c_str())) {
+        if (name == QString::fromStdString(it.first)) {
             QMessageBox::critical(
                 this,
                 tr("Existing Item"),
@@ -961,7 +961,7 @@ void ParameterValue::onCreateFloatItem()
 
     std::vector<std::pair<std::string, double>> fmap = _hcGrp->GetFloatMap();
     for (const auto& it : fmap) {
-        if (name == QLatin1String(it.first.c_str())) {
+        if (name == QString::fromStdString(it.first)) {
             QMessageBox::critical(
                 this,
                 tr("Existing Item"),
@@ -1008,7 +1008,7 @@ void ParameterValue::onCreateBoolItem()
 
     std::vector<std::pair<std::string, bool>> bmap = _hcGrp->GetBoolMap();
     for (const auto& it : bmap) {
-        if (name == QLatin1String(it.first.c_str())) {
+        if (name == QString::fromStdString(it.first)) {
             QMessageBox::critical(
                 this,
                 tr("Existing Item"),

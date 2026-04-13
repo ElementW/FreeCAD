@@ -174,7 +174,7 @@ void SoFCOffscreenRenderer::writeToImageFile(
                     );
                 }
                 else if (strcmp(comment, "$MIBA") == 0) {
-                    img.setText(QStringLiteral("Description"), QLatin1String(createMIBA(mat).c_str()));
+                    img.setText(QStringLiteral("Description"), QString::fromStdString(createMIBA(mat)));
                 }
                 else {
                     img.setText(QStringLiteral("Description"), QString::fromUtf8(comment));

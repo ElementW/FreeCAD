@@ -46,7 +46,7 @@ DlgSettingsFemGeneralImp::DlgSettingsFemGeneralImp(QWidget* parent)
 
     QStringList solversList;
     for (auto item : Solvers) {
-        solversList << QLatin1String(item.c_str());
+        solversList << QString::fromStdString(item);
     }
     ui->cmb_def_solver->addItems(solversList);
 

@@ -381,7 +381,7 @@ void CrossSections::apply()
                     "del slice,comp,wires,points"
                 )
                     .arg(QLatin1String(doc->getName()))
-                    .arg(QLatin1String(s.c_str()))
+                    .arg(QString::fromStdString(s))
                     .toLatin1()
             );
         }
