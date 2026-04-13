@@ -22,6 +22,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <string_view>
+
 #include <fastsignals/connection.h>
 
 #include <QAction>
@@ -45,27 +47,8 @@
 #include "CommandCompleter.h"
 
 
+using namespace std::literals::string_view_literals;
 using namespace Gui::Dialog;
-
-namespace Gui
-{
-namespace Dialog
-{
-using GroupMap = std::vector<std::pair<QLatin1String, QString>>;
-
-struct GroupMap_find
-{
-    const QLatin1String& item;
-    explicit GroupMap_find(const QLatin1String& item)
-        : item(item)
-    {}
-    bool operator()(const std::pair<QLatin1String, QString>& elem) const
-    {
-        return elem.first == item;
-    }
-};
-}  // namespace Dialog
-}  // namespace Gui
 
 /* TRANSLATOR Gui::Dialog::DlgCustomKeyboardImp */
 
@@ -407,38 +390,40 @@ void DlgCustomKeyboardImp::populateCommandGroups(QComboBox* combo)
     CommandManager& cCmdMgr = Application::Instance->commandManager();
     std::map<std::string, Command*> sCommands = cCmdMgr.getCommands();
 
+    using GroupMapEntry = std::pair<std::string_view, QString>;
+    using GroupMap = std::vector<GroupMapEntry>;
     GroupMap groupMap;
-    groupMap.push_back(std::make_pair(QLatin1String("File"), QString()));
-    groupMap.push_back(std::make_pair(QLatin1String("Edit"), QString()));
-    groupMap.push_back(std::make_pair(QLatin1String("View"), QString()));
-    groupMap.push_back(std::make_pair(QLatin1String("Standard-View"), QString()));
-    groupMap.push_back(std::make_pair(QLatin1String("Tools"), QString()));
-    groupMap.push_back(std::make_pair(QLatin1String("Window"), QString()));
-    groupMap.push_back(std::make_pair(QLatin1String("Help"), QString()));
-    groupMap.push_back(
-        std::make_pair(QLatin1String("Macros"), qApp->translate("Gui::MacroCommand", "Macros"))
-    );
+    groupMap.emplace_back("File"sv, QString());
+    groupMap.emplace_back("Edit"sv, QString());
+    groupMap.emplace_back("View"sv, QString());
+    groupMap.emplace_back("Standard-View"sv, QString());
+    groupMap.emplace_back("Tools"sv, QString());
+    groupMap.emplace_back("Window"sv, QString());
+    groupMap.emplace_back("Help"sv, QString());
+    groupMap.emplace_back("Macros"sv, qApp->translate("Gui::MacroCommand", "Macros"));
 
     for (const auto& sCommand : sCommands) {
-        QLatin1String group(sCommand.second->getGroupName());
+        const std::string_view group(sCommand.second->getGroupName());
         QString text = sCommand.second->translatedGroupName();
-        GroupMap::iterator jt;
-        jt = std::find_if(groupMap.begin(), groupMap.end(), GroupMap_find(group));
+        const auto jt = std::ranges::find_if(groupMap, [group](const GroupMapEntry& elem) {
+            return elem.first == group;
+        });
         if (jt != groupMap.end()) {
             if (jt->second.isEmpty()) {
-                jt->second = text;
+                jt->second = std::move(text);
             }
         }
         else {
-            groupMap.push_back(std::make_pair(group, text));
+            groupMap.emplace_back(group, std::move(text));
         }
     }
-    groupMap.push_back(std::make_pair(QLatin1String("All"), tr("All")));
+    groupMap.emplace_back("All"sv, tr("All"));
 
     for (const auto& it : groupMap) {
-        if (combo->findData(it.first) < 0) {
+        const auto groupId = QString::fromUtf8(it.first.data(), qsizetype(it.first.size()));
+        if (combo->findData(groupId) < 0) {
             combo->addItem(it.second);
-            combo->setItemData(combo->count() - 1, QVariant(it.first), Qt::UserRole);
+            combo->setItemData(combo->count() - 1, QVariant(groupId), Qt::UserRole);
         }
     }
 }
