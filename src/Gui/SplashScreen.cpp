@@ -69,7 +69,7 @@ public:
         const std::map<std::string, std::string>& cfg = App::Application::Config();
         auto al = cfg.find("SplashAlignment");
         if (al != cfg.end()) {
-            QString alt = QString::fromLatin1(al->second.c_str());
+            QString alt = QString::fromStdString(al->second);
             int align = 0;
             if (alt.startsWith(QStringLiteral("VCenter"))) {
                 align = Qt::AlignVCenter;

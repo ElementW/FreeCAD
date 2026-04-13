@@ -3686,8 +3686,8 @@ bool ViewProviderSketch::setEdit(int ModNum)
                     "del(ActiveSketch)\n")
                     .arg(QString::fromLatin1(getDocument()->getDocument()->getName()),
                          QString::fromLatin1(getSketchObject()->getNameInDocument()),
-                         QString::fromLatin1(Gui::Command::getObjectCmd(editObj).c_str()),
-                         QString::fromLatin1(editSubName.c_str()));
+                         QString::fromStdString(Gui::Command::getObjectCmd(editObj)),
+                         QString::fromStdString(editSubName));
             QByteArray cmdstr_bytearray = cmdstr.toLatin1();
             Gui::Command::runCommand(Gui::Command::Gui, cmdstr_bytearray);
         }

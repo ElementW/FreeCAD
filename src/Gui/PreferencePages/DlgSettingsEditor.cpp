@@ -314,7 +314,7 @@ void DlgSettingsEditor::loadSettings()
     ui->fontFamily->setProperty("doNotSearch", true);
 
     int index = fixedFamilyNames.indexOf(
-        QString::fromLatin1(hGrp->GetASCII("Font", defaultMonospaceFont).c_str())
+        QString::fromStdString(hGrp->GetASCII("Font", defaultMonospaceFont))
     );
     if (index < 0) {
         index = 0;

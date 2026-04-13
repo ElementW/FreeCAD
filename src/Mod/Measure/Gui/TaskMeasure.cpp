@@ -826,7 +826,7 @@ void TaskMeasure::setModeSilent(App::MeasureType* mode)
         modeSwitch->setCurrentIndex(0);
     }
     else {
-        modeSwitch->setCurrentText(QString::fromLatin1(mode->label.c_str()));
+        modeSwitch->setCurrentText(QString::fromStdString(mode->label));
     }
     modeSwitch->blockSignals(false);
 }

@@ -1051,13 +1051,13 @@ bool DlgFilletEdges::accept()
     std::string fillet = getFilletType();
     int index = ui->shapeObject->currentIndex();
     shape = ui->shapeObject->itemData(index).toString();
-    type = QStringLiteral("Part::%1").arg(QString::fromLatin1(fillet.c_str()));
+    type = QStringLiteral("Part::%1").arg(QString::fromStdString(fillet));
 
     if (d->fillet) {
         name = QString::fromLatin1(d->fillet->getNameInDocument());
     }
     else {
-        name = QString::fromLatin1(activeDoc->getUniqueObjectName(fillet.c_str()).c_str());
+        name = QString::fromStdString(activeDoc->getUniqueObjectName(fillet.c_str()));
     }
 
     activeDoc->openTransaction(fillet.c_str());

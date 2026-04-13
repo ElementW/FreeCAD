@@ -1363,7 +1363,7 @@ void CmdPartReverseShape::activated(int iMsg)
                               "del __o__"
             )
                               .arg(
-                                  QString::fromLatin1(name.c_str()),
+                                  QString::fromStdString(name),
                                   QString::fromLatin1(it->getNameInDocument()),
                                   QString::fromLatin1(it->Label.getValue())
                               );

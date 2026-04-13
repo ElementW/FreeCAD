@@ -2109,7 +2109,7 @@ void StdViewScreenShot::activated(int iMsg)
                                                  .GetGroup("BaseApp")
                                                  ->GetGroup("Preferences")
                                                  ->GetGroup("General");
-        QString ext = QString::fromLatin1(hExt->GetASCII("OffscreenImageFormat").c_str());
+        QString ext = QString::fromStdString(hExt->GetASCII("OffscreenImageFormat"));
         int backtype = hExt->GetInt("OffscreenImageBackground", 0);
 
         Base::Reference<ParameterGrp> methodGrp = App::GetApplication().GetParameterGroupByPath(
@@ -2237,7 +2237,7 @@ void StdViewScreenShot::activated(int iMsg)
                 if (fi.exists() && pixmap.load(fn)) {
                     QString name = qApp->applicationName();
                     std::map<std::string, std::string>& config = App::Application::Config();
-                    QString url = QString::fromLatin1(config["MaintainerUrl"].c_str());
+                    QString url = QString::fromStdString(config["MaintainerUrl"]);
                     url = QUrl(url).host();
 
                     QPixmap appicon = Gui::BitmapFactory().pixmap(config["AppIcon"].c_str());

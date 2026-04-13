@@ -362,7 +362,7 @@ QString PlacementHandler::getIncrementalPlacement(const App::DocumentObject* obj
         .arg(
             QString::fromLatin1(obj->getDocument()->getName()),
             QString::fromLatin1(obj->getNameInDocument()),
-            QString::fromLatin1(this->propertyName.c_str()),
+            QString::fromStdString(this->propertyName),
             data
         );
 }
@@ -373,7 +373,7 @@ QString PlacementHandler::getSimplePlacement(const App::DocumentObject* obj, con
         .arg(
             QString::fromLatin1(obj->getDocument()->getName()),
             QString::fromLatin1(obj->getNameInDocument()),
-            QString::fromLatin1(this->propertyName.c_str()),
+            QString::fromStdString(this->propertyName),
             data
         );
 }

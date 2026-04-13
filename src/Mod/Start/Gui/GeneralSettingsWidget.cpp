@@ -115,7 +115,7 @@ gsl::owner<QComboBox*> GeneralSettingsWidget::createLanguageComboBox()
             it->second = "sr_Latn";
         }
 
-        QLocale locale(QString::fromLatin1(it->second.c_str()));
+        QLocale locale(QString::fromStdString(it->second));
         QString native = locale.nativeLanguageName();
         if (!native.isEmpty()) {
             if (native[0].isLetter()) {

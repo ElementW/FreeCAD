@@ -477,7 +477,7 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
                 }
             }
 
-            wget->setProxy(QString::fromLatin1(prx.c_str()), username, password);
+            wget->setProxy(QString::fromStdString(prx), username, password);
         }
 
         int loop = 3;
@@ -543,7 +543,7 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
         }
 
         if (canStart) {
-            bool ok = wget->startDownload(QString::fromLatin1(url.c_str()));
+            bool ok = wget->startDownload(QString::fromStdString(url));
             if (!ok) {
                 Base::Console().error("The tool 'wget' could not be found. Check the installation.");
             }

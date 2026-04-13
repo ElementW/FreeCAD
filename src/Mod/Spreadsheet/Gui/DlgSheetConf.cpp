@@ -52,8 +52,8 @@ DlgSheetConf::DlgSheetConf(Sheet* sheet, Range range, QWidget* parent)
         range = Range(range.from(), to);
     }
 
-    ui->lineEditStart->setText(QString::fromLatin1(range.from().toString().c_str()));
-    ui->lineEditEnd->setText(QString::fromLatin1(range.to().toString().c_str()));
+    ui->lineEditStart->setText(QString::fromStdString(range.from().toString()));
+    ui->lineEditEnd->setText(QString::fromStdString(range.to().toString()));
 
     ui->lineEditProp->setDocumentObject(sheet, false);
 
@@ -70,8 +70,8 @@ DlgSheetConf::DlgSheetConf(Sheet* sheet, Range range, QWidget* parent)
         }
     }
 
-    ui->lineEditStart->setText(QString::fromLatin1(from.toString().c_str()));
-    ui->lineEditEnd->setText(QString::fromLatin1(to.toString().c_str()));
+    ui->lineEditStart->setText(QString::fromStdString(from.toString()));
+    ui->lineEditEnd->setText(QString::fromStdString(to.toString()));
 }
 
 DlgSheetConf::~DlgSheetConf()

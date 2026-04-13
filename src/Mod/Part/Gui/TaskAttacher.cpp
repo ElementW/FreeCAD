@@ -83,8 +83,7 @@ const QString makeRefString(const App::DocumentObject* obj, const std::string& s
     App::GeoFeature::resolveElement(obj, sub.c_str(), el, true);
 
     return QString::fromLatin1(obj->getNameInDocument())
-        + (sub.length() > 0 ? QStringLiteral(":") : QString())
-        + QString::fromLatin1(el.oldName.c_str());
+        + (sub.length() > 0 ? QStringLiteral(":") : QString()) + QString::fromStdString(el.oldName);
 }
 
 void TaskAttacher::makeRefStrings(std::vector<QString>& refstrings, std::vector<std::string>& refnames)
@@ -1371,10 +1370,10 @@ void TaskAttacher::visibilityAutomation(bool opening_not_closing)
                       "del(tvObj)"
                 )
                       .arg(
-                          QString::fromLatin1(Gui::Command::getObjectCmd(vp->getObject()).c_str()),
-                          QString::fromLatin1(Gui::Command::getObjectCmd(editObj).c_str()),
-                          QString::fromLatin1(editSubName.c_str()),
-                          QString::fromLatin1(postfix.c_str())
+                          QString::fromStdString(Gui::Command::getObjectCmd(vp->getObject())),
+                          QString::fromStdString(Gui::Command::getObjectCmd(editObj)),
+                          QString::fromStdString(editSubName),
+                          QString::fromStdString(postfix)
                       );
             Gui::Command::runCommand(Gui::Command::Gui, code.toLatin1().constData());
         }
@@ -1383,7 +1382,7 @@ void TaskAttacher::visibilityAutomation(bool opening_not_closing)
                                "_tv_%1.restore()\n"
                                "del(_tv_%1)"
             )
-                               .arg(QString::fromLatin1(postfix.c_str()));
+                               .arg(QString::fromStdString(postfix));
             Gui::Command::runCommand(Gui::Command::Gui, code.toLatin1().constData());
         }
     };

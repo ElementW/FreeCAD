@@ -530,7 +530,7 @@ public:
                     *v = QString::fromLatin1(str.c_str() + 1);
                 }
                 else {
-                    *v = QString::fromLatin1(str.c_str());
+                    *v = QString::fromStdString(str);
                 }
             }
         }

@@ -208,7 +208,7 @@ void PatternParametersWidget::updateUI()
         if (m_directionProp->getValue()) {
             QString refStr = QStringLiteral("%1:%2").arg(
                 QString::fromLatin1(m_directionProp->getValue()->getNameInDocument()),
-                QString::fromLatin1(m_directionProp->getSubValues().front().c_str())
+                QString::fromStdString(m_directionProp->getSubValues().front())
             );
             dirLinks.addLink(*m_directionProp, refStr);
             dirLinks.setCurrentLink(*m_directionProp);

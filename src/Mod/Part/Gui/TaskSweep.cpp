@@ -413,7 +413,7 @@ bool SweepWidget::accept()
                       QString::fromStdString(selection),
                       solid,
                       frenet,
-                      QString::fromLatin1(d->document.c_str())
+                      QString::fromStdString(d->document)
                   );
 
         Gui::Document* doc = Gui::Application::Instance->getDocument(d->document.c_str());

@@ -444,7 +444,7 @@ void DlgRevolution::accept()
                                   QString::fromLatin1(axisLink.getValue()->getNameInDocument()),
                                   axisLink.getSubValues().size() == 1
                                       ? QStringLiteral("\"%1\"").arg(
-                                            QString::fromLatin1(axisLink.getSubValues()[0].c_str())
+                                            QString::fromStdString(axisLink.getSubValues()[0])
                                         )
                                       : QString()
                               );
@@ -464,7 +464,7 @@ void DlgRevolution::accept()
         for (auto item : items) {
             shape = item->data(0, Qt::UserRole).toString();
             type = QStringLiteral("Part::Revolution");
-            name = QString::fromLatin1(activeDoc->getUniqueObjectName("Revolve").c_str());
+            name = QString::fromStdString(activeDoc->getUniqueObjectName("Revolve"));
             Base::Vector3d axis = this->getDirection();
             Base::Vector3d pos = this->getPosition();
 

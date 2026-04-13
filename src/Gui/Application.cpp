@@ -2111,7 +2111,7 @@ QStringList Application::workbenches() const
     const char* start = (st != config.end() ? st->second.c_str() : "<none>");
     QStringList hidden, extra;
     if (ht != config.end()) {
-        QString items = QString::fromLatin1(ht->second.c_str());
+        QString items = QString::fromStdString(ht->second);
         hidden = items.split(QLatin1Char(';'), Qt::SkipEmptyParts);
 
         if (hidden.isEmpty()) {
@@ -2119,7 +2119,7 @@ QStringList Application::workbenches() const
         }
     }
     if (et != config.end()) {
-        QString items = QString::fromLatin1(et->second.c_str());
+        QString items = QString::fromStdString(et->second);
 
         extra = items.split(QLatin1Char(';'), Qt::SkipEmptyParts);
         if (extra.isEmpty()) {

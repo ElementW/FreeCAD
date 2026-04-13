@@ -268,7 +268,7 @@ void PrefLineEdit::restorePreferences()
     }
 
     QString text = this->text();
-    text = QString::fromUtf8(getWindowParameter()->GetASCII(entryName(), text.toUtf8()).c_str());
+    text = QString::fromStdString(getWindowParameter()->GetASCII(entryName(), text.toUtf8()));
     setText(text);
 }
 
@@ -299,7 +299,7 @@ void PrefTextEdit::restorePreferences()
     }
 
     QString text = this->toPlainText();
-    text = QString::fromUtf8(getWindowParameter()->GetASCII(entryName(), text.toUtf8()).c_str());
+    text = QString::fromStdString(getWindowParameter()->GetASCII(entryName(), text.toUtf8()));
     setText(text);
 }
 
@@ -797,7 +797,7 @@ void PrefQuantitySpinBox::restorePreferences()
     }
 
     QString text = this->text();
-    text = QString::fromUtf8(getWindowParameter()->GetASCII(entryName(), text.toUtf8()).c_str());
+    text = QString::fromStdString(getWindowParameter()->GetASCII(entryName(), text.toUtf8()));
     lineEdit()->setText(text);
 
     // Restore history

@@ -82,11 +82,8 @@ Py::Object wrapFromWidgetFactory(
         objectName = str.as_std_string("utf-8");
     }
 
-    QWidget* widget = callableFunc(
-        QString::fromLatin1(className.c_str()),
-        parent,
-        QString::fromLatin1(objectName.c_str())
-    );
+    QWidget* widget
+        = callableFunc(QString::fromStdString(className), parent, QString::fromStdString(objectName));
     if (!widget) {
         return Py::None();
         //    std::string err = "No such widget class '";

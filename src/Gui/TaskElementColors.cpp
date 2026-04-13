@@ -153,7 +153,7 @@ public:
             auto icon = BitmapFactory().pixmap("Invisible");
             auto item = new QListWidgetItem(
                 icon,
-                QString::fromLatin1(std::string(sub, marker - sub).c_str()),
+                QString::fromStdString(std::string(sub, marker - sub)),
                 ui->elementList
             );
             item->setData(Qt::UserRole, QColor());
@@ -176,11 +176,11 @@ public:
             px.fill(c);
             auto item = new QListWidgetItem(
                 QIcon(px),
-                QString::fromLatin1(Data::oldElementName(v.first.c_str()).c_str()),
+                QString::fromStdString(Data::oldElementName(v.first.c_str())),
                 ui->elementList
             );
             item->setData(Qt::UserRole, c);
-            item->setData(Qt::UserRole + 1, QString::fromLatin1(v.first.c_str()));
+            item->setData(Qt::UserRole + 1, QString::fromStdString(v.first));
             if (push) {
                 items.push_back(item);
             }

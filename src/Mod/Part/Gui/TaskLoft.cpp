@@ -216,7 +216,7 @@ bool LoftWidget::accept()
                   "App.getDocument('%5').ActiveObject.Ruled=%3\n"
                   "App.getDocument('%5').ActiveObject.Closed=%4\n"
         )
-                  .arg(list, solid, ruled, closed, QString::fromLatin1(d->document.c_str()));
+                  .arg(list, solid, ruled, closed, QString::fromStdString(d->document));
 
         Gui::Document* doc = Gui::Application::Instance->getDocument(d->document.c_str());
         if (!doc) {

@@ -804,7 +804,7 @@ void ToolBarManager::setup(ToolBarItem* item, QToolBar* toolbar) const
     QList<QAction*> actions = toolbar->actions();
     for (ToolBarItem* it : items) {
         // search for the action item
-        QAction* action = findAction(actions, QString::fromLatin1(it->command().c_str()));
+        QAction* action = findAction(actions, QString::fromStdString(it->command()));
         if (!action) {
             if (it->command() == "Separator") {
                 action = toolbar->addSeparator();
@@ -818,7 +818,7 @@ void ToolBarManager::setup(ToolBarItem* item, QToolBar* toolbar) const
 
             // set the tool button user data
             if (action) {
-                action->setData(QString::fromLatin1(it->command().c_str()));
+                action->setData(QString::fromStdString(it->command()));
             }
         }
         else {

@@ -301,7 +301,7 @@ void StdCmdSendToPythonConsole::activated(int iMsg)
                 Gui::Command::runCommand(Gui::Command::Gui, cmd.toLatin1());
                 if (sels[0].hasSubNames()) {
                     std::vector<std::string> subnames = sels[0].getSubNames();
-                    QString subname = QString::fromLatin1(subnames[0].c_str());
+                    QString subname = QString::fromStdString(subnames[0]);
                     cmd = QStringLiteral("sub = obj.getSubObject(\"%1\")").arg(subname);
                     Gui::Command::runCommand(Gui::Command::Gui, cmd.toLatin1());
                     if (subnames.size() > 1) {

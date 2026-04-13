@@ -983,7 +983,7 @@ App::Property* DlgAddProperty::createProperty()
         critical(
             QObject::tr("Add property"),
             QObject::tr("Failed to add property to '%1': %2")
-                .arg(QString::fromLatin1(container->getFullName().c_str()), QString::fromUtf8(e.what()))
+                .arg(QString::fromStdString(container->getFullName()), QString::fromUtf8(e.what()))
         );
         return nullptr;
     }

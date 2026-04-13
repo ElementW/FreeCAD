@@ -1522,7 +1522,7 @@ SelectModule::Dict SelectModule::exportHandler(const QStringList& fileNames, con
         std::map<std::string, std::string>::const_iterator it;
         it = filterList.find((const char*)filter.toUtf8());
         if (it != filterList.end()) {
-            QString module = QString::fromLatin1(it->second.c_str());
+            QString module = QString::fromStdString(it->second);
             for (const auto& fileName : fileNames) {
                 dict[fileName] = module;
             }
@@ -1548,13 +1548,13 @@ SelectModule::Dict SelectModule::exportHandler(const QStringList& fileNames, con
 
         fileExtension[ext].push_back(fileName);
         for (const auto& filter : filters) {
-            filetypeHandler[ext][QString::fromStdString(filter.first)] = QString::fromLatin1(
-                filter.second.c_str()
+            filetypeHandler[ext][QString::fromStdString(filter.first)] = QString::fromStdString(
+                filter.second
             );
         }
         // set the default module handler
         if (!filters.empty()) {
-            dict[fileName] = QString::fromLatin1(filters.begin()->second.c_str());
+            dict[fileName] = QString::fromStdString(filters.begin()->second);
         }
     }
 
@@ -1592,7 +1592,7 @@ SelectModule::Dict SelectModule::importHandler(const QStringList& fileNames, con
         std::map<std::string, std::string>::const_iterator it;
         it = filterList.find((const char*)filter.toUtf8());
         if (it != filterList.end()) {
-            QString module = QString::fromLatin1(it->second.c_str());
+            QString module = QString::fromStdString(it->second);
             for (const auto& fileName : fileNames) {
                 dict[fileName] = module;
             }
@@ -1618,13 +1618,13 @@ SelectModule::Dict SelectModule::importHandler(const QStringList& fileNames, con
 
         fileExtension[ext].push_back(fileName);
         for (const auto& filter : filters) {
-            filetypeHandler[ext][QString::fromStdString(filter.first)] = QString::fromLatin1(
-                filter.second.c_str()
+            filetypeHandler[ext][QString::fromStdString(filter.first)] = QString::fromStdString(
+                filter.second
             );
         }
         // set the default module handler
         if (!filters.empty()) {
-            dict[fileName] = QString::fromLatin1(filters.begin()->second.c_str());
+            dict[fileName] = QString::fromStdString(filters.begin()->second);
         }
     }
 

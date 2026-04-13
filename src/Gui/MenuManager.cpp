@@ -226,7 +226,7 @@ void MenuManager::setup(MenuItem* menuItems) const
     QList<QAction*> actions = menuBar->actions();
     for (auto& item : menuItems->getItems()) {
         // search for the menu action
-        QAction* action = findAction(actions, QString::fromLatin1(item->command().c_str()));
+        QAction* action = findAction(actions, QString::fromStdString(item->command()));
         if (!action) {
             // There must be not more than one separator in the menu bar, so
             // we can safely remove it if available and append it at the end
@@ -239,12 +239,12 @@ void MenuManager::setup(MenuItem* menuItems) const
                 std::string menuName = item->command();
                 QMenu* menu = menuBar->addMenu(QApplication::translate("Workbench", menuName.c_str()));
                 action = menu->menuAction();
-                menu->setObjectName(QString::fromLatin1(menuName.c_str()));
-                action->setObjectName(QString::fromLatin1(menuName.c_str()));
+                menu->setObjectName(QString::fromStdString(menuName));
+                action->setObjectName(QString::fromStdString(menuName));
             }
 
             // set the menu user data
-            action->setData(QString::fromLatin1(item->command().c_str()));
+            action->setData(QString::fromStdString(item->command()));
         }
         else {
             // put the menu at the end
@@ -276,8 +276,7 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
     QList<QAction*> actions = menu->actions();
     for (auto& item : item->getItems()) {
         // search for the menu item
-        QList<QAction*> used_actions
-            = findActions(actions, QString::fromLatin1(item->command().c_str()));
+        QList<QAction*> used_actions = findActions(actions, QString::fromStdString(item->command()));
         if (used_actions.isEmpty()) {
             if (item->command() == "Separator") {
                 QAction* action = menu->addSeparator();
@@ -293,10 +292,10 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
                         QApplication::translate("Workbench", menuName.c_str())
                     );
                     QAction* action = submenu->menuAction();
-                    submenu->setObjectName(QString::fromLatin1(item->command().c_str()));
-                    action->setObjectName(QString::fromLatin1(item->command().c_str()));
+                    submenu->setObjectName(QString::fromStdString(item->command()));
+                    action->setObjectName(QString::fromStdString(item->command()));
                     // set the menu user data
-                    action->setData(QString::fromLatin1(item->command().c_str()));
+                    action->setData(QString::fromStdString(item->command()));
                     used_actions.append(action);
                 }
                 else {
@@ -308,7 +307,7 @@ void MenuManager::setup(MenuItem* item, QMenu* menu) const
                         for (int i = count; i < acts.count(); i++) {
                             QAction* act = acts[i];
                             // set the menu user data
-                            act->setData(QString::fromLatin1(item->command().c_str()));
+                            act->setData(QString::fromStdString(item->command()));
                             used_actions.append(act);
                         }
                     }

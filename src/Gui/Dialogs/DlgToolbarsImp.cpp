@@ -108,7 +108,7 @@ DlgCustomToolbars::DlgCustomToolbars(DlgCustomToolbars::Type t, QWidget* parent)
 
     Workbench* w = WorkbenchManager::instance()->active();
     if (w) {
-        QString name = QString::fromLatin1(w->name().c_str());
+        QString name = QString::fromStdString(w->name());
         int index = ui->workbenchBox->findData(name);
         ui->workbenchBox->setCurrentIndex(index);
     }
