@@ -1059,9 +1059,8 @@ const char* Command::keySequenceToAccel(int sk) const
     auto type = static_cast<QKeySequence::StandardKey>(sk);
     QKeySequence ks(type);
     QString qs = ks.toString();
-    QByteArray data = qs.toLatin1();
 
-    return (strings[sk] = static_cast<const char*>(data)).c_str();
+    return (strings[sk] = qs.toStdString()).c_str();
 }
 
 void Command::printConflictingAccelerators() const

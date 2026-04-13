@@ -488,7 +488,7 @@ Application::Application(bool GUIenabled)
         hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
         QString lang = QLocale::languageToString(QLocale().language());
         Translator::instance()->activateLanguage(
-            hPGrp->GetASCII("Language", (const char*)lang.toLatin1()).c_str());
+            hPGrp->GetASCII("Language", lang.toUtf8().constData()).c_str());
         GetWidgetFactorySupplier();
 
         // Coin3d disabled VBO support for all Intel drivers but in the meantime they have improved
@@ -1979,7 +1979,7 @@ QPixmap Application::workbenchIcon(const QString& wb) const
 {
     Base::PyGILStateLocker lock;
     // get the python workbench object from the dictionary
-    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toLatin1());
+    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toUtf8());
     // test if the workbench exists
     if (pcWorkbench) {
         // make a unique icon name
@@ -2056,7 +2056,7 @@ QString Application::workbenchToolTip(const QString& wb) const
 {
     // get the python workbench object from the dictionary
     Base::PyGILStateLocker lock;
-    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toLatin1());
+    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toUtf8());
     // test if the workbench exists
     if (pcWorkbench) {
         // get its ToolTip member if possible
@@ -2080,7 +2080,7 @@ QString Application::workbenchMenuText(const QString& wb) const
 {
     // get the python workbench object from the dictionary
     Base::PyGILStateLocker lock;
-    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toLatin1());
+    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toUtf8());
     // test if the workbench exists
     if (pcWorkbench) {
         // get its ToolTip member if possible

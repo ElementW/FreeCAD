@@ -187,7 +187,7 @@ void StdCmdOpen::activated(int iMsg)
             // Set flag indicating that this load/restore has been initiated by the user (not by a macro)
             getGuiApplication()->setStatus(Gui::Application::UserInitiatedOpenDocument, true);
 
-            getGuiApplication()->open(it.key().toUtf8(), it.value().toLatin1());
+            getGuiApplication()->open(it.key().toUtf8(), it.value().toUtf8());
 
             getGuiApplication()->setStatus(Gui::Application::UserInitiatedOpenDocument, false);
 
@@ -259,7 +259,7 @@ void StdCmdImport::activated(int iMsg)
         &selectedFilter
     );
     if (!fileList.isEmpty()) {
-        hPath->SetASCII("FileImportFilter", selectedFilter.toLatin1().constData());
+        hPath->SetASCII("FileImportFilter", selectedFilter.toUtf8().constData());
         SelectModule::Dict dict = SelectModule::importHandler(fileList, selectedFilter);
 
         bool emptyDoc = (getActiveGuiDocument()->getDocument()->countObjects() == 0);
@@ -268,7 +268,7 @@ void StdCmdImport::activated(int iMsg)
             getGuiApplication()->importFrom(
                 it.key().toUtf8(),
                 getActiveGuiDocument()->getDocument()->getName(),
-                it.value().toLatin1()
+                it.value().toUtf8()
             );
         }
 
@@ -540,12 +540,12 @@ void StdCmdExport::activated(int iMsg)
         &selectedFilter
     );
     if (!filename.isEmpty()) {
-        hPath->SetASCII("FileExportFilter", selectedFilter.toLatin1().constData());
+        hPath->SetASCII("FileExportFilter", selectedFilter.toUtf8().constData());
 
         SelectModule::Dict dict = SelectModule::exportHandler(filename, selectedFilter);
         // export the files with the associated modules
         for (SelectModule::Dict::iterator it = dict.begin(); it != dict.end(); ++it) {
-            getGuiApplication()->exportTo(it.key().toUtf8(), doc->getName(), it.value().toLatin1());
+            getGuiApplication()->exportTo(it.key().toUtf8(), doc->getName(), it.value().toUtf8());
         }
 
         // Keep a record of if the user used our suggested generated filename. If they

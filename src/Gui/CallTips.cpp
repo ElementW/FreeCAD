@@ -199,12 +199,12 @@ QString CallTipsList::extractContext(const QString& line) const
     int index = len - 1;
     for (int i = 0; i < len; i++) {
         int pos = len - 1 - i;
-        const char ch = line.at(pos).toLatin1();
-        if ((ch >= 48 && ch <= 57) ||       // Numbers
-            (ch >= 65 && ch <= 90) ||       // Uppercase letters
-            (ch >= 97 && ch <= 122) ||      // Lowercase letters
-            (ch == '.') || (ch == '_') ||   // dot or underscore
-            (ch == ' ') || (ch == '\t')) {  // whitespace (between dot and text)
+        const auto ch = line.at(pos).unicode();
+        if ((ch >= u'0' && ch <= u'9') ||     // Numbers
+            (ch >= u'A' && ch <= u'Z') ||     // Uppercase letters
+            (ch >= u'a' && ch <= u'z') ||     // Lowercase letters
+            (ch == u'.') || (ch == u'_') ||   // dot or underscore
+            (ch == u' ') || (ch == u'\t')) {  // whitespace (between dot and text)
             index = pos;
         }
         else {
@@ -235,7 +235,7 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
         QStringList items = context.split(QLatin1Char('.'));
         QString modname = items.front();
         items.pop_front();
-        if (!dict.hasKey(std::string(modname.toLatin1()))) {
+        if (!dict.hasKey(modname.toStdString())) {
             return tips;  // unknown object
         }
         // Don't use hasattr & getattr because if a property is bound to a method this will be
