@@ -23,7 +23,11 @@
 
 #include "FcstdInfoSource.h"
 
-#include <sstream>
+#if __cplusplus >= 202302L
+# include <spanstream>
+#else
+# include <ostream>
+#endif
 
 #include <Base/Console.h>
 #include <Base/Stream.h>
@@ -53,10 +57,21 @@ static QByteArray loadFCStdThumbnail(const App::ProjectFile& proj, const QString
                 createThumbnailsDir();
 
                 // Read the thumbnail into a buffer
-                QByteArray data(proj.sizeOfFile(pathToThumbnail), Qt::Uninitialized);
-                std::ostringstream dataStream;
-                dataStream.rdbuf()->pubsetbuf(data.data(), data.size());
+                const auto dataSize = proj.sizeOfFile(pathToThumbnail);
+#if __cplusplus >= 202302L
+                QByteArray data(dataSize, Qt::Uninitialized);
+                std::spanstream dataStream({data.data(), size_t(data.size())});
+#else
+                std::string dataString;
+                dataString.reserve(dataSize);
+                Base::StringOStreambuf dataStreambuf(dataString);
+                std::ostream dataStream(&dataStreambuf);
+#endif
                 proj.readInputFileDirect(pathToThumbnail, dataStream);
+#if __cplusplus < 202302L
+                // Incurs a copy
+                QByteArray data(dataString.data(), qsizetype(dataString.size()));
+#endif
 
                 // Save that buffer to the thumbnail cache
                 const Base::FileInfo thumbnailFileInfo(pathToCachedThumbnail.toStdString());
