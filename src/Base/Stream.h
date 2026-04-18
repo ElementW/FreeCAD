@@ -30,10 +30,12 @@
 #endif
 
 #include <fstream>
+#include <span>
 #include <sstream>
+#include <streambuf>
 #include <string>
 #include <vector>
-#include <streambuf>
+
 #include "FileInfo.h"
 
 
@@ -421,6 +423,100 @@ public:
 private:
     const std::string& _buffer;
     int _beg, _end, _cur;
+};
+
+/**
+ * Streambuf for reading/writing to a fixed memory buffer.
+ * Equivalent in functionality to C++23 std::spanbuf.
+ */
+class BaseExport
+#if __cplusplus >= 202302L
+    [[deprecated("Use std::spanbuf wrapped in a \"#if __cplusplus >= 202302L\" condition instead")]]
+#endif
+    BufferStreambuf: public std::streambuf
+{
+public:
+    BufferStreambuf()
+        : BufferStreambuf(std::ios::in | std::ios::out)
+    {}
+
+    explicit BufferStreambuf(std::ios::openmode mode)
+        : std::streambuf()
+        , mode(mode)
+    {}
+
+    explicit BufferStreambuf(
+        std::span<char> buffer,
+        std::ios::openmode mode = std::ios::in | std::ios::out
+    )
+        : std::streambuf()
+        , mode(mode)
+    {
+        span(buffer);
+    }
+
+
+    BufferStreambuf(BufferStreambuf&& rhs)
+        : std::streambuf(rhs)
+        , mode(rhs.mode)
+    {
+        span(rhs.buffer);
+    }
+    BufferStreambuf& operator=(BufferStreambuf&& rhs)
+    {
+        mode = rhs.mode;
+        buffer = rhs.buffer;
+        std::streambuf::operator=(std::move(rhs));
+        return *this;
+    }
+
+    BufferStreambuf(const BufferStreambuf&) = delete;
+    BufferStreambuf& operator=(const BufferStreambuf&) = delete;
+
+    void swap(BufferStreambuf& rhs)
+    {
+        std::streambuf::swap(rhs);
+        std::swap(mode, rhs.mode);
+        std::swap(buffer, rhs.buffer);
+    }
+
+    std::span<char> span() const noexcept
+    {
+        if (mode & std::ios::out) {
+            return {pbase(), pptr()};
+        }
+        return buffer;
+    }
+
+    void span(std::span<char> s) noexcept
+    {
+        buffer = s;
+        if (mode & std::ios::in) {
+            setg(s.data(), s.data(), s.data() + s.size());
+        }
+        if (mode & std::ios::out) {
+            setp(s.data(), s.data() + s.size());
+            if (mode & std::ios::ate) {
+                pbump(s.size());
+            }
+        }
+    }
+
+protected:
+    std::streambuf* setbuf(char* s, std::streamsize n) override;
+    pos_type seekoff(
+        off_type off,
+        std::ios::seekdir way,
+        std::ios::openmode mode = std::ios::in | std::ios::out
+    ) override;
+    pos_type seekpos(
+        pos_type pos,
+        std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out
+    ) override;
+
+private:
+    std::ios_base::openmode mode;
+    std::span<char> buffer;
 };
 
 class BaseExport PyStreambuf: public std::streambuf
