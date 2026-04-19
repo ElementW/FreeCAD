@@ -21,51 +21,61 @@
  *                                                                          *
  ***************************************************************************/
 
-#include <QFile>
+#include "FileCardDelegate.h"
+
+#include <cstdint>
+
+#include <QApplication>
+#include <QCache>
 #include <QFileIconProvider>
+#include <QFileInfo>
 #include <QImageReader>
 #include <QPainter>
-#include <QStyleOptionViewItem>
-#include <QLabel>
-#include <QModelIndex>
-#include <QVBoxLayout>
-#include <QApplication>
-#include <QPushButton>
-#include <QString>
-#include <QAbstractItemView>
-#include <QCache>
 
-#include "FileCardDelegate.h"
+#include <App/Application.h>
+
 #include "../App/DisplayedFilesModel.h"
-#include "App/Application.h"
-#include <Base/Color.h>
-#include <Base/Console.h>
-#include <Gui/Application.h>
-#include <Gui/MainWindow.h>
 
 using namespace Start;
 
-
-static QCache<QString, QPixmap> thumbnailCache;  // cache key structure: "path:modtime:size:fallback"
-static constexpr const int CACHE_SIZE_MB = 50;   // 50MB cache limit
-
-static QString getCacheKey(const QString& path, int thumbnailSize, bool fallback)
+namespace
 {
-    QFileInfo fileInfo(path);
-    if (!fileInfo.exists()) {
-        return {};
+struct ThumbnailData
+{
+    enum class Source : uint8_t
+    {
+        Default = 0,
+        DataModelProvided = 1,
+    };
+
+    QPixmap pixmap;
+    qint64 lastModified;
+    int thumbnailSize;
+    Source source;
+
+    ThumbnailData() = default;
+    ThumbnailData(QPixmap pixmap, const QString& path, int thumbnailSize, Source source)
+        : pixmap(std::move(pixmap))
+        , thumbnailSize(thumbnailSize)
+        , source(source)
+    {
+        const QFileInfo fileInfo(path);
+        lastModified = fileInfo.exists() ? fileInfo.lastModified().toSecsSinceEpoch() : 0;
     }
 
-    // create cache key: path:modtime:size:fallback
-    QString modTime = QString::number(fileInfo.lastModified().toSecsSinceEpoch());
-    return QStringLiteral("%1:%2:%3:%4")
-        .arg(
-            path,
-            modTime,
-            QString::number(thumbnailSize),
-            fallback ? QStringLiteral("1") : QStringLiteral("0")
-        );
-}
+    bool isStale(const QString& path, int newThumbnailSize, Source newSource) const
+    {
+        const QFileInfo fileInfo(path);
+        return (lastModified != (fileInfo.exists() ? fileInfo.lastModified().toSecsSinceEpoch() : 0))
+            || (thumbnailSize != newThumbnailSize)
+            || (newSource > source)  // Thumbnail sources have priorities
+            ;
+    }
+};
+}  // namespace
+
+static QCache<QString, ThumbnailData> thumbnailCache;
+static constexpr const int CACHE_SIZE_MB = 50;  // 50MB cache limit
 
 FileCardDelegate::FileCardDelegate(QObject* parent)
     : QStyledItemDelegate(parent)
@@ -111,7 +121,7 @@ void FileCardDelegate::paint(
     if ((option.state & QStyle::State_Sunken) != 0) {
         buttonOption.state |= QStyle::State_Sunken;
     }
-    qApp->style()->drawControl(QStyle::CE_PushButton, &buttonOption, painter, &styleButton);
+    QApplication::style()->drawControl(QStyle::CE_PushButton, &buttonOption, painter, &styleButton);
 
     // Step 2: Fetch required data
     using Roles = DisplayedFilesModelRoles;
@@ -124,36 +134,39 @@ void FileCardDelegate::paint(
 
     QPixmap pixmap;
     // Check if we have this thumbnail already inside cache, don't load it once again.
-    const auto cacheKey = getCacheKey(path, thumbnailSize, image.isEmpty());
-    if (!cacheKey.isEmpty()) {
-        if (QPixmap* cachedThumbnail = thumbnailCache.object(cacheKey)) {
-            pixmap = *cachedThumbnail;
-        }
+    const auto source = image.isEmpty() ? ThumbnailData::Source::Default
+                                        : ThumbnailData::Source::DataModelProvided;
+    if (ThumbnailData* cachedThumbnailData = thumbnailCache.object(path);
+        cachedThumbnailData != nullptr && !cachedThumbnailData->isStale(path, thumbnailSize, source)) {
+        pixmap = cachedThumbnailData->pixmap;
     }
-    // If not and encoded thumbnail bytes are available, attempt decoding them,
-    // deleting the backing thumbnail file if that fails (assumed to be corrupt).
-    if (pixmap.isNull() && !image.isEmpty() && !pixmap.loadFromData(image)) {
-        Base::Console().log("Failed to load thumbnail for %s\n", path.toStdString());
-        if (auto imageCachePath = index.data(static_cast<int>(Roles::imageCachePath)).toString();
-            !imageCachePath.isEmpty()) {
-            if (QFile imageCacheFile(imageCachePath); imageCacheFile.exists()) {
-                Base::Console().log("Deleting cached thumbnail at %s\n", imageCachePath.toStdString());
-                // Ignore deletion failure, not critical
-                (void)imageCacheFile.remove();
+    else {
+        // If not and encoded thumbnail bytes are available, attempt decoding them,
+        // deleting the backing thumbnail file if that fails (assumed to be corrupt).
+        if (pixmap.isNull() && !image.isEmpty() && !pixmap.loadFromData(image)) {
+            // Don't be tempted to set `source` to `Default` here, the point is that even a
+            // failed thumbnail load's fallback gets cached with that level of priority.
+            Base::Console().log("Failed to load thumbnail for %s\n", path.toStdString());
+            if (auto imageCachePath = index.data(static_cast<int>(Roles::imageCachePath)).toString();
+                !imageCachePath.isEmpty()) {
+                if (QFile imageCacheFile(imageCachePath); imageCacheFile.exists()) {
+                    Base::Console().log(
+                        "Deleting cached thumbnail at %s\n",
+                        imageCachePath.toStdString()
+                    );
+                    // Ignore deletion failure, not critical
+                    (void)imageCacheFile.remove();
+                }
             }
         }
-    }
-    // Check for null again in case no data is available yet or the above loadFromData() failed
-    if (pixmap.isNull()) {
-        pixmap = loadThumbnail(path, thumbnailSize);
-    }
-    // Cache the thumbnail if valid.
-    if (!pixmap.isNull() && !cacheKey.isEmpty()) {
-        thumbnailCache.insert(cacheKey, new QPixmap(pixmap), 1);
-        // If this is a thumbnail provided by the QModelIndex, delete the
-        // fallback thumbnail thay may have been shown in the interim.
-        if (!image.isEmpty()) {
-            thumbnailCache.remove(getCacheKey(path, thumbnailSize, true));
+        // Check for null again in case no data model thumbnail is available yet or
+        // the above loadFromData() failed
+        if (pixmap.isNull()) {
+            pixmap = loadThumbnail(path, thumbnailSize);
+        }
+        // Cache the thumbnail if valid.
+        if (!pixmap.isNull()) {
+            thumbnailCache.insert(path, new ThumbnailData(pixmap, path, thumbnailSize, source), 1);
         }
     }
 

@@ -23,12 +23,11 @@
 
 #pragma once
 
-#include <Base/Parameter.h>
-#include <QEvent>
-#include <QFileInfo>
-#include <QImage>
 #include <QPushButton>
 #include <QStyledItemDelegate>
+
+#include <Base/Parameter.h>
+
 
 class FileCardDelegate: public QStyledItemDelegate
 {
