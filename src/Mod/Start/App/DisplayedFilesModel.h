@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include <gsl/pointers>
 
 #include <QAbstractListModel>
@@ -94,7 +96,7 @@ public:
 
     void addInfoSourceType(const InfoSourceType&);
 
-    void addFile(const QString& filePath);
+    void addFile(const std::filesystem::path& filePath);
 
     void clear();
 
@@ -105,7 +107,7 @@ protected:
 
     /// Process incoming metadata & thumbnail about a file
     void processNewFileInfo(
-        const QString& filePath,
+        const std::filesystem::path& filePath,
         const FileStats& stats,
         const QByteArray& thumbnail,
         const QString& thumbnailPath
@@ -116,7 +118,7 @@ private:
     int _thumbnailSizeHint;
     std::vector<gsl::not_null<const InfoSourceType*>> _infoSourceTypes;
     std::vector<FileStats> _fileInfoCache;
-    QMap<QString, QByteArray> _imageCache;
+    QMap<std::filesystem::path, QByteArray> _imageCache;
 };
 
 }  // namespace Start

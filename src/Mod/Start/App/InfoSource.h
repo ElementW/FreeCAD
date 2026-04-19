@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include <QObject>
 #include <QRunnable>
 #include <QString>
@@ -39,7 +41,7 @@ class InfoSourceSignals: public QObject
 public:
 Q_SIGNALS:
     void infoAvailable(
-        const QString& filePath,
+        const std::filesystem::path& filePath,
         const FileStats& stats,
         const QByteArray& thumbnail,
         const QString& thumbnailPath
@@ -50,8 +52,8 @@ class InfoSource;
 
 struct InfoSourceType
 {
-    using Constructor = InfoSource*(QString filePath, int thumbnailSizeHint);
-    using HandlesFile = bool(const QFileInfo&);
+    using Constructor = InfoSource*(std::filesystem::path filePath, int thumbnailSizeHint);
+    using HandlesFile = bool(const std::filesystem::path&);
     Constructor* makeSource;
     HandlesFile* handlesFile;
 };

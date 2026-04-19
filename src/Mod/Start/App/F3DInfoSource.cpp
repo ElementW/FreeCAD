@@ -158,10 +158,10 @@ static void setupF3D()
 }
 
 constexpr InfoSource::Type F3DInfoSource::type {
-    .makeSource = [](QString filePath, int) -> InfoSource* {
+    .makeSource = [](std::filesystem::path filePath, int) -> InfoSource* {
         return new F3DInfoSource(std::move(filePath));
     },
-    .handlesFile = [](const QFileInfo& qfi) -> bool {
+    .handlesFile = [](const std::filesystem::path& filePath) -> bool {
         static const QStringList ignoredExtensions {
             QStringLiteral("fcstd"),
             QStringLiteral("fcmacro"),
@@ -181,7 +181,7 @@ constexpr InfoSource::Type F3DInfoSource::type {
     },
 };
 
-F3DInfoSource::F3DInfoSource(QString filePath)
+F3DInfoSource::F3DInfoSource(std::filesystem::path filePath)
     : filePath(std::move(filePath))
 {}
 

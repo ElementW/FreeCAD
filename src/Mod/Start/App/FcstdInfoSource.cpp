@@ -41,7 +41,7 @@ using namespace Start;
 /// \returns The image bytes, or an empty QByteArray (if no thumbnail was stored)
 static std::pair<QByteArray, QString> loadFCStdThumbnail(
     const App::ProjectFile& proj,
-    const QString& filePath
+    const std::filesystem::path& filePath
 )
 {
     try {
@@ -79,7 +79,7 @@ static std::pair<QByteArray, QString> loadFCStdThumbnail(
         }
     }
     catch (...) {
-        Base::Console().log("Failed to load thumbnail for %s", filePath.toStdString());
+        Base::Console().log("Failed to load thumbnail for %s", filePath.string());
     }
     return {};
 }
@@ -98,7 +98,7 @@ static FileStats getProjectFileInfo(const App::ProjectFile& proj)
 }
 
 constexpr InfoSource::Type FcstdInfoSource::type {
-    .makeSource = [](QString filePath, int) -> InfoSource* {
+    .makeSource = [](std::filesystem::path filePath, int) -> InfoSource* {
         return new FcstdInfoSource(std::move(filePath));
     },
     .handlesFile = [](const QFileInfo& qfi) -> bool {
@@ -107,14 +107,13 @@ constexpr InfoSource::Type FcstdInfoSource::type {
     },
 };
 
-FcstdInfoSource::FcstdInfoSource(QString filePath)
+FcstdInfoSource::FcstdInfoSource(std::filesystem::path filePath)
     : filePath(std::move(filePath))
 {}
 
 void FcstdInfoSource::run()
 {
-    const std::string stdFilePath(filePath.toStdString());
-    App::ProjectFile proj(stdFilePath);
+    App::ProjectFile proj(filePath.string());
     proj.loadDocument();
     auto fileStats = getProjectFileInfo(proj);
     auto thumbnail = loadFCStdThumbnail(proj, filePath);

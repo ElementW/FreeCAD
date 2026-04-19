@@ -113,7 +113,7 @@ QVariant DisplayedFilesModel::data(const QModelIndex& index, int role) const
             }
             break;
         case DisplayedFilesModelRoles::image: {
-            if (const auto path = QString::fromStdString(mapEntry.at(DisplayedFilesModelRoles::path));
+            if (const auto& path = mapEntry.at(DisplayedFilesModelRoles::path);
                 _imageCache.contains(path)) {
                 return _imageCache[path];
             }
@@ -158,20 +158,20 @@ void DisplayedFilesModel::addInfoSourceType(const InfoSourceType& type)
 
 static InfoSource* createInfoSource(
     const std::vector<gsl::not_null<const InfoSourceType*>>& types,
-    const QFileInfo& qfi,
+    const std::filesystem::path& filePath,
     int thumbnailSizeHint
 )
 {
     // Iterate backwards so the last info source types that were added take priority
     for (gsl::not_null<const InfoSourceType*> type : std::views::reverse(types)) {
-        if (type->handlesFile(qfi)) {
-            return type->makeSource(qfi.absoluteFilePath(), thumbnailSizeHint);
+        if (type->handlesFile(filePath)) {
+            return type->makeSource(filePath, thumbnailSizeHint);
         }
     }
     return nullptr;
 }
 
-void DisplayedFilesModel::addFile(const QString& filePath)
+void DisplayedFilesModel::addFile(const std::filesystem::path& filePath)
 {
     const QFileInfo qfi(filePath);
     if (!qfi.isReadable()) {
@@ -184,10 +184,10 @@ void DisplayedFilesModel::addFile(const QString& filePath)
 
     {
         QMutexLocker locker(&_mutex);
-        _fileInfoCache.emplace_back(getCommonFileInfo(filePath.toStdString()));
+        _fileInfoCache.emplace_back(getCommonFileInfo(filePath));
     }
 
-    InfoSource* source = createInfoSource(_infoSourceTypes, qfi, _thumbnailSizeHint);
+    InfoSource* source = createInfoSource(_infoSourceTypes, filePath, _thumbnailSizeHint);
     if (source) {
         connect(
             &source->signals,
@@ -224,7 +224,7 @@ QHash<int, QByteArray> DisplayedFilesModel::roleNames() const
     return nameMap;
 }
 
-static std::size_t indexOfFile(const std::vector<FileStats>& fileInfoCache, const std::string& filePath)
+static std::size_t indexOfFile(const std::vector<FileStats>& fileInfoCache, const std::filesystem::path& filePath)
 {
     auto it = std::ranges::find_if(fileInfoCache, [filePath](const FileStats& row) {
         auto pathIt = row.find(DisplayedFilesModelRoles::path);
@@ -234,7 +234,7 @@ static std::size_t indexOfFile(const std::vector<FileStats>& fileInfoCache, cons
 }
 
 void DisplayedFilesModel::processNewFileInfo(
-    const QString& filePath,
+    const std::filesystem::path& filePath,
     const FileStats& stats,
     const QByteArray& thumbnail,
     const QString& thumbnailPath
@@ -242,7 +242,7 @@ void DisplayedFilesModel::processNewFileInfo(
 {
     QMutexLocker locker(&_mutex);
 
-    const std::size_t index = indexOfFile(_fileInfoCache, filePath.toStdString());
+    const std::size_t index = indexOfFile(_fileInfoCache, filePath);
     if (index == _fileInfoCache.size()) {
         return;
     }

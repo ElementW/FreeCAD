@@ -33,13 +33,13 @@ class FcstdInfoSource: public InfoSource
 public:
     static const Type type;
 
-    explicit FcstdInfoSource(QString filePath);
+    explicit FcstdInfoSource(std::filesystem::path filePath);
     ~FcstdInfoSource() override = default;
 
     void run() override;
 
 private:
-    QString filePath;
+    std::filesystem::path filePath;
 };
 
 }  // namespace Start

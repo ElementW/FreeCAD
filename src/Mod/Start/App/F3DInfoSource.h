@@ -33,13 +33,13 @@ class F3DInfoSource: public InfoSource
 public:
     static const Type type;
 
-    explicit F3DInfoSource(QString filePath);
+    explicit F3DInfoSource(std::filesystem::path filePath);
     ~F3DInfoSource() override = default;
 
     void run() override;
 
 private:
-    QString filePath;
+    std::filesystem::path filePath;
 };
 
 }  // namespace Start
