@@ -27,7 +27,6 @@
 #include <Base/Type.h>
 #include <Gui/MDIView.h>
 
-#include "../App/DisplayedFilesModel.h"
 #include "../App/RecentFilesModel.h"
 #include "../App/ExamplesModel.h"
 #include "../App/CustomFolderModel.h"

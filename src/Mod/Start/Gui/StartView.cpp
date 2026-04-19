@@ -21,33 +21,26 @@
  *                                                                          *
  ***************************************************************************/
 
-
-#include <QApplication>
-#include <QCheckBox>
-#include <QFrame>
-#include <QGridLayout>
-#include <QLabel>
-#include <QListView>
-#include <QMdiSubWindow>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QScrollArea>
-#include <QTimer>
-#include <QWidget>
-#include <QStackedWidget>
-#include <QShowEvent>
-
 #include "StartView.h"
-#include "FileCardDelegate.h"
-#include "FileCardView.h"
-#include "FirstStartWidget.h"
-#include "FlowLayout.h"
-#include "NewFileButton.h"
-#include "QImageReaderInfoSource.h"
-#include <App/DocumentObject.h>
-#include <App/Application.h>
+
+#include <QCheckBox>
+#include <QCoreApplication>
+#include <QEvent>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QList>
+#include <QListView>
+#include <QMdiArea>
+#include <QMdiSubWindow>
+#include <QTimer>
+#include <QScrollArea>
+#include <QStackedWidget>
+#include <QVBoxLayout>
+
 #include <Base/Interpreter.h>
-#include <Base/Tools.h>
+
+#include <App/Application.h>
+
 #include <Gui/Action.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
@@ -56,8 +49,14 @@
 #include <Gui/ModuleIO.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
-#include <gsl/pointers>
-#include <string>
+
+#include "FileCardDelegate.h"
+#include "FileCardView.h"
+#include "FirstStartWidget.h"
+#include "FlowLayout.h"
+#include "NewFileButton.h"
+#include "QImageReaderInfoSource.h"
+
 
 using namespace StartGui;
 
@@ -368,7 +367,7 @@ void StartView::newArchFile()
     }
 
     // Set the camera zoom level to 10 m, which is more appropriate for architectural projects
-    Gui::Command::doCommand(
+    Gui::Command::runCommand(
         Gui::Command::Gui,
         "Gui.activeDocument().activeView().viewDefaultOrientation(None, 10000.0)"
     );
