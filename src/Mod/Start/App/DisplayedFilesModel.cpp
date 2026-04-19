@@ -31,7 +31,7 @@
 
 #include "FcstdInfoSource.h"
 #include "FileUtilities.h"
-#include "ThumbnailSource.h"
+#include "F3DInfoSource.h"
 
 
 using namespace Start;
@@ -141,6 +141,34 @@ QVariant DisplayedFilesModel::data(const QModelIndex& index, int role) const
     return {};
 }
 
+static InfoSource* createInfoSource(const QFileInfo& qfi)
+{
+    const auto lowercaseExtension = qfi.suffix().toLower();
+    if (lowercaseExtension == QStringLiteral("fcstd")) {
+        return new FcstdInfoSource(qfi.absoluteFilePath());
+    }
+    const QStringList ignoredExtensions {
+        QStringLiteral("fcmacro"),
+        QStringLiteral("py"),
+        QStringLiteral("pyi"),
+        QStringLiteral("csv"),
+        QStringLiteral("txt"),
+        QStringLiteral("tif"),
+        QStringLiteral("tiff"),
+        QStringLiteral("png"),
+        QStringLiteral("jpeg"),
+        QStringLiteral("jpg"),
+        QStringLiteral("bmp"),
+        QStringLiteral("tga"),
+    };
+    if (ignoredExtensions.contains(lowercaseExtension)) {
+        // Don't try to generate a thumbnail for things like this: FreeCAD can read them, but
+        // there's not much point in showing anything besides a generic icon
+        return nullptr;
+    }
+    return new F3DInfoSource(qfi.absoluteFilePath());
+}
+
 void DisplayedFilesModel::addFile(const QString& filePath)
 {
     const QFileInfo qfi(filePath);
@@ -157,38 +185,17 @@ void DisplayedFilesModel::addFile(const QString& filePath)
         _fileInfoCache.emplace_back(getCommonFileInfo(filePath.toStdString()));
     }
 
-    const auto lowercaseExtension = qfi.suffix().toLower();
-    if (lowercaseExtension == QLatin1String("fcstd")) {
-        const auto runner = new FcstdInfoSource(filePath);
+    InfoSource* source = createInfoSource(qfi);
+    if (source) {
         connect(
-            runner->signals(),
-            &FcstdInfoSource::Signals::infoAvailable,
+            &source->signals,
+            &InfoSource::Signals::infoAvailable,
             this,
-            &DisplayedFilesModel::processNewFcstdInfo
+            &DisplayedFilesModel::processNewFileInfo
         );
-        QThreadPool::globalInstance()->start(runner);
-        return;
+        // `source` will be deleted by the thread pool once work is done
+        QThreadPool::globalInstance()->start(source);
     }
-    const QStringList ignoredExtensions {
-        QLatin1String("fcmacro"),
-        QLatin1String("py"),
-        QLatin1String("pyi"),
-        QLatin1String("csv"),
-        QLatin1String("txt")
-    };
-    if (ignoredExtensions.contains(lowercaseExtension)) {
-        // Don't try to generate a thumbnail for things like this: FreeCAD can read them, but
-        // there's not much point in showing anything besides a generic icon
-        return;
-    }
-    const auto runner = new ThumbnailSource(filePath);
-    connect(
-        runner->signals(),
-        &ThumbnailSource::Signals::thumbnailAvailable,
-        this,
-        &DisplayedFilesModel::processNewThumbnail
-    );
-    QThreadPool::globalInstance()->start(runner);
 }
 
 void DisplayedFilesModel::clear()
@@ -224,7 +231,7 @@ static std::size_t indexOfFile(const std::vector<FileStats>& fileInfoCache, cons
     return std::distance(fileInfoCache.begin(), it);
 }
 
-void DisplayedFilesModel::processNewFcstdInfo(
+void DisplayedFilesModel::processNewFileInfo(
     const QString& filePath,
     const FileStats& stats,
     const QByteArray& thumbnail,
@@ -256,38 +263,5 @@ void DisplayedFilesModel::processNewFcstdInfo(
 
     locker.unlock();
     QModelIndex qmi = createIndex(index, 0);
-    Q_EMIT(dataChanged(qmi, qmi, changedRoles));
-}
-
-void DisplayedFilesModel::processNewThumbnail(
-    const QString& filePath,
-    const QByteArray& thumbnail,
-    const QString& thumbnailPath
-)
-{
-    if (thumbnail.isEmpty()) {
-        return;
-    }
-
-    QMutexLocker locker(&_mutex);
-    QList<int> changedRoles;
-
-    _imageCache.insert(filePath, thumbnail);
-    changedRoles.append(static_cast<int>(DisplayedFilesModelRoles::image));
-
-    const std::size_t index = indexOfFile(_fileInfoCache, filePath.toStdString());
-    if (index == _fileInfoCache.size()) {
-        Base::Console().log("Unrecognized path %s\n", filePath.toStdString());
-        return;
-    }
-
-    if (!thumbnailPath.isEmpty()) {
-        auto& info = _fileInfoCache[index];
-        info.emplace(DisplayedFilesModelRoles::imageCachePath, thumbnailPath.toStdString());
-        changedRoles.append(static_cast<int>(DisplayedFilesModelRoles::imageCachePath));
-    }
-
-    locker.unlock();
-    QModelIndex qmi = createIndex(index, 0);
-    Q_EMIT(dataChanged(qmi, qmi, changedRoles));
+    Q_EMIT dataChanged(qmi, qmi, changedRoles);
 }

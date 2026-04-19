@@ -92,17 +92,10 @@ protected:
     /// DisplayedFilesModelRoles enumeration
     QHash<int, QByteArray> roleNames() const override;
 
-    /// Process incoming metadata & thumbnail about an FCStd file
-    void processNewFcstdInfo(
+    /// Process incoming metadata & thumbnail about a file
+    void processNewFileInfo(
         const QString& filePath,
         const FileStats& stats,
-        const QByteArray& thumbnail,
-        const QString& thumbnailPath
-    );
-
-    /// Process a new thumbnail produces by some sort of worker thread
-    void processNewThumbnail(
-        const QString& filePath,
         const QByteArray& thumbnail,
         const QString& thumbnailPath
     );

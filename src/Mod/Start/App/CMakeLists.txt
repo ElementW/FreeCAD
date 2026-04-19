@@ -33,15 +33,17 @@ set(Start_SRCS
         DisplayedFilesModel.h
         ExamplesModel.cpp
         ExamplesModel.h
+        F3DInfoSource.cpp
+        F3DInfoSource.h
         FcstdInfoSource.cpp
         FcstdInfoSource.h
         FileUtilities.cpp
         FileUtilities.h
+        InfoSource.h
         PreCompiled.h
         RecentFilesModel.cpp
         RecentFilesModel.h
-        ThumbnailSource.cpp
-        ThumbnailSource.h)
+        )
 
 add_library(Start SHARED ${Start_SRCS})
 
