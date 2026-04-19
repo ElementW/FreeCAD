@@ -199,6 +199,6 @@ void ThumbnailSource::run()
         );
     }
     if (QFile thumbnailFile(_thumbnailPath); thumbnailFile.open(QIODevice::OpenModeFlag::ReadOnly)) {
-        Q_EMIT _signals.thumbnailAvailable(_file, thumbnailFile.readAll());
+        Q_EMIT _signals.thumbnailAvailable(_file, thumbnailFile.readAll(), _thumbnailPath);
     }
 }

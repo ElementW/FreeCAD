@@ -41,14 +41,17 @@ using namespace Start;
 
 /// Load the thumbnail image data (if any) that is stored in an FCStd file.
 /// \returns The image bytes, or an empty QByteArray (if no thumbnail was stored)
-static QByteArray loadFCStdThumbnail(const App::ProjectFile& proj, const QString& filePath)
+static std::pair<QByteArray, QString> loadFCStdThumbnail(
+    const App::ProjectFile& proj,
+    const QString& filePath
+)
 {
     try {
         const QString pathToCachedThumbnail = getPathToCachedThumbnail(filePath);
         if (useCachedThumbnail(pathToCachedThumbnail, filePath)) {
             if (auto inputFile = QFile(pathToCachedThumbnail);
                 inputFile.exists() && inputFile.open(QIODevice::OpenModeFlag::ReadOnly)) {
-                return inputFile.readAll();
+                return {inputFile.readAll(), pathToCachedThumbnail};
             }
         }
         else {
@@ -73,7 +76,7 @@ static QByteArray loadFCStdThumbnail(const App::ProjectFile& proj, const QString
                 thumbnailFileStream.write(data.data(), data.size());
                 thumbnailFileStream.close();
 
-                return data;
+                return {data, pathToCachedThumbnail};
             }
         }
     }
@@ -107,5 +110,5 @@ void FcstdInfoSource::run()
     proj.loadDocument();
     auto fileStats = getProjectFileInfo(proj);
     auto thumbnail = loadFCStdThumbnail(proj, _filePath);
-    Q_EMIT _signals.infoAvailable(_filePath, fileStats, thumbnail);
+    Q_EMIT _signals.infoAvailable(_filePath, fileStats, thumbnail.first, thumbnail.second);
 }

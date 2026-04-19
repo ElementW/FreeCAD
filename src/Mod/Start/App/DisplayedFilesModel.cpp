@@ -91,6 +91,8 @@ QVariant DisplayedFilesModel::data(const QModelIndex& index, int role) const
             [[fallthrough]];
         case DisplayedFilesModelRoles::description:
             [[fallthrough]];
+        case DisplayedFilesModelRoles::imageCachePath:
+            [[fallthrough]];
         case DisplayedFilesModelRoles::license:
             [[fallthrough]];
         case DisplayedFilesModelRoles::modifiedTime:
@@ -204,6 +206,7 @@ QHash<int, QByteArray> DisplayedFilesModel::roleNames() const
         std::make_pair(static_cast<int>(DisplayedFilesModelRoles::creationTime), "creationTime"),
         std::make_pair(static_cast<int>(DisplayedFilesModelRoles::description), "description"),
         std::make_pair(static_cast<int>(DisplayedFilesModelRoles::image), "image"),
+        std::make_pair(static_cast<int>(DisplayedFilesModelRoles::imageCachePath), "imageCachePath"),
         std::make_pair(static_cast<int>(DisplayedFilesModelRoles::license), "license"),
         std::make_pair(static_cast<int>(DisplayedFilesModelRoles::modifiedTime), "modifiedTime"),
         std::make_pair(static_cast<int>(DisplayedFilesModelRoles::path), "path"),
@@ -224,7 +227,8 @@ static std::size_t indexOfFile(const std::vector<FileStats>& fileInfoCache, cons
 void DisplayedFilesModel::processNewFcstdInfo(
     const QString& filePath,
     const FileStats& stats,
-    const QByteArray& thumbnail
+    const QByteArray& thumbnail,
+    const QString& thumbnailPath
 )
 {
     QMutexLocker locker(&_mutex);
@@ -245,20 +249,31 @@ void DisplayedFilesModel::processNewFcstdInfo(
         _imageCache.insert(filePath, thumbnail);
         changedRoles.append(static_cast<int>(DisplayedFilesModelRoles::image));
     }
+    if (!thumbnailPath.isEmpty()) {
+        info.emplace(DisplayedFilesModelRoles::imageCachePath, thumbnailPath.toStdString());
+        changedRoles.append(static_cast<int>(DisplayedFilesModelRoles::imageCachePath));
+    }
 
     locker.unlock();
     QModelIndex qmi = createIndex(index, 0);
     Q_EMIT(dataChanged(qmi, qmi, changedRoles));
 }
 
-void DisplayedFilesModel::processNewThumbnail(const QString& filePath, const QByteArray& thumbnail)
+void DisplayedFilesModel::processNewThumbnail(
+    const QString& filePath,
+    const QByteArray& thumbnail,
+    const QString& thumbnailPath
+)
 {
     if (thumbnail.isEmpty()) {
         return;
     }
 
     QMutexLocker locker(&_mutex);
+    QList<int> changedRoles;
+
     _imageCache.insert(filePath, thumbnail);
+    changedRoles.append(static_cast<int>(DisplayedFilesModelRoles::image));
 
     const std::size_t index = indexOfFile(_fileInfoCache, filePath.toStdString());
     if (index == _fileInfoCache.size()) {
@@ -266,7 +281,13 @@ void DisplayedFilesModel::processNewThumbnail(const QString& filePath, const QBy
         return;
     }
 
+    if (!thumbnailPath.isEmpty()) {
+        auto& info = _fileInfoCache[index];
+        info.emplace(DisplayedFilesModelRoles::imageCachePath, thumbnailPath.toStdString());
+        changedRoles.append(static_cast<int>(DisplayedFilesModelRoles::imageCachePath));
+    }
+
     locker.unlock();
     QModelIndex qmi = createIndex(index, 0);
-    Q_EMIT(dataChanged(qmi, qmi, {static_cast<int>(DisplayedFilesModelRoles::image)}));
+    Q_EMIT(dataChanged(qmi, qmi, changedRoles));
 }

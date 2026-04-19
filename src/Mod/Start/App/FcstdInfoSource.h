@@ -37,7 +37,12 @@ class FcstdInfoSourceSignals: public QObject
     Q_OBJECT
 public:
 Q_SIGNALS:
-    void infoAvailable(const QString& filePath, const FileStats& stats, const QByteArray& thumbnail);
+    void infoAvailable(
+        const QString& filePath,
+        const FileStats& stats,
+        const QByteArray& thumbnail,
+        const QString& thumbnailPath
+    );
 };
 
 class FcstdInfoSource: public QRunnable

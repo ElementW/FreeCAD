@@ -34,16 +34,38 @@ namespace Start
 
 enum class DisplayedFilesModelRoles
 {
+    // QString, file name.
     baseName = Qt::UserRole + 1,
+
+    // QString, file path.
+    path,
+
+    // Optional QByteArray, encoded contents of the file thumbnail.
     image,
+
+    // Optional QString, filesystem path of the cached file thumbnail.
+    imageCachePath,
+
+    // Optional QString, human readable file size.
     size,
+
+    // Optional QString, file author name.
     author,
-    creationTime,
-    modifiedTime,
-    description,
+
+    // Optional QString, file company name.
     company,
+
+    // Optional QString, license covering the file.
     license,
-    path
+
+    // Optional QString, file conents decription.
+    description,
+
+    // QString, ISO 8601-formatted file creation date.
+    creationTime,
+
+    // QString, ISO 8601-formatted file modification date.
+    modifiedTime,
 };
 
 using FileStats = std::map<DisplayedFilesModelRoles, std::string>;
@@ -71,10 +93,19 @@ protected:
     QHash<int, QByteArray> roleNames() const override;
 
     /// Process incoming metadata & thumbnail about an FCStd file
-    void processNewFcstdInfo(const QString& filePath, const FileStats& stats, const QByteArray& thumbnail);
+    void processNewFcstdInfo(
+        const QString& filePath,
+        const FileStats& stats,
+        const QByteArray& thumbnail,
+        const QString& thumbnailPath
+    );
 
     /// Process a new thumbnail produces by some sort of worker thread
-    void processNewThumbnail(const QString& file, const QByteArray& thumbnail);
+    void processNewThumbnail(
+        const QString& filePath,
+        const QByteArray& thumbnail,
+        const QString& thumbnailPath
+    );
 
 private:
     mutable QMutex _mutex;

@@ -36,7 +36,7 @@ class ThumbnailSourceSignals: public QObject
     Q_OBJECT
 public:
 Q_SIGNALS:
-    void thumbnailAvailable(const QString& file, const QByteArray& data);
+    void thumbnailAvailable(const QString& file, const QByteArray& data, const QString& thumbnailPath);
 };
 
 class ThumbnailSource: public QRunnable
