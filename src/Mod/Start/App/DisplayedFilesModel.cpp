@@ -23,9 +23,8 @@
 
 #include "DisplayedFilesModel.h"
 
+#include <cctype>
 #include <ranges>
-
-#include <boost/algorithm/string/predicate.hpp>
 
 #include <QThreadPool>
 
@@ -58,7 +57,11 @@ static bool freecadCanOpen(const QString& extension)
     auto importTypes = App::GetApplication().getImportTypes();
     return std::ranges::find_if(
                importTypes,
-               [&ext](const auto& item) { return boost::iequals(item, ext); }
+               [&ext](const auto& item) {
+                   return std::ranges::equal(item, ext, [](unsigned char a, unsigned char b) -> bool {
+                       return std::tolower(a) == std::tolower(b);
+                   });
+               }
            )
         != importTypes.end();
 }

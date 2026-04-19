@@ -35,9 +35,6 @@
 #include <vector>
 #include <unordered_map>
 
-// boost
-#include <boost/algorithm/string/predicate.hpp>
-
 // fmt
 #include <fmt/format.h>
 
