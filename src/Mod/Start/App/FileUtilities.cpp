@@ -35,8 +35,9 @@
 
 void Start::createThumbnailsDir()
 {
-    if (!thumbnailsParentDir.exists(defaultThumbnailName)) {
-        thumbnailsParentDir.mkpath(defaultThumbnailName);
+    const auto dirName = defaultThumbnailDirName.toString();
+    if (!thumbnailsParentDir.exists(dirName)) {
+        thumbnailsParentDir.mkpath(dirName);
     }
 }
 
@@ -49,12 +50,13 @@ QString Start::getMD5Hash(const QString& path)
     QCryptographicHash hash(QCryptographicHash::Md5);
     hash.addData(url.toEncoded());
     const QByteArray ba = hash.result().toHex();
+    // Latin1 is a valid encoding to use here since toHex() is constrained to ASCII
     return QString::fromLatin1(ba);
 }
 
 QString Start::getPathToCachedThumbnail(const QString& path)
 {
-    const QString md5 = getMD5Hash(path) + QLatin1String(".png");
+    const QString md5 = getMD5Hash(path) + QStringLiteral(".png");
     return thumbnailsDir.absoluteFilePath(md5);
 }
 

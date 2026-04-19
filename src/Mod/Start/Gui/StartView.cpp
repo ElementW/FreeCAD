@@ -75,7 +75,7 @@ StartView::StartView(QWidget* parent)
     , _customFolderLabel {nullptr}
     , _showOnStartupCheckBox {nullptr}
 {
-    setObjectName(QLatin1String("StartView"));
+    setObjectName(QStringLiteral("StartView"));
     auto hGrp = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/Mod/Start"
     );
@@ -175,7 +175,7 @@ StartView::StartView(QWidget* parent)
     documentsMainLayout->addLayout(footerLayout);
 
     _openFirstStart = gsl::owner<QPushButton*>(new QPushButton());
-    _openFirstStart->setIcon(QIcon(QLatin1String(":/icons/preferences-general.svg")));
+    _openFirstStart->setIcon(QIcon(QStringLiteral(":/icons/preferences-general.svg")));
     connect(_openFirstStart, &QPushButton::clicked, this, &StartView::openFirstStartClicked);
 
     _showOnStartupCheckBox = gsl::owner<QCheckBox*>(new QCheckBox());
@@ -219,34 +219,36 @@ StartView::StartView(QWidget* parent)
 
 void StartView::configureNewFileButtons(QLayout* layout) const
 {
-    auto newEmptyFile = gsl::owner<NewFileButton*>(new NewFileButton(
-        {tr("Empty File"),
-         tr("Creates a new empty FreeCAD file"),
-         QLatin1String(":/icons/document-new.svg")}
-    ));
-    auto openFile = gsl::owner<NewFileButton*>(new NewFileButton(
-        {tr("Open File"),
-         tr("Opens an existing CAD file or 3D model"),
-         QLatin1String(":/icons/document-open.svg")}
-    ));
-    auto partDesign = gsl::owner<NewFileButton*>(new NewFileButton(
-        {tr("Parametric Body"),
-         tr("Creates a body with the Part Design workbench"),
-         QLatin1String(":/icons/PartDesignWorkbench.svg")}
-    ));
-    auto assembly = gsl::owner<NewFileButton*>(new NewFileButton(
-        {tr("Assembly"),
-         tr("Creates an assembly project"),
-         QLatin1String(":/icons/AssemblyWorkbench.svg")}
-    ));
-    auto draft = gsl::owner<NewFileButton*>(new NewFileButton(
-        {tr("2D Draft"), tr("Creates a 2D Draft document"), QLatin1String(":/icons/DraftWorkbench.svg")}
-    ));
-    auto arch = gsl::owner<NewFileButton*>(new NewFileButton(
-        {tr("BIM/Architecture"),
-         tr("Creates an architectural project"),
-         QLatin1String(":/icons/BIMWorkbench.svg")}
-    ));
+    auto newEmptyFile = gsl::owner<NewFileButton*>(new NewFileButton({
+        .heading = tr("Empty File"),
+        .description = tr("Creates a new empty FreeCAD file"),
+        .iconPath = QStringLiteral(":/icons/document-new.svg"),
+    }));
+    auto openFile = gsl::owner<NewFileButton*>(new NewFileButton({
+        .heading = tr("Open File"),
+        .description = tr("Opens an existing CAD file or 3D model"),
+        .iconPath = QStringLiteral(":/icons/document-open.svg"),
+    }));
+    auto partDesign = gsl::owner<NewFileButton*>(new NewFileButton({
+        .heading = tr("Parametric Body"),
+        .description = tr("Creates a body with the Part Design workbench"),
+        .iconPath = QStringLiteral(":/icons/PartDesignWorkbench.svg"),
+    }));
+    auto assembly = gsl::owner<NewFileButton*>(new NewFileButton({
+        .heading = tr("Assembly"),
+        .description = tr("Creates an assembly project"),
+        .iconPath = QStringLiteral(":/icons/AssemblyWorkbench.svg"),
+    }));
+    auto draft = gsl::owner<NewFileButton*>(new NewFileButton({
+        .heading = tr("2D Draft"),
+        .description = tr("Creates a 2D Draft document"),
+        .iconPath = QStringLiteral(":/icons/DraftWorkbench.svg"),
+    }));
+    auto arch = gsl::owner<NewFileButton*>(new NewFileButton({
+        .heading = tr("BIM/Architecture"),
+        .description = tr("Creates an architectural project"),
+        .iconPath = QStringLiteral(":/icons/BIMWorkbench.svg"),
+    }));
 
     // TODO: Ensure all of the required WBs are actually available
     layout->addWidget(partDesign);
@@ -525,8 +527,8 @@ void StartView::retranslateUi()
     QString title = QCoreApplication::translate("Workbench", "Start");
     setWindowTitle(title);
 
-    const QLatin1String h1Start("<h1>");
-    const QLatin1String h1End("</h1>");
+    const auto h1Start = QStringLiteral("<h1>");
+    const auto h1End = QStringLiteral("</h1>");
 
     _newFileLabel->setText(h1Start + tr("New File") + h1End);
     if (_examplesLabel) {

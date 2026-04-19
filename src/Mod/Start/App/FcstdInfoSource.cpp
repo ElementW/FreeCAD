@@ -53,7 +53,7 @@ static std::pair<QByteArray, QString> loadFCStdThumbnail(
             }
         }
         else {
-            const auto pathToThumbnail = QString(defaultThumbnailPath).toStdString();
+            const std::string pathToThumbnail("thumbnails/Thumbnail.png");
             if (proj.containsFile(pathToThumbnail)) {
                 createThumbnailsDir();
 

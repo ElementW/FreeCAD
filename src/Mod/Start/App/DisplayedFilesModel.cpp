@@ -130,10 +130,11 @@ QVariant DisplayedFilesModel::data(const QModelIndex& index, int role) const
                 if (it != mapEntry.end()) {
                     auto str = QString::fromStdString(it->second);
                     QDateTime dt = QDateTime::fromString(str, Qt::DateFormat::ISODate);
-                    toolTip.append(QLatin1Char('\n'));
+                    toolTip.append(QChar('\n'));
                     toolTip.append(text);
+                    toolTip.append(QChar(' '));
                     QLocale loc = QLocale::system();
-                    toolTip.append(QString::fromLatin1(" %1").arg(loc.toString(dt)));
+                    toolTip.append(loc.toString(dt));
                 }
             };
 

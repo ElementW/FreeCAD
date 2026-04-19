@@ -51,7 +51,7 @@ GeneralSettingsWidget::GeneralSettingsWidget(QWidget* parent)
     , _unitSystemComboBox {nullptr}
     , _navigationStyleComboBox {nullptr}
 {
-    setObjectName(QLatin1String("GeneralSettingsWidget"));
+    setObjectName(QStringLiteral("GeneralSettingsWidget"));
     setupUi();
     qApp->installEventFilter(this);
 }
@@ -89,8 +89,8 @@ void GeneralSettingsWidget::createHorizontalUi()
 
 QString GeneralSettingsWidget::createLabelText(const QString& translatedText) const
 {
-    static const auto h2Start = QLatin1String("<h2>");
-    static const auto h2End = QLatin1String("</h2>");
+    static const auto h2Start = QStringLiteral("<h2>");
+    static const auto h2End = QStringLiteral("</h2>");
     return h2Start + translatedText + h2End;
 }
 
@@ -107,7 +107,7 @@ gsl::owner<QComboBox*> GeneralSettingsWidget::createLanguageComboBox()
     int index {1};
     for (auto it = list.begin(); it != list.end(); ++it, ++index) {
         QByteArray lang = it->first.c_str();
-        QString langname = QString::fromLatin1(lang.constData());
+        QString langname = QString::fromUtf8(lang.constData());
 
         if (it->second == "sr-CS") {
             // Qt does not treat sr-CS (Serbian, Latin) as a Latin-script variant by default: this
@@ -115,7 +115,7 @@ gsl::owner<QComboBox*> GeneralSettingsWidget::createLanguageComboBox()
             it->second = "sr_Latn";
         }
 
-        QLocale locale(QString::fromLatin1(it->second.c_str()));
+        QLocale locale(QString::fromUtf8(it->second.c_str()));
         QString native = locale.nativeLanguageName();
         if (!native.isEmpty()) {
             if (native[0].isLetter()) {

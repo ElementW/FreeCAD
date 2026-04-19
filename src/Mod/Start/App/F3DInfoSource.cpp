@@ -54,10 +54,10 @@ static std::tuple<int, int, int> extractF3DVersion(const QString& stdoutString)
     int major {0};
     int minor {0};
     int patch {0};
-    for (auto lines = stdoutString.split(QLatin1Char('\n')); const auto& line : lines) {
-        if (line.startsWith(QLatin1String("Version: "))) {
+    for (auto lines = stdoutString.split(QChar('\n')); const auto& line : lines) {
+        if (line.startsWith(QStringLiteral("Version: "))) {
             const auto substring = line.mid(8);
-            if (auto split = substring.split(QLatin1Char('.')); split.size() >= 3) {
+            if (auto split = substring.split(QChar('.')); split.size() >= 3) {
                 try {
                     major = split[0].toInt();
                     minor = split[1].toInt();
@@ -110,7 +110,7 @@ static QStringList getF3DOptions(const QString& f3dPath)
         }
         auto stderrAsBytes = process.readAllStandardError();
         if (auto stderrAsString = QString::fromUtf8(stderrAsBytes);
-            !stderrAsString.contains(QLatin1String("Unknown option"))) {
+            !stderrAsString.contains(QStringLiteral("Unknown option"))) {
             goodOptions.append(option);
         }
     }
@@ -132,7 +132,7 @@ static void setupF3D()
 
     f3d.initialized = true;  // Set immediately so we can use early-return below
     const auto f3dPath = getF3dPath();
-    const QStringList args {QLatin1String("--version")};
+    const QStringList args {QStringLiteral("--version")};
     QProcess process;
     process.start(f3dPath, args);
     if (!process.waitForFinished()) {
@@ -192,7 +192,7 @@ void F3DInfoSource::run()
         }
         const auto f3dPath = getF3dPath();
         QStringList args(f3d.baseArgs);
-        args << QLatin1String("--output=") + thumbnailPath << filePath;
+        args << QStringLiteral("--output=") + thumbnailPath << filePath;
 
         Base::Console().log("Creating thumbnail for %s...\n", filePath.toStdString());
         QProcess process;

@@ -48,7 +48,7 @@ FirstStartWidget::FirstStartWidget(QWidget* parent)
     , _descriptionLabel {nullptr}
     , _doneButton {nullptr}
 {
-    setObjectName(QLatin1String("FirstStartWidget"));
+    setObjectName(QStringLiteral("FirstStartWidget"));
     setupUi();
     qApp->installEventFilter(this);
 }
@@ -91,10 +91,10 @@ void FirstStartWidget::retranslateUi()
     _doneButton->setText(tr("Done"));
     QString application = QString::fromStdString(App::Application::getExecutableName());
     _welcomeLabel->setText(
-        QLatin1String("<h1>") + tr("Welcome to %1").arg(application) + QLatin1String("</h1>")
+        QStringLiteral("<h1>") + tr("Welcome to %1").arg(application) + QStringLiteral("</h1>")
     );
     _descriptionLabel->setText(
-        tr("Set your basic configuration options below.") + QLatin1String(" ")
+        tr("Set your basic configuration options below.") + QStringLiteral(" ")
         + tr("These options (and many more) can be changed later in the preferences.")
     );
 }

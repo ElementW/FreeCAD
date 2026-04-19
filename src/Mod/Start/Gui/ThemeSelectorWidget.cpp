@@ -97,7 +97,7 @@ ThemeSelectorWidget::ThemeSelectorWidget(QWidget* parent)
     , _descriptionLabel {nullptr}
     , _buttons {nullptr, nullptr, nullptr}
 {
-    setObjectName(QLatin1String("ThemeSelectorWidget"));
+    setObjectName(QStringLiteral("ThemeSelectorWidget"));
     if (shouldHideClassicTheme()) {
         preselectThemeFromSystemSettings();
     }
@@ -117,9 +117,9 @@ void ThemeSelectorWidget::setupButtons(QBoxLayout* layout)
         {Theme::Light, tr("FreeCAD Light")}
     };
     std::map<Theme, QIcon> iconMap {
-        {Theme::Classic, QIcon(QLatin1String(":/thumbnails/Theme_thumbnail_classic.png"))},
-        {Theme::Light, QIcon(QLatin1String(":/thumbnails/Theme_thumbnail_light.png"))},
-        {Theme::Dark, QIcon(QLatin1String(":/thumbnails/Theme_thumbnail_dark.png"))}
+        {Theme::Classic, QIcon(QStringLiteral(":/thumbnails/Theme_thumbnail_classic.png"))},
+        {Theme::Light, QIcon(QStringLiteral(":/thumbnails/Theme_thumbnail_light.png"))},
+        {Theme::Dark, QIcon(QStringLiteral(":/thumbnails/Theme_thumbnail_dark.png"))}
     };
     auto hGrp = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/MainWindow"
@@ -143,13 +143,13 @@ void ThemeSelectorWidget::setupButtons(QBoxLayout* layout)
         }
         else if (
             theme.first == Theme::Light
-            && styleSheetName.contains(QLatin1String("FreeCAD Light"), Qt::CaseSensitivity::CaseInsensitive)
+            && styleSheetName.contains(QStringLiteral("FreeCAD Light"), Qt::CaseSensitivity::CaseInsensitive)
         ) {
             button->setChecked(true);
         }
         else if (
             theme.first == Theme::Dark
-            && styleSheetName.contains(QLatin1String("FreeCAD Dark"), Qt::CaseSensitivity::CaseInsensitive)
+            && styleSheetName.contains(QStringLiteral("FreeCAD Dark"), Qt::CaseSensitivity::CaseInsensitive)
         ) {
             button->setChecked(true);
         }
@@ -247,7 +247,7 @@ bool ThemeSelectorWidget::eventFilter(QObject* object, QEvent* event)
 
 void ThemeSelectorWidget::retranslateUi()
 {
-    _titleLabel->setText(QLatin1String("<h2>") + tr("Theme") + QLatin1String("</h2>"));
+    _titleLabel->setText(QStringLiteral("<h2>") + tr("Theme") + QStringLiteral("</h2>"));
     if (Gui::Application::Instance->commandManager().getCommandByName("Std_AddonMgr")) {
         _descriptionLabel->setText(
             tr("Looking for more themes? You can obtain them using "

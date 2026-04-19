@@ -23,30 +23,33 @@
 
 #pragma once
 
-#include "Base/FileInfo.h"
-#include "Mod/Start/StartGlobal.h"
+#include <FCConfig.h>
 
-#include <qglobal.h>
 #include <QDir>
 #include <QStandardPaths>
+#include <QString>
+#include <QStringView>
+
+#include <Base/FileInfo.h>
+
+#include "../StartGlobal.h"
+
 
 class QString;
 
 namespace Start
 {
 
-const QLatin1String defaultThumbnailPath("thumbnails/Thumbnail.png");
-
-const QLatin1String defaultThumbnailName
-#if defined(Q_OS_LINUX)
-    ("thumbnails/normal");
+constexpr QStringView defaultThumbnailDirName
+#if defined(FC_OS_LINUX)
+    (u"thumbnails/normal");
 #else
-    ("FreeCADStartThumbnails");
+    (u"FreeCADStartThumbnails");
 #endif
 
 const QDir thumbnailsParentDir {QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation)};
 
-const QDir thumbnailsDir {thumbnailsParentDir.absoluteFilePath(defaultThumbnailName)};
+const QDir thumbnailsDir {thumbnailsParentDir.absoluteFilePath(defaultThumbnailDirName.toString())};
 
 StartExport void createThumbnailsDir();
 

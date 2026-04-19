@@ -107,7 +107,7 @@ public:
         // was called to early. This polls the views to make sure the view was created, and if it
         // was not, re-calls the command.
         auto mw = Gui::getMainWindow();
-        auto existingView = mw->findChild<StartGui::StartView*>(QLatin1String("StartView"));
+        auto existingView = mw->findChild<StartGui::StartView*>(QStringLiteral("StartView"));
         if (!existingView) {
             Launch();
         }
