@@ -43,6 +43,7 @@
 #include "FirstStartWidget.h"
 #include "FlowLayout.h"
 #include "NewFileButton.h"
+#include "QImageReaderInfoSource.h"
 #include <App/DocumentObject.h>
 #include <App/Application.h>
 #include <Base/Interpreter.h>
@@ -66,6 +67,9 @@ TYPESYSTEM_SOURCE_ABSTRACT(StartGui::StartView, Gui::MDIView)  // NOLINT
 StartView::StartView(QWidget* parent)
     : Gui::MDIView(nullptr, parent)
     , _contents(new QStackedWidget(parent))
+    , _recentFilesModel(nullptr, FileCardDelegate::DefaultThumbnailSize)
+    , _examplesModel(nullptr, FileCardDelegate::DefaultThumbnailSize)
+    , _customFolderModel(nullptr, FileCardDelegate::DefaultThumbnailSize)
     , _newFileLabel {nullptr}
     , _examplesLabel {nullptr}
     , _recentFilesLabel {nullptr}
@@ -78,6 +82,14 @@ StartView::StartView(QWidget* parent)
     );
     auto cardSpacing = hGrp->GetInt("FileCardSpacing", 15);  // NOLINT
     auto showExamples = hGrp->GetBool("ShowExamples", true);
+
+    const auto thumbnailSize = FileCardDelegate::thumbnailSize();
+    _recentFilesModel.setThumbnailSizeHint(thumbnailSize);
+    _recentFilesModel.addInfoSourceType(QImageReaderInfoSource::type);
+    _examplesModel.setThumbnailSizeHint(thumbnailSize);
+    _examplesModel.addInfoSourceType(QImageReaderInfoSource::type);
+    _customFolderModel.setThumbnailSizeHint(thumbnailSize);
+    _customFolderModel.addInfoSourceType(QImageReaderInfoSource::type);
 
     // Verify that the folder specified in preferences is available before showing it
     std::string customFolder(hGrp->GetASCII("CustomFolder", ""));

@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <gsl/pointers>
+
 #include <QAbstractListModel>
 #include <QMutex>
 #include <Base/Parameter.h>
@@ -31,6 +33,8 @@
 
 namespace Start
 {
+
+struct InfoSourceType;
 
 enum class DisplayedFilesModelRoles
 {
@@ -77,11 +81,18 @@ class StartExport DisplayedFilesModel: public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit DisplayedFilesModel(QObject* parent = nullptr);
+    explicit DisplayedFilesModel(QObject* parent, int thumbnailSizeHint);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+
+    void setThumbnailSizeHint(int thumbnailSizeHint)
+    {
+        _thumbnailSizeHint = thumbnailSizeHint;
+    }
+
+    void addInfoSourceType(const InfoSourceType&);
 
     void addFile(const QString& filePath);
 
@@ -102,6 +113,8 @@ protected:
 
 private:
     mutable QMutex _mutex;
+    int _thumbnailSizeHint;
+    std::vector<gsl::not_null<const InfoSourceType*>> _infoSourceTypes;
     std::vector<FileStats> _fileInfoCache;
     QMap<QString, QByteArray> _imageCache;
 };

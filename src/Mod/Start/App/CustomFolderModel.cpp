@@ -30,8 +30,8 @@
 using namespace Start;
 
 
-CustomFolderModel::CustomFolderModel(QObject* parent)
-    : DisplayedFilesModel(parent)
+CustomFolderModel::CustomFolderModel(QObject* parent, int thumbnailSizeHint)
+    : DisplayedFilesModel(parent, thumbnailSizeHint)
 {
 
     Base::Reference<ParameterGrp> parameterGroup = App::GetApplication().GetParameterGroupByPath(

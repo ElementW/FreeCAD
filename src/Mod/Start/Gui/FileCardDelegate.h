@@ -33,6 +33,9 @@ class FileCardDelegate: public QStyledItemDelegate
 {
 
 public:
+    static constexpr int DefaultThumbnailSize = 128;
+    static int thumbnailSize();
+
     explicit FileCardDelegate(QObject* parent = nullptr);
 
     void paint(
@@ -46,7 +49,6 @@ public:
 private:
     QPixmap loadThumbnail(const QString& path, int thumbnailSize) const;
 
-    Base::Reference<ParameterGrp> _parameterGroup;
     const int margin = 11;
     const int textspacing = 2;
     QPushButton styleButton;

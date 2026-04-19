@@ -31,6 +31,8 @@ class FcstdInfoSource: public InfoSource
     Q_DISABLE_COPY_MOVE(FcstdInfoSource)
 
 public:
+    static const Type type;
+
     explicit FcstdInfoSource(QString filePath);
     ~FcstdInfoSource() override = default;
 

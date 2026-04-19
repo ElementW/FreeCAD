@@ -39,7 +39,7 @@ class StartExport ExamplesModel: public DisplayedFilesModel
 {
     Q_OBJECT
 public:
-    explicit ExamplesModel(QObject* parent = nullptr);
+    explicit ExamplesModel(QObject* parent, int thumbnailSizeHint);
 
     void loadExamples();
 

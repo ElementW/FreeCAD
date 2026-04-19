@@ -97,6 +97,16 @@ static FileStats getProjectFileInfo(const App::ProjectFile& proj)
     return result;
 }
 
+constexpr InfoSource::Type FcstdInfoSource::type {
+    .makeSource = [](QString filePath, int) -> InfoSource* {
+        return new FcstdInfoSource(std::move(filePath));
+    },
+    .handlesFile = [](const QFileInfo& qfi) -> bool {
+        return qfi.suffix().compare(QStringLiteral("fcstd"), Qt::CaseSensitivity::CaseInsensitive)
+            == 0;
+    },
+};
+
 FcstdInfoSource::FcstdInfoSource(QString filePath)
     : filePath(std::move(filePath))
 {}

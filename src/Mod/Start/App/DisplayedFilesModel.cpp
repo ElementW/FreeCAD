@@ -23,6 +23,8 @@
 
 #include "DisplayedFilesModel.h"
 
+#include <ranges>
+
 #include <boost/algorithm/string/predicate.hpp>
 
 #include <QThreadPool>
@@ -61,10 +63,13 @@ static bool freecadCanOpen(const QString& extension)
         != importTypes.end();
 }
 
-DisplayedFilesModel::DisplayedFilesModel(QObject* parent)
+DisplayedFilesModel::DisplayedFilesModel(QObject* parent, int thumbnailSizeHint)
     : QAbstractListModel(parent)
-{}
-
+    , _thumbnailSizeHint(thumbnailSizeHint)
+{
+    _infoSourceTypes.emplace_back(&F3DInfoSource::type);
+    _infoSourceTypes.emplace_back(&FcstdInfoSource::type);
+}
 
 int DisplayedFilesModel::rowCount(const QModelIndex& parent) const
 {
@@ -141,32 +146,25 @@ QVariant DisplayedFilesModel::data(const QModelIndex& index, int role) const
     return {};
 }
 
-static InfoSource* createInfoSource(const QFileInfo& qfi)
+void DisplayedFilesModel::addInfoSourceType(const InfoSourceType& type)
 {
-    const auto lowercaseExtension = qfi.suffix().toLower();
-    if (lowercaseExtension == QStringLiteral("fcstd")) {
-        return new FcstdInfoSource(qfi.absoluteFilePath());
+    QMutexLocker locker(&_mutex);
+    _infoSourceTypes.emplace_back(&type);
+}
+
+static InfoSource* createInfoSource(
+    const std::vector<gsl::not_null<const InfoSourceType*>>& types,
+    const QFileInfo& qfi,
+    int thumbnailSizeHint
+)
+{
+    // Iterate backwards so the last info source types that were added take priority
+    for (gsl::not_null<const InfoSourceType*> type : std::views::reverse(types)) {
+        if (type->handlesFile(qfi)) {
+            return type->makeSource(qfi.absoluteFilePath(), thumbnailSizeHint);
+        }
     }
-    const QStringList ignoredExtensions {
-        QStringLiteral("fcmacro"),
-        QStringLiteral("py"),
-        QStringLiteral("pyi"),
-        QStringLiteral("csv"),
-        QStringLiteral("txt"),
-        QStringLiteral("tif"),
-        QStringLiteral("tiff"),
-        QStringLiteral("png"),
-        QStringLiteral("jpeg"),
-        QStringLiteral("jpg"),
-        QStringLiteral("bmp"),
-        QStringLiteral("tga"),
-    };
-    if (ignoredExtensions.contains(lowercaseExtension)) {
-        // Don't try to generate a thumbnail for things like this: FreeCAD can read them, but
-        // there's not much point in showing anything besides a generic icon
-        return nullptr;
-    }
-    return new F3DInfoSource(qfi.absoluteFilePath());
+    return nullptr;
 }
 
 void DisplayedFilesModel::addFile(const QString& filePath)
@@ -185,7 +183,7 @@ void DisplayedFilesModel::addFile(const QString& filePath)
         _fileInfoCache.emplace_back(getCommonFileInfo(filePath.toStdString()));
     }
 
-    InfoSource* source = createInfoSource(qfi);
+    InfoSource* source = createInfoSource(_infoSourceTypes, qfi, _thumbnailSizeHint);
     if (source) {
         connect(
             &source->signals,

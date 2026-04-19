@@ -30,8 +30,8 @@
 using namespace Start;
 
 
-ExamplesModel::ExamplesModel(QObject* parent)
-    : DisplayedFilesModel(parent)
+ExamplesModel::ExamplesModel(QObject* parent, int thumbnailSizeHint)
+    : DisplayedFilesModel(parent, thumbnailSizeHint)
 {
     auto examplesPath = QDir(QString::fromStdString(App::Application::getResourceDir()));
     _examplesDirectory.setPath(examplesPath.filePath(QLatin1String("examples")));

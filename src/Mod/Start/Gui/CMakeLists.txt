@@ -58,6 +58,8 @@ SET(StartGui_SRCS
         NewFileButton.cpp
         NewFileButton.h
         PreCompiled.h
+        QImageReaderInfoSource.cpp
+        QImageReaderInfoSource.h
         StartView.cpp
         StartView.h
         ThemeSelectorWidget.cpp

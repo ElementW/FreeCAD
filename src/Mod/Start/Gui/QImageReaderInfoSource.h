@@ -21,25 +21,26 @@
 
 #pragma once
 
-#include "InfoSource.h"
+#include "../App/InfoSource.h"
 
-namespace Start
+namespace StartGui
 {
 
-class F3DInfoSource: public InfoSource
+class QImageReaderInfoSource: public Start::InfoSource
 {
-    Q_DISABLE_COPY_MOVE(F3DInfoSource)
+    Q_DISABLE_COPY_MOVE(QImageReaderInfoSource)
 
 public:
     static const Type type;
 
-    explicit F3DInfoSource(QString filePath);
-    ~F3DInfoSource() override = default;
+    explicit QImageReaderInfoSource(QString filePath, int thumbnailSizeHint);
+    ~QImageReaderInfoSource() override = default;
 
     void run() override;
 
 private:
     QString filePath;
+    int thumbnailSizeHint;
 };
 
-}  // namespace Start
+}  // namespace StartGui

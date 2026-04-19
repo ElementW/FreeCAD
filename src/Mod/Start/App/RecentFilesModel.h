@@ -38,7 +38,7 @@ class StartExport RecentFilesModel: public DisplayedFilesModel
 {
     Q_OBJECT
 public:
-    explicit RecentFilesModel(QObject* parent = nullptr);
+    explicit RecentFilesModel(QObject* parent, int thumbnailSizeHint);
 
     void loadRecentFiles();
     void recentFileAdded(const QString& filename);

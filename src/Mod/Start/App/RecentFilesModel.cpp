@@ -27,8 +27,8 @@
 
 using namespace Start;
 
-RecentFilesModel::RecentFilesModel(QObject* parent)
-    : DisplayedFilesModel(parent)
+RecentFilesModel::RecentFilesModel(QObject* parent, int thumbnailSizeHint)
+    : DisplayedFilesModel(parent, thumbnailSizeHint)
 {
     _parameterGroup = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/RecentFiles"

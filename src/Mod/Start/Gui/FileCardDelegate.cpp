@@ -49,18 +49,18 @@ struct ThumbnailData
     };
 
     QPixmap pixmap;
-    qint64 lastModified;
+    qint64 lastModified = 0;
     int thumbnailSize;
     Source source;
 
-    ThumbnailData() = default;
     ThumbnailData(QPixmap pixmap, const QString& path, int thumbnailSize, Source source)
         : pixmap(std::move(pixmap))
         , thumbnailSize(thumbnailSize)
         , source(source)
     {
-        const QFileInfo fileInfo(path);
-        lastModified = fileInfo.exists() ? fileInfo.lastModified().toSecsSinceEpoch() : 0;
+        if (const QFileInfo fileInfo(path); fileInfo.exists()) {
+            lastModified = fileInfo.lastModified().toSecsSinceEpoch();
+        }
     }
 
     bool isStale(const QString& path, int newThumbnailSize, Source newSource) const
@@ -77,18 +77,23 @@ struct ThumbnailData
 static QCache<QString, ThumbnailData> thumbnailCache;
 static constexpr const int CACHE_SIZE_MB = 50;  // 50MB cache limit
 
+int FileCardDelegate::thumbnailSize()
+{
+    return App::GetApplication()
+        .GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Start")
+        ->GetInt("FileThumbnailIconsSize", DefaultThumbnailSize);
+}
+
 FileCardDelegate::FileCardDelegate(QObject* parent)
     : QStyledItemDelegate(parent)
 {
-    _parameterGroup = App::GetApplication().GetParameterGroupByPath(
-        "User parameter:BaseApp/Preferences/Mod/Start"
-    );
     setObjectName(QStringLiteral("thumbnailWidget"));
 
     // Initialize cache size based on thumbnail size (only once)
     if (thumbnailCache.maxCost() == 0) {
-        int thumbnailSize = static_cast<int>(_parameterGroup->GetInt("FileThumbnailIconsSize", 128));
-        int thumbnailMemory = thumbnailSize * thumbnailSize * 4;  // rgba
+        const auto thumbnailSize = FileCardDelegate::thumbnailSize();
+        constexpr int BytesPerPixel = 4;  // RGBA
+        int thumbnailMemory = thumbnailSize * thumbnailSize * BytesPerPixel;
         int maxCacheItems = (CACHE_SIZE_MB * 1024 * 1024) / thumbnailMemory;
         thumbnailCache.setMaxCost(maxCacheItems);
         Base::Console().log(
@@ -125,7 +130,7 @@ void FileCardDelegate::paint(
 
     // Step 2: Fetch required data
     using Roles = DisplayedFilesModelRoles;
-    auto thumbnailSize = static_cast<int>(_parameterGroup->GetInt("FileThumbnailIconsSize", 128));  // NOLINT
+    const auto thumbnailSize = FileCardDelegate::thumbnailSize();
     auto baseName = index.data(static_cast<int>(Roles::baseName)).toString();
     auto elidedName = painter->fontMetrics().elidedText(baseName, Qt::ElideRight, thumbnailSize);
     auto size = index.data(static_cast<int>(Roles::size)).toString();
@@ -207,7 +212,7 @@ QSize FileCardDelegate::sizeHint(const QStyleOptionViewItem& option, const QMode
     Q_UNUSED(option);
     Q_UNUSED(index);
 
-    auto thumbnailSize = _parameterGroup->GetInt("FileThumbnailIconsSize", 128);  // NOLINT
+    const auto thumbnailSize = FileCardDelegate::thumbnailSize();
 
     QFontMetrics qfm(QGuiApplication::font());
     int textHeight = textspacing + qfm.lineSpacing() * 2;  // name + size
@@ -232,29 +237,6 @@ QPixmap FileCardDelegate::loadThumbnail(const QString& path, int thumbnailSize) 
         QImageReader reader(QLatin1String(":/icons/MacroEditor.svg"));
         reader.setScaledSize(QSize(thumbnailSize, thumbnailSize));
         thumbnail = QPixmap::fromImage(reader.read());
-    }
-    else if (!QImageReader::imageFormat(path).isEmpty()) {
-        // It is an image: it can be its own thumbnail
-        QImageReader reader(path);
-
-        // get original size to calculate proper aspect-preserving scaled size
-        QSize originalSize = reader.size();
-        if (originalSize.isValid()) {
-            QSize scaledSize = originalSize.scaled(thumbnailSize, thumbnailSize, Qt::KeepAspectRatio);
-            reader.setScaledSize(scaledSize);
-        }
-
-        auto image = reader.read();
-        if (!image.isNull()) {
-            thumbnail = QPixmap::fromImage(image);
-        }
-        else {
-            Base::Console().log(
-                "FileCardDelegate: Failed to load image %s: %s\n",
-                path.toStdString().c_str(),
-                reader.errorString().toStdString().c_str()
-            );
-        }
     }
 
     // fallback to system icon if no thumbnail was generated

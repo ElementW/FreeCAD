@@ -27,6 +27,9 @@
 
 #include "DisplayedFilesModel.h"
 
+
+class QFileInfo;
+
 namespace Start
 {
 
@@ -43,12 +46,23 @@ Q_SIGNALS:
     );
 };
 
+class InfoSource;
+
+struct InfoSourceType
+{
+    using Constructor = InfoSource*(QString filePath, int thumbnailSizeHint);
+    using HandlesFile = bool(const QFileInfo&);
+    Constructor* makeSource;
+    HandlesFile* handlesFile;
+};
+
 class InfoSource: public QRunnable
 {
     Q_DISABLE_COPY_MOVE(InfoSource)
 
 public:
     using Signals = InfoSourceSignals;
+    using Type = InfoSourceType;
 
     InfoSource() = default;
     ~InfoSource() override = default;

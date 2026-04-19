@@ -39,7 +39,7 @@ class StartExport CustomFolderModel: public DisplayedFilesModel
 {
     Q_OBJECT
 public:
-    explicit CustomFolderModel(QObject* parent = nullptr);
+    explicit CustomFolderModel(QObject* parent, int thumbnailSizeHint);
 
     void loadCustomFolder();
 

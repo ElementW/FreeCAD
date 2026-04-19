@@ -152,6 +152,30 @@ static void setupF3D()
     Base::Console().log("Running f3d version %d.%d\n", f3d.major, f3d.minor);
 }
 
+constexpr InfoSource::Type F3DInfoSource::type {
+    .makeSource = [](QString filePath, int) -> InfoSource* {
+        return new F3DInfoSource(std::move(filePath));
+    },
+    .handlesFile = [](const QFileInfo& qfi) -> bool {
+        static const QStringList ignoredExtensions {
+            QStringLiteral("fcstd"),
+            QStringLiteral("fcmacro"),
+            QStringLiteral("py"),
+            QStringLiteral("pyi"),
+            QStringLiteral("csv"),
+            QStringLiteral("txt"),
+            QStringLiteral("tiff"),
+            QStringLiteral("tif"),
+            QStringLiteral("png"),
+            QStringLiteral("jpeg"),
+            QStringLiteral("jpg"),
+            QStringLiteral("bmp"),
+            QStringLiteral("tga"),
+        };
+        return !ignoredExtensions.contains(qfi.suffix(), Qt::CaseSensitivity::CaseInsensitive);
+    },
+};
+
 F3DInfoSource::F3DInfoSource(QString filePath)
     : filePath(std::move(filePath))
 {}
