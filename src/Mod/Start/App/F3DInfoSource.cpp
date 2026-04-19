@@ -21,11 +21,11 @@
 
 #include "F3DInfoSource.h"
 
-#include <QFile>
-#include <QMutex>
-#include <QMutexLocker>
+#include <mutex>
+#include <ranges>
+#include <string_view>
+
 #include <QProcess>
-#include <QStringList>
 
 #include <Base/Console.h>
 #include <Base/Parameter.h>
@@ -36,6 +36,8 @@
 
 
 using namespace Start;
+using namespace std::string_view_literals;
+using namespace std::views;
 
 /// Gather together all of the f3d information protected by the mutex: data in this struct
 /// should be accessed only after a call to setupF3D() to ensure synchronization.
@@ -47,40 +49,39 @@ static struct F3DInstallation
     QStringList baseArgs;
 } f3d;
 
-static QMutex mutex;
+static std::mutex mutex;
 
-static std::tuple<int, int, int> extractF3DVersion(const QString& stdoutString)
+static std::array<int, 3> extractF3DVersion(std::string_view stdoutString)
 {
-    int major {0};
-    int minor {0};
-    int patch {0};
-    for (auto lines = stdoutString.split(QChar('\n')); const auto& line : lines) {
-        if (line.startsWith(QStringLiteral("Version: "))) {
-            const auto substring = line.mid(8);
-            if (auto split = substring.split(QChar('.')); split.size() >= 3) {
-                try {
-                    major = split[0].toInt();
-                    minor = split[1].toInt();
-                    patch = split[2].toInt();
-                }
-                catch (...) {
-                    Base::Console().log(
-                        "Could not determine F3D version, disabling thumbnail generation\n"
-                    );
-                }
-            }
-            break;
+    std::array<int, 3> ver {0, 0, 0};
+    constexpr auto versionMarker = "Version: "sv;
+    for (const auto lineRange : stdoutString | split("\n"sv)) {
+        const std::string_view line {lineRange.begin(), lineRange.end()};
+        if (!line.starts_with(versionMarker)) {
+            continue;
         }
+        const auto substring = line.substr(versionMarker.size());
+        int i = 0;
+        for (const auto num : substring | split("."sv) | take(3)) {
+            const auto [p, ec] = std::from_chars(num.begin(), num.end(), ver[i++]);  // NOLINT
+            if (ec != std::errc {}) {
+                return {0, 0, 0};
+            }
+        }
+        if (i != 3) {
+            return {0, 0, 0};
+        }
+        break;
     }
-    return std::make_tuple(major, minor, patch);
+    return ver;
 }
 
-static QString getF3dPath()
+static std::string getF3dPath()
 {
     const ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath(
         "User parameter:BaseApp/Preferences/Mod/Start"
     );
-    return QString::fromUtf8(hGrp->GetASCII("f3d", "f3d").c_str());
+    return hGrp->GetASCII("f3d", "f3d");
 }
 
 static QStringList getF3DOptions(const QString& f3dPath)
@@ -119,7 +120,7 @@ static QStringList getF3DOptions(const QString& f3dPath)
 
 static void setupF3D()
 {
-    QMutexLocker locker(&mutex);
+    std::lock_guard<std::mutex> guard(mutex);
     if (f3d.initialized) {
         return;
     }
@@ -131,7 +132,7 @@ static void setupF3D()
     // affect any other part of the program.
 
     f3d.initialized = true;  // Set immediately so we can use early-return below
-    const auto f3dPath = getF3dPath();
+    const auto f3dPath = QString::fromStdString(getF3dPath());
     const QStringList args {QStringLiteral("--version")};
     QProcess process;
     process.start(f3dPath, args);
@@ -142,14 +143,18 @@ static void setupF3D()
         return;
     }
     const QByteArray stdoutBytes = process.readAllStandardOutput();
-    const auto stdoutString = QString::fromUtf8(stdoutBytes);
-    const auto version = extractF3DVersion(stdoutString);
-    f3d.major = std::get<0>(version);
-    f3d.minor = std::get<1>(version);
-    if (f3d.major >= 2) {
-        f3d.baseArgs = getF3DOptions(f3dPath);
+    const auto version = extractF3DVersion({stdoutBytes.data(), size_t(stdoutBytes.size())});
+    if (version[0] == 0 && version[1] == 0 && version[2] == 0) {
+        Base::Console().log("Could not determine F3D version, disabling thumbnail generation\n");
     }
-    Base::Console().log("Running f3d version %d.%d\n", f3d.major, f3d.minor);
+    else {
+        f3d.major = version[0];
+        f3d.minor = version[1];
+        if (f3d.major >= 2) {
+            f3d.baseArgs = getF3DOptions(f3dPath);
+        }
+        Base::Console().log("Running f3d version %d.%d.%d\n", f3d.major, f3d.minor, version[2]);
+    }
 }
 
 constexpr InfoSource::Type F3DInfoSource::type {
@@ -190,7 +195,7 @@ void F3DInfoSource::run()
         if (f3d.major < 2) {
             return;
         }
-        const auto f3dPath = getF3dPath();
+        const auto f3dPath = QString::fromStdString(getF3dPath());
         QStringList args(f3d.baseArgs);
         args << QStringLiteral("--output=") + thumbnailPath << filePath;
 
