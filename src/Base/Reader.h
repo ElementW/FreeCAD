@@ -33,8 +33,6 @@
 #include <xercesc/framework/XMLPScanToken.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
 
-#include <boost/iostreams/categories.hpp>
-
 #include "FileInfo.h"
 
 
@@ -135,9 +133,8 @@ public:
     XMLReader(const char* FileName, std::istream&);
     ~XMLReader() override;
 
-    /** @name boost iostream device interface */
+    /** @name iostream device interface */
     //@{
-    using category = boost::iostreams::source_tag;
     using char_type = char;
     std::streamsize read(char_type* s, std::streamsize n);
     //@}

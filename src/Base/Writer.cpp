@@ -23,14 +23,14 @@
  ***************************************************************************/
 
 
-#include <memory>
-#include <set>
-#include <vector>
-#include <string>
-
+#include <cstring>
+#include <iomanip>
 #include <limits>
 #include <locale>
-#include <iomanip>
+#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 #include "Writer.h"
 #include "Base64.h"
@@ -39,24 +39,24 @@
 #include "FileInfo.h"
 #include "Persistence.h"
 #include "Stream.h"
-#include "Tools.h"
 
-#include <boost/iostreams/filtering_stream.hpp>
 #include <zipios++/zipinputstream.h>
 
 using namespace Base;
 
 // boost iostream filter to escape ']]>' in text file saved into CDATA section.
 // It does not check if the character is valid utf8 or not.
-struct cdata_filter
+class CdataFilterStreambuf : public std::streambuf
 {
+public:
+    CdataFilterStreambuf(std::ostream &dev) : dev(dev) {}
 
-    using char_type = char;
-    using category = boost::iostreams::output_filter_tag;
-
-    template<typename Device>
-    inline bool put(Device& dev, char ch)
+protected:
+    int_type overflow(int_type ch) override
     {
+        if (traits_type::eq_int_type(ch, traits_type::eof())) {
+            return traits_type::not_eof(ch);
+        }
         switch (state) {
             case 0:
             case 1:
@@ -70,15 +70,29 @@ struct cdata_filter
             case 2:
                 if (ch == '>') {
                     static const char escape[] = "]]><![CDATA[";
-                    boost::iostreams::write(dev, escape, sizeof(escape) - 1);
+                    dev.write(escape, sizeof(escape) - 1);
                 }
                 state = 0;
                 break;
         }
-        return boost::iostreams::put(dev, ch);
+        dev.put(ch);
+        return ch;
     }
 
+    std::ostream &dev;
     int state = 0;
+};
+
+class CdataFilterStream: public std::ostream
+{
+public:
+    explicit CdataFilterStream(std::ostream& dev)
+        : std::ostream(&streambuf)
+        , streambuf(dev)
+    {}
+
+private:
+    CdataFilterStreambuf streambuf;
 };
 
 // ---------------------------------------------------------------------------
@@ -124,15 +138,12 @@ std::ostream& Writer::beginCharStream(CharStreamFormat format)
     }
     charStreamFormat = format;
     if (format == CharStreamFormat::Base64Encoded) {
-        CharStream = create_base64_encoder(Stream(), Base::base64DefaultBufferSize);
+        CharStream = std::make_unique<Base64EncoderStream>(Stream(), Base::base64DefaultBufferSize);
     }
     else {
         Stream() << "<![CDATA[";
-        CharStream = std::make_unique<boost::iostreams::filtering_ostream>();
-        auto* filteredStream = dynamic_cast<boost::iostreams::filtering_ostream*>(CharStream.get());
-        filteredStream->push(cdata_filter());
-        filteredStream->push(Stream());
-        *filteredStream << std::setprecision(std::numeric_limits<double>::digits10 + 1);
+        CharStream = std::make_unique<CdataFilterStream>(Stream());
+        *CharStream << std::setprecision(std::numeric_limits<double>::digits10 + 1);
     }
 
     checkErrNo();

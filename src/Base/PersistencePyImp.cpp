@@ -22,10 +22,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <boost/iostreams/stream.hpp>
+#ifdef __cpp_lib_spanstream
+#include <spanstream>
+#endif
 
 #include "Persistence.h"
 #include "PyWrapParseTupleAndKeywords.h"
+#ifndef __cpp_lib_spanstream
+#include "Stream.h"
+#endif
 #include "Writer.h"
 
 // generated out of Persistence.pyi
@@ -142,8 +147,12 @@ PyObject* PersistencePy::restoreContent(PyObject* args)
 
     // check if it really is a buffer
     try {
-        using Device = boost::iostreams::basic_array_source<char>;
-        boost::iostreams::stream<Device> stream((char*)buf.buf, buf.len);
+#ifdef __cpp_lib_spanstream
+        std::spanstream stream({(char*)buf.buf, size_t(buf.len)});
+#else
+        Base::BufferStreambuf streambuf({(char*)buf.buf, size_t(buf.len)});
+        std::istream stream(&streambuf);
+#endif
         getPersistencePtr()->restoreFromStream(stream);
     }
     catch (...) {

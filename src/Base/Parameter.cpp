@@ -36,6 +36,7 @@
 #include <xercesc/sax/EntityResolver.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
+#include <ranges>
 #include <sstream>
 #include <string>
 #include <utility>
@@ -46,7 +47,6 @@
 # include <unistd.h>
 #endif
 
-#include <boost/algorithm/string.hpp>
 #include <fmt/printf.h>
 
 #include "Parameter.h"
@@ -384,14 +384,11 @@ Base::Reference<ParameterGrp> ParameterGrp::GetGroup(const char* Name)
     }
 
     Base::Reference<ParameterGrp> hGrp = this;
-    std::vector<std::string> tokens;
-    boost::split(tokens, Name, boost::is_any_of("/"));
-    for (auto& token : tokens) {
-        boost::trim(token);
+    for (const auto token : std::views::split(std::string_view(Name), '/')) {
         if (token.empty()) {
             continue;
         }
-        hGrp = hGrp->_GetGroup(token.c_str());
+        hGrp = hGrp->_GetGroup(std::string{token.begin(), token.end()}.c_str());
         if (!hGrp) {
             // The group is clearing. Return some dummy group to avoid caller
             // crashing for backward compatibility.
@@ -539,22 +536,22 @@ const char* ParameterGrp::TypeName(ParamType Type)
 ParameterGrp::ParamType ParameterGrp::TypeValue(const char* Name)
 {
     if (Name) {
-        if (boost::equals(Name, "FCBool")) {
+        if (strcmp(Name, "FCBool") == 0) {
             return ParamType::FCBool;
         }
-        if (boost::equals(Name, "FCInt")) {
+        if (strcmp(Name, "FCInt") == 0) {
             return ParamType::FCInt;
         }
-        if (boost::equals(Name, "FCUInt")) {
+        if (strcmp(Name, "FCUInt") == 0) {
             return ParamType::FCUInt;
         }
-        if (boost::equals(Name, "FCText")) {
+        if (strcmp(Name, "FCText") == 0) {
             return ParamType::FCText;
         }
-        if (boost::equals(Name, "FCFloat")) {
+        if (strcmp(Name, "FCFloat") == 0) {
             return ParamType::FCFloat;
         }
-        if (boost::equals(Name, "FCParamGroup")) {
+        if (strcmp(Name, "FCParamGroup") == 0) {
             return ParamType::FCGroup;
         }
     }

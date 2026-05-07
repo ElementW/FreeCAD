@@ -173,6 +173,7 @@ SET(FreeCADBase_CPP_SRCS
     Axis.cpp
     AxisPyImp.cpp
     Base64.cpp
+    Base64Filter.cpp
     BaseClass.cpp
     BaseClassPyImp.cpp
     BindingManager.cpp
