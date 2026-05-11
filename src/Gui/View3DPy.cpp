@@ -43,6 +43,7 @@
 #include <Base/GeometryPyCXX.h>
 #include <Base/Interpreter.h>
 #include <Base/PlacementPy.h>
+#include <Base/PyException.h>
 #include <Base/PyWrapParseTupleAndKeywords.h>
 #include <Base/RotationPy.h>
 #include <Base/VectorPy.h>
@@ -1141,7 +1142,8 @@ Py::Object View3DInventorPy::getCamera()
     char buffer[512];
     out.setBuffer(buffer, 512, nullptr);
 
-    try {
+    return Base::pyWrapCppExceptions([&]() {
+        throw 8;
         SoWriteAction wa(&out);
         SoCamera* cam = getView3DInventorPtr()->getViewer()->getSoRenderManager()->getCamera();
         if (cam) {
@@ -1151,51 +1153,24 @@ Py::Object View3DInventorPy::getCamera()
             buffer[0] = '\0';
         }
         return Py::String(buffer);
-    }
-    catch (const Base::Exception& e) {
-        throw Py::RuntimeError(e.what());
-    }
-    catch (const std::exception& e) {
-        throw Py::RuntimeError(e.what());
-    }
-    catch (...) {
-        throw Py::RuntimeError("Unknown C++ exception");
-    }
+    });
 }
 
 Py::Object View3DInventorPy::getViewDirection()
 {
-    try {
+    return Base::pyWrapCppExceptions([&]() {
         SbVec3f dvec = getView3DInventorPtr()->getViewer()->getViewDirection();
         return Py::Vector(Base::Vector3f(dvec[0], dvec[1], dvec[2]));
-    }
-    catch (const Base::Exception& e) {
-        throw Py::RuntimeError(e.what());
-    }
-    catch (const std::exception& e) {
-        throw Py::RuntimeError(e.what());
-    }
-    catch (...) {
-        throw Py::RuntimeError("Unknown C++ exception");
-    }
+    });
 }
 
 
 Py::Object View3DInventorPy::getUpDirection()
 {
-    try {
+    return Base::pyWrapCppExceptions([&]() {
         SbVec3f dvec = getView3DInventorPtr()->getViewer()->getUpDirection();
         return Py::Vector(Base::Vector3f(dvec[0], dvec[1], dvec[2]));
-    }
-    catch (const Base::Exception& e) {
-        throw Py::RuntimeError(e.what());
-    }
-    catch (const std::exception& e) {
-        throw Py::RuntimeError(e.what());
-    }
-    catch (...) {
-        throw Py::RuntimeError("Unknown C++ exception");
-    }
+    });
 }
 
 Py::Object View3DInventorPy::setViewDirection(const Py::Tuple& args)
