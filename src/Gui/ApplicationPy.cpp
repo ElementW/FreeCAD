@@ -32,6 +32,8 @@
 #elif defined(Q_WS_X11)
 # include <QX11EmbedWidget>
 #endif
+
+#if defined(FREECAD_USE_COIN3D)
 #include <Inventor/SoInput.h>
 #include <Inventor/SoPath.h>
 #include <Inventor/SoDB.h>
@@ -39,6 +41,8 @@
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/nodekits/SoNodeKit.h>
 #include <Inventor/nodes/SoSeparator.h>
+#endif
+
 #include <xercesc/util/TranscodingException.hpp>
 #include <xercesc/util/XMLString.hpp>
 
@@ -72,7 +76,6 @@
 #include "MainWindowPy.h"
 #include "PythonEditor.h"
 #include "PythonWrapper.h"
-#include "SoFCDB.h"
 #include "SplitView3DInventor.h"
 #include "StartupProcess.h"
 #include "View3DInventor.h"
@@ -84,7 +87,11 @@
 #include "WorkbenchManipulatorPython.h"
 #include "Inventor/MarkerBitmaps.h"
 #include "Language/Translator.h"
+
+#if defined(FREECAD_USE_COIN3D)
 #include "Selection/SoFCUnifiedSelection.h"
+#include "SoFCDB.h"
+#endif
 
 
 using namespace Gui;
@@ -101,11 +108,13 @@ void requirePythonMainThread(const char* api)
     }
 }
 
+#if defined(FREECAD_USE_COIN3D)
 struct CoinActionTarget
 {
     SoNode* node {nullptr};
     SoPath* path {nullptr};
 };
+#endif
 
 std::string pythonStringToStdString(PyObject* value)
 {
@@ -205,6 +214,7 @@ std::map<std::string, Base::Color> pythonToColorOverrideMap(PyObject* value)
     return colors;
 }
 
+#if defined(FREECAD_USE_COIN3D)
 CoinActionTarget pythonToCoinActionTarget(PyObject* proxy)
 {
     CoinActionTarget target;
@@ -252,6 +262,7 @@ void applyElementColorOverrideAction(
         throw Py::TypeError("target must be of type coin.SoNode or coin.SoPath");
     }
 }
+#endif
 }  // namespace
 
 static bool _isSetupWithoutGui = false;
@@ -397,15 +408,22 @@ PyObject* Gui::ApplicationPy::sSetupWithoutGUI(PyObject* /*self*/, PyObject* arg
         _isSetupWithoutGui = true;
         Q_UNUSED(app);
     }
-    if (!SoDB::isInitialized()) {
-        // init the Inventor subsystem
-        SoDB::init();
-        SoNodeKit::init();
-        SoInteraction::init();
+
+#if defined(FREECAD_USE_COIN3D)
+    auto sceneGraph = App::GetApplication().GetParameterGroupByPath(
+        "User parameter:BaseApp/Preferences/View")->GetASCII("SceneGraph", "Coin3D");
+    if (sceneGraph == "Coin3D") {
+        if (!SoDB::isInitialized()) {
+            // init the Inventor subsystem
+            SoDB::init();
+            SoNodeKit::init();
+            SoInteraction::init();
+        }
+        if (!Gui::SoFCDB::isInitialized()) {
+            Gui::SoFCDB::init();
+        }
     }
-    if (!Gui::SoFCDB::isInitialized()) {
-        Gui::SoFCDB::init();
-    }
+#endif
 
     Py_INCREF(Py_None);
     return Py_None;

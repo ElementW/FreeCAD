@@ -28,9 +28,10 @@
 #include <QLabel>
 #include <Gui/QuantitySpinBox.h>
 
-#include "SoDatumLabel.h"
-
 #include <FCGlobal.h>
+
+#if defined(FREECAD_USE_COIN3D)
+#include "SoDatumLabel.h"
 
 class SoNodeSensor;
 class SoTransform;
@@ -38,6 +39,7 @@ class SoAnnotation;
 class SoSwitch;
 class SoEventCallback;
 class SoPickStyle;
+#endif
 
 namespace Gui
 {

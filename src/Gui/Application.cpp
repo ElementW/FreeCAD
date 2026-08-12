@@ -23,8 +23,12 @@
 #include <FCConfig.h>
 
 #include <boost/interprocess/sync/file_lock.hpp>
+
+#if defined(FREECAD_USE_COIN3D)
 #include <Inventor/errors/SoDebugError.h>
 #include <Inventor/errors/SoError.h>
+#endif
+
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QCoreApplication>
@@ -537,13 +541,19 @@ Application::Application(bool GUIenabled)
             hPGrp->GetASCII("Language", (const char*)lang.toLatin1()).c_str());
         GetWidgetFactorySupplier();
 
-        // Coin3d disables VBO support for some (typically very old) drivers and hardware.
-        // Force it on if the preference says to.
-        ParameterGrp::handle hViewGrp = App::GetApplication().GetParameterGroupByPath(
-            "User parameter:BaseApp/Preferences/View");
-        if (hViewGrp->GetBool("UseVBO", false)) {
-            (void)coin_setenv("COIN_VBO", "1", true);
+#if defined(FREECAD_USE_COIN3D)
+        auto sceneGraph = App::GetApplication().GetParameterGroupByPath(
+            "User parameter:BaseApp/Preferences/View")->GetASCII("SceneGraph", "Coin3D");
+        if (sceneGraph == "Coin3D") {
+            // Coin3d disables VBO support for some (typically very old) drivers and hardware.
+            // Force it on if the preference says to.
+            ParameterGrp::handle hViewGrp = App::GetApplication().GetParameterGroupByPath(
+                "User parameter:BaseApp/Preferences/View");
+            if (hViewGrp->GetBool("UseVBO", false)) {
+                (void)coin_setenv("COIN_VBO", "1", true);
+            }
         }
+#endif
 
         // Check for the symbols for group separator and decimal point. They must be different
         // otherwise Qt doesn't work properly.

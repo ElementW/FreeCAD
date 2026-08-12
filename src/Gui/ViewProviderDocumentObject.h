@@ -23,15 +23,18 @@
 
 #pragma once
 
-#include <Inventor/SoType.h>
+#include <App/DocumentObject.h>
 
 #include "ViewProvider.h"
-#include <App/DocumentObject.h>
+
+#if defined(FREECAD_USE_COIN3D)
+#include <Inventor/SoType.h>
 
 class SoMaterial;
 class SoDrawStyle;
 class SoNode;
 class SoType;
+#endif
 
 namespace App
 {

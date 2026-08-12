@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 
+#if defined(FREECAD_USE_COIN3D)
 #include <Inventor/SbViewportRegion.h>
 #include <Inventor/SoEventManager.h>
 #include <Inventor/SoPickedPoint.h>
@@ -37,6 +38,8 @@
 #include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/projectors/SbSphereSheetProjector.h>
+#endif
+
 #include <QAction>
 #include <QActionGroup>
 #include <QApplication>
@@ -65,8 +68,11 @@
 #include "Navigation/NavigationAnimation.h"
 #include "Selection.h"
 #include "SoFullPathHelper.h"
-#include "View3DInventorViewer.h"
 #include "ViewParams.h"
+
+#if defined(FREECAD_USE_COIN3D)
+#include "View3DInventorViewer.h"
+#endif
 
 using namespace Gui;
 
@@ -164,7 +170,7 @@ public:
 
     static constexpr float defaultSphereRadius = 0.8F;
 
-    FCSphereSheetProjector(const SbSphere& sph, const SbBool orienttoeye = true)
+    FCSphereSheetProjector(const SbSphere& sph, bool orienttoeye = true)
         : SbSphereSheetProjector(sph, orienttoeye)
     {}
 
@@ -197,7 +203,7 @@ public:
         SbVec3f planeIntersection;
 
         SbVec3f sphereIntersection, dontCare;
-        SbBool hitSphere;
+        bool hitSphere;
         if (intersectFront == TRUE) {
             hitSphere = sphere.intersect(workingLine, sphereIntersection, dontCare);
         }
@@ -527,27 +533,27 @@ NavigationStyle::OrbitStyle NavigationStyle::getOrbitStyle() const
     return NavigationStyle::OrbitStyle(projector->getOrbitStyle());
 }
 
-SbBool NavigationStyle::isViewing() const
+bool NavigationStyle::isViewing() const
 {
     return viewer->isViewing();
 }
 
-void NavigationStyle::setViewing(SbBool enable)
+void NavigationStyle::setViewing(bool enable)
 {
     viewer->setViewing(enable);
 }
 
-SbBool NavigationStyle::isSeekMode() const
+bool NavigationStyle::isSeekMode() const
 {
     return viewer->isSeekMode();
 }
 
-void NavigationStyle::setSeekMode(SbBool enable)
+void NavigationStyle::setSeekMode(bool enable)
 {
     viewer->setSeekMode(enable);
 }
 
-SbBool NavigationStyle::seekToPoint(const SbVec2s screenpos)
+bool NavigationStyle::seekToPoint(const SbVec2s screenpos)
 {
     return viewer->seekToPoint(screenpos);
 }
@@ -607,7 +613,7 @@ SoCamera* NavigationStyle::getCamera() const
 
 std::shared_ptr<NavigationAnimation> NavigationStyle::setCameraOrientation(
     const SbRotation& orientation,
-    const SbBool moveToCenter
+    bool moveToCenter
 ) const
 {
     SoCamera* camera = getCamera();
@@ -987,7 +993,7 @@ void NavigationStyle::zoom(SoCamera* cam, float diffvalue)
         // frustum (similar to glFrustum())
         if (!t.isDerivedFrom(SoPerspectiveCamera::getClassTypeId()) && tname != "FrustumCamera") {
 #ifdef FC_DEBUG
-            static SbBool first = true;
+            static bool first = true;
             if (first) {
                 SoDebugError::postWarning(
                     "NavigationStyle::zoom",
@@ -1093,7 +1099,7 @@ void NavigationStyle::doZoom(SoCamera* camera, float logfactor, const SbVec2f& p
     if (fabs(logfactor) > 4.0) {
         return;
     }
-    SbBool zoomAtCur = this->zoomAtCursor;
+    bool zoomAtCur = this->zoomAtCursor;
     if (zoomAtCur) {
         const SbViewportRegion& vp = viewer->getSoRenderManager()->getViewportRegion();
         float ratio = vp.getViewportAspectRatio();
@@ -1140,7 +1146,7 @@ void NavigationStyle::doRotate(SoCamera* camera, float angle, const SbVec2f& pos
         return;
     }
 
-    SbBool zoomAtCur = this->zoomAtCursor;
+    bool zoomAtCur = this->zoomAtCursor;
     if (zoomAtCur) {
         const SbViewportRegion& vp = viewer->getSoRenderManager()->getViewportRegion();
         float ratio = vp.getViewportAspectRatio();
@@ -1166,7 +1172,7 @@ void NavigationStyle::doRotate(SoCamera* camera, float angle, const SbVec2f& pos
     }
 }
 
-SbVec3f NavigationStyle::getRotationCenter(SbBool& found) const
+SbVec3f NavigationStyle::getRotationCenter(bool& found) const
 {
     found = this->rotationCenterFound;
     return this->rotationCenter;
@@ -1498,7 +1504,7 @@ void NavigationStyle::applyOrbitDragCameraConstraints(const OrbitDragState& stat
     camera->farDistance = farDistance;
 }
 
-SbBool NavigationStyle::doSpin()
+bool NavigationStyle::doSpin()
 {
     if (this->log.historysize >= 3) {
         SbTime stoptime = (SbTime::getTimeOfDay() - this->log.time[0]);
@@ -1643,7 +1649,7 @@ void NavigationStyle::moveCursorPosition()
 }
 
 
-SbBool NavigationStyle::handleEventInForeground(const SoEvent* const e)
+bool NavigationStyle::handleEventInForeground(const SoEvent* const e)
 {
     SoHandleEventAction action(viewer->getSoRenderManager()->getViewportRegion());
     action.setEvent(e);
@@ -1657,7 +1663,7 @@ SbBool NavigationStyle::handleEventInForeground(const SoEvent* const e)
  *
  * If the enable flag is false and we're currently animating, the animation will be stopped
  */
-void NavigationStyle::setAnimationEnabled(const SbBool enable)
+void NavigationStyle::setAnimationEnabled(bool enable)
 {
     animationEnabled = enable;
     if (!enable && isAnimating()) {
@@ -1671,7 +1677,7 @@ void NavigationStyle::setAnimationEnabled(const SbBool enable)
  *
  * If the enable flag is false and we're currently animating, the spin animation will be stopped
  */
-void NavigationStyle::setSpinningAnimationEnabled(const SbBool enable)
+void NavigationStyle::setSpinningAnimationEnabled(bool enable)
 {
     spinningAnimationEnabled = enable;
     if (!enable && isSpinning()) {
@@ -1682,7 +1688,7 @@ void NavigationStyle::setSpinningAnimationEnabled(const SbBool enable)
 /**
  * @return Whether or not it is possible to start any animation
  */
-SbBool NavigationStyle::isAnimationEnabled() const
+bool NavigationStyle::isAnimationEnabled() const
 {
     return animationEnabled;
 }
@@ -1690,7 +1696,7 @@ SbBool NavigationStyle::isAnimationEnabled() const
 /**
  * @return Whether or not it is possible to start a spinning animation e.g. after dragging
  */
-SbBool NavigationStyle::isSpinningAnimationEnabled() const
+bool NavigationStyle::isSpinningAnimationEnabled() const
 {
     return animationEnabled && spinningAnimationEnabled;
 }
@@ -1698,7 +1704,7 @@ SbBool NavigationStyle::isSpinningAnimationEnabled() const
 /**
  * @return Whether or not any animation is currently active
  */
-SbBool NavigationStyle::isAnimating() const
+bool NavigationStyle::isAnimating() const
 {
     return animator->isAnimating();
 }
@@ -1706,7 +1712,7 @@ SbBool NavigationStyle::isAnimating() const
 /**
  * @return Whether or not a spinning animation is currently active e.g. after a user drag
  */
-SbBool NavigationStyle::isSpinning() const
+bool NavigationStyle::isSpinning() const
 {
     return currentmode == NavigationStyle::SPINNING;
 }
@@ -1714,7 +1720,7 @@ SbBool NavigationStyle::isSpinning() const
 /**
  * @return Whether or not viewer rotation is enabled
  */
-SbBool NavigationStyle::isRotationEnabled() const
+bool NavigationStyle::isRotationEnabled() const
 {
     return rotationEnabled;
 }
@@ -1722,7 +1728,7 @@ SbBool NavigationStyle::isRotationEnabled() const
 /**
  * @brief Decide if camera rotation should be possible
  */
-void NavigationStyle::setRotationEnabled(const SbBool enable)
+void NavigationStyle::setRotationEnabled(bool enable)
 {
     rotationEnabled = enable;
     if (!enable && isSpinning()) {
@@ -1730,7 +1736,7 @@ void NavigationStyle::setRotationEnabled(const SbBool enable)
     }
 }
 
-SbBool NavigationStyle::canChangeCameraOrientation(
+bool NavigationStyle::canChangeCameraOrientation(
     const SbRotation& current,
     const SbRotation& target,
     const OrientationChangeSource source
@@ -1748,7 +1754,7 @@ SbBool NavigationStyle::canChangeCameraOrientation(
     return true;
 }
 
-SbBool NavigationStyle::setCameraOrientationValue(
+bool NavigationStyle::setCameraOrientationValue(
     SoCamera* camera,
     const SbRotation& orientation,
     const OrientationChangeSource source
@@ -1765,12 +1771,12 @@ SbBool NavigationStyle::setCameraOrientationValue(
     return true;
 }
 
-SbBool NavigationStyle::isOrientationLocked() const
+bool NavigationStyle::isOrientationLocked() const
 {
     return orientationLocked;
 }
 
-void NavigationStyle::setOrientationLocked(const SbBool enable)
+void NavigationStyle::setOrientationLocked(bool enable)
 {
     orientationLocked = enable;
 }
@@ -1800,22 +1806,22 @@ float NavigationStyle::getSensitivity() const
     return this->sensitivity;
 }
 
-void NavigationStyle::setResetCursorPosition(SbBool on)
+void NavigationStyle::setResetCursorPosition(bool on)
 {
     this->resetcursorpos = on;
 }
 
-SbBool NavigationStyle::isResetCursorPosition() const
+bool NavigationStyle::isResetCursorPosition() const
 {
     return this->resetcursorpos;
 }
 
-void NavigationStyle::setZoomInverted(SbBool on)
+void NavigationStyle::setZoomInverted(bool on)
 {
     this->invertZoom = on;
 }
 
-SbBool NavigationStyle::isZoomInverted() const
+bool NavigationStyle::isZoomInverted() const
 {
     return this->invertZoom;
 }
@@ -1825,12 +1831,12 @@ void NavigationStyle::setZoomStep(float val)
     this->zoomStep = val;
 }
 
-void NavigationStyle::setZoomAtCursor(SbBool on)
+void NavigationStyle::setZoomAtCursor(bool on)
 {
     this->zoomAtCursor = on;
 }
 
-SbBool NavigationStyle::isZoomAtCursor() const
+bool NavigationStyle::isZoomAtCursor() const
 {
     return this->zoomAtCursor;
 }
@@ -1926,7 +1932,7 @@ void NavigationStyle::resetButtonState()
     setViewingMode(IDLE);
 }
 
-SbBool NavigationStyle::isSelecting() const
+bool NavigationStyle::isSelecting() const
 {
     return (mouseSelection ? true : false);
 }
@@ -1939,7 +1945,7 @@ const std::vector<SbVec2s>& NavigationStyle::getPolygon(SelectionRole* role) con
     return pcPolygon;
 }
 
-void NavigationStyle::updateSelectionStartPosition(SbBool press, const SbVec2s& position)
+void NavigationStyle::updateSelectionStartPosition(bool press, const SbVec2s& position)
 {
     if (press) {
         setSelectionStartPosition(position);
@@ -2213,7 +2219,7 @@ int NavigationStyle::getViewingMode() const
     return (int)this->currentmode;
 }
 
-SbBool NavigationStyle::processEvent(const SoEvent* const ev)
+bool NavigationStyle::processEvent(const SoEvent* const ev)
 {
     // If we're in picking mode then all events must be redirected to the
     // appropriate mouse model.
@@ -2252,7 +2258,7 @@ SbBool NavigationStyle::processEvent(const SoEvent* const ev)
 
     const ViewerMode curmode = this->currentmode;
 
-    SbBool processed = false;
+    bool processed = false;
     processed = this->processSoEvent(ev);
 
     // check for left click without selecting something
@@ -2267,7 +2273,7 @@ SbBool NavigationStyle::processEvent(const SoEvent* const ev)
     return processed;
 }
 
-SbBool NavigationStyle::processSoEvent(const SoEvent* const ev)
+bool NavigationStyle::processSoEvent(const SoEvent* const ev)
 {
     bool processed = false;
     bool offeredtoViewerEventBase = false;
@@ -2315,7 +2321,7 @@ void NavigationStyle::syncWithEvent(const SoEvent* const ev)
     // Keyboard handling
     if (type.isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
         auto const event = static_cast<const SoKeyboardEvent*>(ev);
-        const SbBool press = event->getState() == SoButtonEvent::DOWN ? true : false;
+        const bool press = event->getState() == SoButtonEvent::DOWN ? true : false;
         switch (event->getKey()) {
             case SoKeyboardEvent::LEFT_CONTROL:
             case SoKeyboardEvent::RIGHT_CONTROL:
@@ -2338,7 +2344,7 @@ void NavigationStyle::syncWithEvent(const SoEvent* const ev)
     if (type.isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
         auto const event = static_cast<const SoMouseButtonEvent*>(ev);
         const int button = event->getButton();
-        const SbBool press = event->getState() == SoButtonEvent::DOWN ? true : false;
+        const bool press = event->getState() == SoButtonEvent::DOWN ? true : false;
 #ifdef FC_DEBUG
         SoDebugError::postInfo("processSoEvent", "button = %d", button);
 #endif
@@ -2358,7 +2364,7 @@ void NavigationStyle::syncWithEvent(const SoEvent* const ev)
     }
 }
 
-SbBool NavigationStyle::processMotionEvent(const SoMotion3Event* const ev)
+bool NavigationStyle::processMotionEvent(const SoMotion3Event* const ev)
 {
     SoCamera* const camera = viewer->getSoRenderManager()->getCamera();
     if (!camera) {
@@ -2427,10 +2433,10 @@ SbBool NavigationStyle::processMotionEvent(const SoMotion3Event* const ev)
     return true;
 }
 
-SbBool NavigationStyle::processKeyboardEvent(const SoKeyboardEvent* const event)
+bool NavigationStyle::processKeyboardEvent(const SoKeyboardEvent* const event)
 {
-    SbBool processed = false;
-    const SbBool press = event->getState() == SoButtonEvent::DOWN ? true : false;
+    bool processed = false;
+    const bool press = event->getState() == SoButtonEvent::DOWN ? true : false;
     switch (event->getKey()) {
         case SoKeyboardEvent::LEFT_CONTROL:
         case SoKeyboardEvent::RIGHT_CONTROL:
@@ -2473,12 +2479,12 @@ SbBool NavigationStyle::processKeyboardEvent(const SoKeyboardEvent* const event)
     return processed;
 }
 
-SbBool NavigationStyle::processClickEvent(const SoMouseButtonEvent* const event)
+bool NavigationStyle::processClickEvent(const SoMouseButtonEvent* const event)
 {
     // issue #0002433: avoid to swallow the UP event if down the
     // scene graph somewhere a dialog gets opened
-    SbBool processed = false;
-    const SbBool press = event->getState() == SoButtonEvent::DOWN ? true : false;
+    bool processed = false;
+    const bool press = event->getState() == SoButtonEvent::DOWN ? true : false;
     if (press) {
         if (isDoubleClickCandidate(event)) {
             deferMouseDownEvent(event);
@@ -2530,7 +2536,7 @@ void NavigationStyle::replayDeferredMouseDownEvent()
     clearDeferredMouseDownEvent();
 }
 
-SbBool NavigationStyle::processWheelEvent(const SoMouseWheelEvent* const event)
+bool NavigationStyle::processWheelEvent(const SoMouseWheelEvent* const event)
 {
     const SbVec2s pos(event->getPosition());
     const SbVec2f posn = normalizePixelPos(pos);
@@ -2540,12 +2546,12 @@ SbBool NavigationStyle::processWheelEvent(const SoMouseWheelEvent* const event)
     return true;
 }
 
-void NavigationStyle::setPopupMenuEnabled(const SbBool on)
+void NavigationStyle::setPopupMenuEnabled(bool on)
 {
     this->menuenabled = on;
 }
 
-SbBool NavigationStyle::isPopupMenuEnabled() const
+bool NavigationStyle::isPopupMenuEnabled() const
 {
     return this->menuenabled;
 }

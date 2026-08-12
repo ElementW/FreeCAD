@@ -1438,13 +1438,11 @@ SET(FreeCADGui_SRCS
     ${Dock_Windows_SRCS}
     ${Editor_SRCS}
     ${Help_SRCS}
-    ${Inventor_CPP_SRCS}
     ${Language_SRCS}
     ${Propertyeditor_SRCS}
     ${Task_View_SRCS}
     ${qsintActionPanel_SRCS}
     ${Resource_SRCS}
-    ${Quarter_SRCS}
     ${View3D_SRCS}
     ${Navigation_SRCS}
     ${Viewprovider_SRCS}
@@ -1455,6 +1453,13 @@ SET(FreeCADGui_SRCS
     ${Selection_SRCS}
     ${FreeCADGui_SRCS}
 )
+if(FREECAD_USE_COIN3D)
+    list(APPEND FreeCADGui_SRCS ${Inventor_CPP_SRCS} ${Quarter_SRCS})
+    target_compile_definitions(FreeCADGui PUBLIC FREECAD_USE_COIN3D)
+endif(FREECAD_USE_COIN3D)
+if(FREECAD_USE_CASHLESS3D)
+    target_compile_definitions(FreeCADGui PUBLIC FREECAD_USE_CASHLESS3D)
+endif(FREECAD_USE_CASHLESS3D)
 
 if(MSVC)
     SET(FreeCADGui_CPP_SRCS

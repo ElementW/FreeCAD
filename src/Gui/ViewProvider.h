@@ -38,6 +38,7 @@
 
 #include "TreeItemMode.h"
 
+#if defined(FREECAD_USE_COIN3D)
 class SbVec2s;
 class SbVec3f;
 class SoNode;
@@ -51,6 +52,9 @@ class SoEventCallback;
 class SoPickedPoint;
 class SoDetail;
 class SoFullPath;
+class SoGroup;
+#endif
+
 class QString;
 class QMenu;
 class QObject;
@@ -61,8 +65,6 @@ namespace Base
 class Matrix4D;
 class Color;
 }  // namespace Base
-
-class SoGroup;
 
 
 namespace Gui
@@ -87,6 +89,7 @@ enum ViewStatus
 };
 
 
+#if defined(FREECAD_USE_COIN3D)
 /** Convenience smart pointer to manage the lifetime of coin nodes.
  *
  * This class is copied from Inventor/misc/SoRefPtr.h and can be removed when the
@@ -195,6 +198,7 @@ public:
  * @sa https://bitbucket.org/Coin3D/coin/pull-requests/119/fix-sochildlist-auditing/diff
  */
 void GuiExport coinRemoveAllChildren(SoGroup* node);
+#endif
 
 /** General interface for all visual stuff in FreeCAD
  * This class is used to generate and handle all around
