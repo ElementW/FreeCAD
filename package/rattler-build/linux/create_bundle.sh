@@ -38,13 +38,80 @@ find . -path "*/__pycache__/*" -delete
 find . -name "*.pyc" -type f -delete
 
 # reduce size
-rm -rf ${conda_env}/conda-meta/
-rm -rf ${conda_env}/doc/global/
-rm -rf ${conda_env}/share/gtk-doc/
-rm -rf ${conda_env}/lib/cmake/
 
-find . -name "*.h" -type f -delete
-find . -name "*.cmake" -type f -delete
+# Remove parts of packages we do not want and we know aren't getting loaded under normal circumstances.
+# Do not remove libraries that executables depend from, nor remove conda-meta; the former is handled
+# and the latter needed by force_remove_conda_packages.
+rm -rf \
+    ${conda_env}/doc/global/ \
+    ${conda_env}/lib/cmake/ \
+    ${conda_env}/lib/graphviz/libgvplugin_gd.* \
+    ${conda_env}/lib/graphviz/libgvplugin_gdk.* \
+    ${conda_env}/lib/graphviz/libgvplugin_pango.* \
+    ${conda_env}/lib/graphviz/libgvplugin_rsvg.* \
+    ${conda_env}/lib/graphviz/libgvplugin_webp.* \
+    ${conda_env}/lib/python3.11/site-packages/pandas/tests/ \
+    ${conda_env}/lib/qt6/mkspecs/ \
+    ${conda_env}/lib/qt6/bin/lupdate \
+    ${conda_env}/lib/qt6/bin/qdoc \
+    ${conda_env}/lib/qt6/plugins/egldeviceintegrations/ \
+    ${conda_env}/lib/qt6/plugins/generic/ \
+    ${conda_env}/lib/qt6/plugins/platforms/libqeglfs.so \
+    ${conda_env}/lib/qt6/plugins/platforms/libqlinuxfb.so \
+    ${conda_env}/lib/qt6/plugins/platforms/libqminimal.so \
+    ${conda_env}/lib/qt6/plugins/platforms/libqminimalegl.so \
+    ${conda_env}/lib/qt6/plugins/platforms/libqoffscreen.so \
+    ${conda_env}/lib/qt6/plugins/platforms/libqvkkhrdisplay.so \
+    ${conda_env}/lib/qt6/plugins/platforms/libqvnc.so \
+    ${conda_env}/lib/qt6/plugins/qmllint/ \
+    ${conda_env}/lib/qt6/plugins/qmlls/ \
+    ${conda_env}/lib/qt6/plugins/qmltooling/ \
+    ${conda_env}/lib/qt6/plugins/sqldrivers/ \
+    ${conda_env}/lib/qt6/plugins/wayland-graphics-integration-server/ \
+    ${conda_env}/lib/qt6/sbom/ \
+    ${conda_env}/lib/libharfbuzz-cairo.so* \
+    ${conda_env}/lib/libpangocairo* \
+    ${conda_env}/lib/libQt6EglFs* \
+    ${conda_env}/share/aclocal/ \
+    ${conda_env}/share/gtk-doc/ \
+    ${conda_env}/share/wayland/ \
+    ${conda_env}/share/wayland-protocols/ \
+    ${conda_env}/man/
+
+./force_remove_conda_packages.py \
+    --print-rdeps-before-removal \
+    -e "${conda_env}" \
+    -s symbol_subst.yaml \
+    --keep-needed-libs 'libdrm.+' \
+    '*openvino*' \
+    '*gtk3*' \
+    'libllvm*' \
+    'libclang*' \
+    libva \
+    'mysql-*' \
+    cairo \
+    libdrm \
+    pang \
+    epoxy \
+    sdl3 \
+    librsvg \
+    sdl2 \
+    scipy \
+    libraw \
+    tk \
+    gdk-pixbuf \
+    libtheora \
+    libpq \
+    libsndfile \
+    libcurl
+
+rm -rf ${conda_env}/conda-meta/
+
+find ${conda_env} \( \
+    -name "*.h" -o \
+    -name "*.prl" -o \
+    -name "*.cmake" \
+    \) -type f -delete
 
 version_name="FreeCAD_${BUILD_TAG}-Linux-$(uname -m)"
 
@@ -67,7 +134,7 @@ if ! "${conda_env}/bin/freecadcmd" --safe-mode --console "import pivy; from pivy
     exit 1
 fi
 
-curl -LO https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$(uname -m).AppImage
+#curl -LO https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$(uname -m).AppImage
 chmod a+x appimagetool-$(uname -m).AppImage
 
 if [ "${UPLOAD_RELEASE}" == "true" ]; then

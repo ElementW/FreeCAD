@@ -1,0 +1,71 @@
+$crash: &crash
+    crash: true
+$0i: &0i
+    return:
+        type: int
+        value: 0
+$-1i: &-1i
+    return:
+        type: int
+        value: -1
+$1i: &1i
+    return:
+        type: int
+        value: -1
+$-EINVAL: &-EINVAL
+    return:
+        type: int
+        value: -22
+$null: &nullptr
+    return:
+        type: void*
+        value: nullptr
+$nop: &nop
+    return:
+        type: void
+$constzeroes: &constzeroes
+    return:
+        type: const void*
+        value: 'constzeroes'
+
+# libdrm (sister library to mesa)
+# drmGetDevice: *-EINVAL
+# drmFreeDevice: *nop
+# drmGetVersion: *nullptr
+# drmFreeVersion: *nop
+# drmGetNodeTypeFromFd: *0i
+# drm[A-Z].+: *crash
+
+# SDL2
+SDL_.+: *crash
+
+# cairo (2D drawing API)
+cairo_.+: *crash
+
+# libRaw (RAW photo reader API)
+_ZNK?[0-9]{1,2}LibRaw.+: *crash
+
+# Theora audio codec (dead format)
+th_.+: *crash
+
+# libsndfile (simple audio format I/O library)
+sf_.+: *crash
+
+# CURL
+curl_.+: *crash
+
+# OpenVino
+ov_core_create: *-1i  # GENERAL_ERROR
+ov_get_openvino_version: *constzeroes
+ov_version_free: *nop
+ov_.+: *crash
+
+# librsvg (SVG renderer)
+rsvg_handle_new_from_data: *nullptr
+rsvg_h.+: *crash
+
+# libva (Linux accelerated video encode/decode API)
+vaInitialize: *1i  # VA_STATUS_ERROR_OPERATION_FAILED
+vaGetDisplay: *nullptr
+vaGetDisplayDRM: *nullptr
+va[A-Z].+: *crash
