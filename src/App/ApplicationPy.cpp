@@ -40,6 +40,7 @@
 #include "DocumentPy.h"
 #include "DocumentObserverPython.h"
 #include "DocumentObjectPy.h"
+#include "FileFormat.h"
 #include "RecoverySnapshot.h"
 
 
@@ -66,14 +67,13 @@ PyObject* ApplicationPy::sLoadFile(PyObject* /*self*/, PyObject* args)
 
         std::string module = mod;
         if (module.empty()) {
-            std::string ext = fi.extension();
-            std::vector<std::string> modules = GetApplication().getImportModules(ext.c_str());
+            const auto fileName = fi.fileName();
+            const auto modules = GetApplication().getFormats().importersForFileName(fileName);
             if (modules.empty()) {
-                PyErr_Format(PyExc_IOError, "Filetype %s is not supported.", ext.c_str());
+                PyErr_Format(PyExc_IOError, "File %s is not supported: no available importer", fileName.c_str());
                 return nullptr;
             }
-
-            module = modules.front();
+            module = modules.front()->moduleName;
         }
 
         // path and doc could contain characters that need escaping, such as quote signs
@@ -499,6 +499,14 @@ PyObject* ApplicationPy::sVersion(PyObject* /*self*/, PyObject* args)
     return Py::new_reference_to(list);
 }
 
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
+#ifdef _MSC_VER
+# pragma warning(push)
+# pragma warning(disable : 34996)
+#else
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 PyObject* ApplicationPy::sAddImportType(PyObject* /*self*/, PyObject* args)
 {
     char *psKey {};
@@ -677,6 +685,12 @@ PyObject* ApplicationPy::sGetExportType(PyObject* /*self*/, PyObject* args)
 
     return Py::new_reference_to(dict);
 }
+#ifdef _MSC_VER
+# pragma warning(pop)
+#else
+# pragma GCC diagnostic pop
+#endif
+#endif  // FC_NO_LEGACY_FORMAT_HANDLING
 
 PyObject* ApplicationPy::sGetResourceDir(PyObject* /*self*/, PyObject* args)
 {

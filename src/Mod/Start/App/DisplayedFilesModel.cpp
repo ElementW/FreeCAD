@@ -29,6 +29,7 @@
 #include <QThreadPool>
 
 #include <App/Application.h>
+#include <App/FileFormat.h>
 
 #include "FcstdInfoSource.h"
 #include "FileUtilities.h"
@@ -51,15 +52,12 @@ static FileStats getCommonFileInfo(const std::string& path)
     return result;
 }
 
-static bool freecadCanOpen(const QString& extension)
+static bool freecadCanOpen(const QFileInfo& fileInfo)
 {
-    std::string ext = extension.toStdString();
-    auto importTypes = App::GetApplication().getImportTypes();
-    return std::ranges::find_if(
-               importTypes,
-               [&ext](const auto& item) { return boost::iequals(item, ext); }
-           )
-        != importTypes.end();
+    return !App::GetApplication()
+                .getFormats()
+                .importersForFileName(fileInfo.fileName().toStdString())
+                .empty();
 }
 
 DisplayedFilesModel::DisplayedFilesModel(QObject* parent)
@@ -156,7 +154,7 @@ void DisplayedFilesModel::addFile(const QString& filePath)
         return;
     }
 
-    if (!freecadCanOpen(qfi.suffix())) {
+    if (!freecadCanOpen(qfi)) {
         return;
     }
 
@@ -198,7 +196,7 @@ void DisplayedFilesModel::modifiedFile(const QString& filePath)
     if (!qfi.isReadable()) {
         return;
     }
-    if (!freecadCanOpen(qfi.suffix())) {
+    if (!freecadCanOpen(qfi)) {
         return;
     }
 

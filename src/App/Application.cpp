@@ -129,6 +129,7 @@
 #include "ExpressionParser.h"
 #include "FeatureTest.h"
 #include "FeaturePython.h"
+#include "FileFormat.h"
 #include "GeoFeature.h"
 #include "GeoFeatureGroupExtension.h"
 #include "ImagePlane.h"
@@ -396,8 +397,9 @@ init_image_module()
 }
 // clang-format on
 
-Application::Application(std::map<std::string,std::string> &mConfig)
-  : _mConfig(mConfig)
+Application::Application(std::map<std::string, std::string>& mConfig)
+    : _formats(new Formats)
+    , _mConfig(mConfig)
 {
     mpcPramManager["System parameter"] = _pcSysParamMngr;
     mpcPramManager["User parameter"] = _pcUserParamMngr;
@@ -1553,324 +1555,96 @@ Base::Reference<ParameterGrp>  Application::GetParameterGroupByPath(const char* 
     return It->second->GetGroup(cName.c_str());
 }
 
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
 void Application::addImportType(const char* filter, const char* moduleName)
 {
-    FileTypeItem item;
-    item.filter = filter;
-    item.module = moduleName;
-
-    // Extract each filetype from 'Type' literal
-    std::string::size_type pos = item.filter.find("*.");
-    while ( pos != std::string::npos ) {
-        const std::string::size_type next = item.filter.find_first_of(" )", pos + 1);
-        const std::string::size_type len = next-pos-2;
-        std::string type = item.filter.substr(pos+2,len);
-        item.types.push_back(std::move(type));
-        pos = item.filter.find("*.", next);
-    }
-
-    // Due to branding stuff replace "FreeCAD" with the branded application name
-    if (strncmp(filter, "FreeCAD", 7) == 0) {
-        std::string AppName = getExecutableName();
-        AppName += item.filter.substr(7);
-        item.filter = std::move(AppName);
-        // put to the front of the array
-        _mImportTypes.insert(_mImportTypes.begin(),std::move(item));
-    }
-    else {
-        _mImportTypes.push_back(std::move(item));
-    }
+    _formats->addImportType(filter, moduleName);
 }
 
 void Application::changeImportModule(const char* filter, const char* oldModuleName, const char* newModuleName)
 {
-    for (auto& it : _mImportTypes) {
-        if (it.filter == filter && it.module == oldModuleName) {
-            it.module = newModuleName;
-            break;
-        }
-    }
+    _formats->changeImportModule(filter, oldModuleName, newModuleName);
 }
 
 std::vector<std::string> Application::getImportModules(const std::string& extension) const
 {
-    std::vector<std::string> modules;
-    for (const auto & it : _mImportTypes) {
-        const std::vector<std::string>& types = it.types;
-        for (const auto & jt : types) {
-            if (boost::iequals(extension, jt)) {
-                modules.push_back(it.module);
-            }
-        }
-    }
-
-    return modules;
+    return _formats->getImportModules(extension);
 }
 
 std::vector<std::string> Application::getImportModules() const
 {
-    std::vector<std::string> modules;
-    modules.reserve(_mImportTypes.size());
-    for (const auto& it : _mImportTypes) {
-        modules.push_back(it.module);
-    }
-    std::sort(modules.begin(), modules.end());
-    modules.erase(std::unique(modules.begin(), modules.end()), modules.end());
-    return modules;
+    return _formats->getImportModules();
 }
 
-std::vector<std::string> Application::getImportTypes(const std::string& Module) const
+std::vector<std::string> Application::getImportTypes(const std::string& module) const
 {
-    std::vector<std::string> types;
-    for (const auto & it : _mImportTypes) {
-        if (boost::iequals(Module, it.module)) {
-            types.insert(types.end(), it.types.begin(), it.types.end());
-        }
-    }
-
-    return types;
+    return _formats->getImportTypes(module);
 }
 
 std::vector<std::string> Application::getImportTypes() const
 {
-    std::vector<std::string> types;
-    for (const auto & it : _mImportTypes) {
-        types.insert(types.end(), it.types.begin(), it.types.end());
-    }
-
-    std::sort(types.begin(), types.end());
-    types.erase(std::unique(types.begin(), types.end()), types.end());
-
-    return types;
+    return _formats->getImportTypes();
 }
 
 std::map<std::string, std::string> Application::getImportFilters(const std::string& extension) const
 {
-    std::map<std::string, std::string> moduleFilter;
-    for (const auto & it : _mImportTypes) {
-        const std::vector<std::string>& types = it.types;
-        for (const auto & jt : types) {
-            if (boost::iequals(extension, jt)) {
-                moduleFilter[it.filter] = it.module;
-            }
-        }
-    }
-
-    return moduleFilter;
+    return _formats->getImportFilters(extension);
 }
 
 std::map<std::string, std::string> Application::getImportFilters() const
 {
-    std::map<std::string, std::string> filter;
-    for (const auto & it : _mImportTypes) {
-        filter[it.filter] = it.module;
-    }
-
-    return filter;
+    return _formats->getImportFilters();
 }
 
 void Application::addExportType(const char* filter, const char* moduleName)
 {
-    FileTypeItem item;
-    item.filter = filter;
-    item.module = moduleName;
-
-    // Extract each filetype from 'Type' literal
-    std::string::size_type pos = item.filter.find("*.");
-    while ( pos != std::string::npos ) {
-        const std::string::size_type next = item.filter.find_first_of(" )", pos + 1);
-        const std::string::size_type len = next-pos-2;
-        std::string type = item.filter.substr(pos+2,len);
-        item.types.push_back(std::move(type));
-        pos = item.filter.find("*.", next);
-    }
-
-    // Due to branding stuff replace "FreeCAD" with the branded application name
-    if (strncmp(filter, "FreeCAD", 7) == 0) {
-        std::string AppName = getExecutableName();
-        AppName += item.filter.substr(7);
-        item.filter = std::move(AppName);
-        // put to the front of the array
-        _mExportTypes.insert(_mExportTypes.begin(),std::move(item));
-    }
-    else {
-        _mExportTypes.push_back(std::move(item));
-    }
+    _formats->addExportType(filter, moduleName);
 }
 
-namespace {
-    // To enable changing languages while the program is running, cache the translatable export type
-    // entries so that their addition can be "replayed" when the language changes (after removing
-    // the originals).
-
-    struct TranslatableTypeCacheEntry {
-        std::string description;
-        const std::vector<std::string> extensions;
-        std::string moduleName;
-    };
-
-    class TranslatableTypeCache {
-    public:
-        TranslatableTypeCache() = default;
-        void addCacheEntry(TranslatableTypeCacheEntry entry) {
-            _cache.push_back(std::move(entry));
-        }
-        std::vector<TranslatableTypeCacheEntry> getCache() const {
-            return _cache;
-        }
-        void clear()
-        {
-            _cache.clear();
-        }
-    private:
-        std::vector<TranslatableTypeCacheEntry> _cache;
-    };
-
-    TranslatableTypeCache translatableExportTypeCache;
-
-    // Given a description string and a list of extensions, construct a type string that Qt's file
-    // dialogs will recognize
-    void appendTypeString(std::string &description, const std::vector<std::string> &extensions) {
-        description = fmt::format("{} (*.{})", description, fmt::join(extensions, " *."));
-    }
-}
-
-void Application::addTranslatableExportType(const std::string &description,
-                                            const std::vector<std::string> &extensions,
-                                            const std::string &moduleName)
+void Application::addTranslatableExportType(
+    const std::string& description,
+    const std::vector<std::string>& extensions,
+    const std::string& moduleName
+)
 {
-    assert(!extensions.empty());  // Programming error, there must be extensions
-
-    // Branding: replace "FreeCAD" in a file type description with the branded application name
-    auto replaceFreeCAD =
-    [](std::string& s)
-    {
-        constexpr std::string_view freecad = "FreeCAD";
-        if (auto pos = s.find(freecad); pos != std::string::npos) {
-            s.replace(pos, freecad.size(), getExecutableName());
-            return true;  // Contained the app name
-        }
-        return false;  // Did NOT contain the app name
-    };
-
-    translatableExportTypeCache.addCacheEntry({description, extensions, moduleName});
-    auto translatedDescription = QCoreApplication::translate("FileFormat", description.c_str()).toStdString();
-    bool containsAppName = replaceFreeCAD(translatedDescription);  // Run *AFTER* translation
-    appendTypeString(translatedDescription, extensions);
-
-    FileTypeItem item;
-    item.filter = translatedDescription;
-    item.module = moduleName;
-    item.types = extensions;
-    item.translatable = true;
-
-    if (containsAppName) {
-        // put to the front of the array
-        _mExportTypes.insert(_mExportTypes.begin(),std::move(item));
-    }
-    else {
-        _mExportTypes.push_back(std::move(item));
-    }
-}
-
-void Application::retranslateExportTypes()
-{
-    auto cache = translatableExportTypeCache.getCache();
-    translatableExportTypeCache.clear();
-    std::erase_if(_mExportTypes, [](const FileTypeItem& item) {
-        return item.translatable;
-    });
-    for (const auto &cacheEntry : cache) {
-        addTranslatableExportType(cacheEntry.description, cacheEntry.extensions, cacheEntry.moduleName);
-    }
+    _formats->addTranslatableExportType(description, extensions, moduleName);
 }
 
 void Application::changeExportModule(const char* filter, const char* oldModuleName, const char* newModuleName)
 {
-    for (auto& it : _mExportTypes) {
-        if (it.filter == filter && it.module == oldModuleName) {
-            it.module = newModuleName;
-            break;
-        }
-    }
+    _formats->changeExportModule(filter, oldModuleName, newModuleName);
 }
 
 std::vector<std::string> Application::getExportModules(const std::string& extension) const
 {
-    std::vector<std::string> modules;
-    for (const auto & it : _mExportTypes) {
-        const std::vector<std::string>& types = it.types;
-        for (const auto & jt : types) {
-            if (boost::iequals(extension, jt)) {
-                modules.push_back(it.module);
-            }
-        }
-    }
-
-    return modules;
+    return _formats->getExportModules(extension);
 }
 
 std::vector<std::string> Application::getExportModules() const
 {
-    std::vector<std::string> modules;
-    modules.reserve(_mExportTypes.size());
-    for (const auto& it : _mExportTypes) {
-        modules.push_back(it.module);
-    }
-    std::sort(modules.begin(), modules.end());
-    modules.erase(std::unique(modules.begin(), modules.end()), modules.end());
-    return modules;
+    return _formats->getExportModules();
 }
 
-std::vector<std::string> Application::getExportTypes(const std::string& Module) const
+std::vector<std::string> Application::getExportTypes(const std::string& module) const
 {
-    std::vector<std::string> types;
-    for (const auto & it : _mExportTypes) {
-        if (boost::iequals(Module, it.module)) {
-            types.insert(types.end(), it.types.begin(), it.types.end());
-        }
-    }
-
-    return types;
+    return _formats->getExportTypes(module);
 }
 
 std::vector<std::string> Application::getExportTypes() const
 {
-    std::vector<std::string> types;
-    for (const FileTypeItem& it : _mExportTypes) {
-        types.insert(types.end(), it.types.begin(), it.types.end());
-    }
-
-    std::sort(types.begin(), types.end());
-    types.erase(std::unique(types.begin(), types.end()), types.end());
-
-    return types;
+    return _formats->getExportTypes();
 }
 
 std::map<std::string, std::string> Application::getExportFilters(const std::string& extension) const
 {
-    std::map<std::string, std::string> moduleFilter;
-    for (const auto & it : _mExportTypes) {
-        const std::vector<std::string>& types = it.types;
-        for (const auto & jt : types) {
-            if (boost::iequals(extension, jt)) {
-                moduleFilter[it.filter] = it.module;
-            }
-        }
-    }
-
-    return moduleFilter;
+    return _formats->getExportFilters(extension);
 }
 
 std::map<std::string, std::string> Application::getExportFilters() const
 {
-    std::map<std::string, std::string> filter;
-    for (const FileTypeItem& it : _mExportTypes) {
-        filter[it.filter] = it.module;
-    }
-
-    return filter;
+    return _formats->getExportFilters();
 }
+#endif  // FC_NO_LEGACY_FORMAT_HANDLING
 
 //**************************************************************************
 // signaling
@@ -3118,17 +2892,26 @@ std::list<std::string> Application::processFiles(const std::list<std::string>& f
                 }
             }
             else {
-                std::vector<std::string> mods = GetApplication().getImportModules(file.extension());
-                if (!mods.empty()) {
+                const auto fileName = file.fileName();
+                const auto importers = GetApplication().getFormats().importersForFileName(fileName);
+                if (!importers.empty()) {
                     std::string escapedstr = Base::Tools::escapedUnicodeFromUtf8(file.filePath().c_str());
                     escapedstr = Base::Tools::escapeEncodeFilename(escapedstr);
 
-                    Base::Interpreter().loadModule(mods.front().c_str());
-                    Base::Interpreter().runStringArg("import %s",mods.front().c_str());
-                    Base::Interpreter().runStringArg("%s.open(u\"%s\")",mods.front().c_str(),
-                            escapedstr.c_str());
+                    const auto& importerModule = importers.front()->moduleName;
+                    Base::Interpreter().loadModule(importerModule.c_str());
+                    Base::Interpreter().runStringArg("import %s", importerModule.c_str());
+                    Base::Interpreter().runStringArg(
+                        "%s.open(u\"%s\")",
+                        importerModule.c_str(),
+                        escapedstr.c_str()
+                    );
                     processed.push_back(it);
-                    Base::Console().log("Command line open: %s.open(u\"%s\")\n",mods.front().c_str(),escapedstr.c_str());
+                    Base::Console().log(
+                        "Command line open: %s.open(u\"%s\")\n",
+                        importerModule.c_str(),
+                        escapedstr.c_str()
+                    );
                 }
                 else if (file.exists()) {
                     Base::Console().warning("File format not supported: %s \n", file.filePath().c_str());
@@ -3175,13 +2958,15 @@ void Application::processCmdLineFiles()
         output = Base::Tools::escapeEncodeFilename(output);
 
         const Base::FileInfo fi(output);
+        const auto fileName = fi.fileName();
         try {
-            const std::vector<std::string> mods = GetApplication().getExportModules(fi.extension());
-            if (!mods.empty()) {
-                Base::Interpreter().loadModule(mods.front().c_str());
-                Base::Interpreter().runStringArg("import %s",mods.front().c_str());
-                Base::Interpreter().runStringArg("%s.export(App.ActiveDocument.Objects, '%s')"
-                    ,mods.front().c_str(),output.c_str());
+            const auto exporters = GetApplication().getFormats().exportersForFileName(fileName);
+            if (!exporters.empty()) {
+                const auto& exporterModule = exporters.front()->moduleName;
+                Base::Interpreter().loadModule(exporterModule.c_str());
+                Base::Interpreter().runStringArg("import %s", exporterModule.c_str());
+                Base::Interpreter().runStringArg("%s.export(App.ActiveDocument.Objects, '%s')",
+                                                 exporterModule.c_str(), output.c_str());
             }
             else {
                 Base::Console().warning("File format not supported: %s \n", output.c_str());

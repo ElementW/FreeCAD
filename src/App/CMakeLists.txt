@@ -185,6 +185,8 @@ SET(Document_CPP_SRCS
     ExpressionTokenizer.cpp
     FeaturePython.cpp
     FeatureTest.cpp
+    FileFormat.cpp
+    FileFormatLegacy.cpp
     GeoFeature.cpp
     GeoFeatureGroupExtensionPyImp.cpp
     GeoFeatureGroupExtension.cpp
@@ -239,6 +241,7 @@ SET(Document_HPP_SRCS
     FeaturePythonPyImp.h
     FeaturePythonPyImp.inl
     FeatureTest.h
+    FileFormat.h
     GeoFeature.h
     GeoFeatureGroupExtension.h
     ImagePlane.h

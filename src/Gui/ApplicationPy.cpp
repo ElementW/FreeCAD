@@ -48,6 +48,7 @@
 #include <App/Application.h>
 #include <App/DocumentObjectPy.h>
 #include <App/DocumentPy.h>
+#include <App/FileFormat.h>
 #include <App/PropertyFile.h>
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>
@@ -1843,14 +1844,18 @@ PyObject* ApplicationPy::sLoadFile(PyObject* /*self*/, PyObject* args)
 
         std::string module = mod;
         if (module.empty()) {
-            std::string ext = fi.extension();
-            std::vector<std::string> modules = App::GetApplication().getImportModules(ext.c_str());
-            if (modules.empty()) {
-                PyErr_Format(PyExc_IOError, "Filetype %s is not supported.", ext.c_str());
+            const auto fileName = fi.fileName();
+            const auto importers = App::GetApplication().getFormats().importersForFileName(fileName);
+            if (importers.empty()) {
+                PyErr_Format(
+                    PyExc_IOError,
+                    "File %s is not supported: no available importer",
+                    fileName.c_str()
+                );
                 return nullptr;
             }
 
-            module = modules.front();
+            module = importers.front()->moduleName;
         }
 
         Application::Instance->open(path, module.c_str());

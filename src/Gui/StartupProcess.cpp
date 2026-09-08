@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QImageReader>
 #include <QLabel>
+#include <QMimeDatabase>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QProcess>
@@ -57,6 +58,7 @@
 
 #include <App/Application.h>
 #include <App/ApplicationDirectories.h>
+#include <App/FileFormat.h>
 #include <Base/Console.h>
 
 
@@ -436,16 +438,28 @@ void StartupPostProcess::setBranding()
 
 void StartupPostProcess::setImportImageFormats()
 {
-    QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-    std::stringstream str;
-    str << "Image formats (";
-    for (const auto& ext : supportedFormats) {
-        str << "*." << ext.constData() << " *." << ext.toUpper().constData() << " ";
+    QMimeDatabase mimeDb;
+    const auto supportedMimes = QImageReader::supportedMimeTypes();
+    std::vector<std::string> importerMimes;
+    importerMimes.reserve(supportedMimes.size());
+    for (const auto& mimeName : supportedMimes) {
+        const QMimeType mime {mimeDb.mimeTypeForName(QString::fromUtf8(mimeName))};
+        std::vector<std::string> patterns;
+        for (const auto& qtPattern : mime.globPatterns()) {
+            patterns.emplace_back(qtPattern.toStdString());
+        }
+        App::FileFormat format {mime.comment().toStdString(), mimeName.toStdString(), patterns};
+        App::GetApplication().getFormats().addFormat(std::move(format));
+        importerMimes.emplace_back(mimeName.data());
     }
-    str << ")";
-
-    std::string filter = str.str();
-    App::GetApplication().addImportType(filter.c_str(), "FreeCADGui");
+    App::FileImporter importer {
+        "FreeCADGui",
+        std::move(importerMimes),
+        QT_TRANSLATE_NOOP("FileFormat", "Image formats"),
+        QT_TRANSLATE_NOOP("FileFormat", "Import images"),
+        QT_TRANSLATE_NOOP("FileFormat", "Import %1 image file(s)"),
+    };
+    App::GetApplication().getFormats().addImporter(std::move(importer));
 }
 
 void StartupPostProcess::showMainWindow()

@@ -5,6 +5,7 @@
 files: |
     (?x)^(
         .github|
+        src/App/FileF*|
         src/Base|
         src/Gui|
         src/Main|

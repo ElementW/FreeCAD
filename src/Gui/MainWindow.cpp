@@ -74,6 +74,7 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 #include <App/DocumentObjectGroup.h>
+#include <App/FileFormat.h>
 #include <App/ImagePlane.h>
 #include <App/SafeMode.h>
 #include <Base/ConsoleObserver.h>
@@ -2609,13 +2610,10 @@ void MainWindow::loadUrls(App::Document* doc, const QList<QUrl>& urls)
             if (info.isSymLink()) {
                 info.setFile(info.symLinkTarget());
             }
-            std::vector<std::string> module = App::GetApplication().getImportModules(
-                info.completeSuffix().toStdString()
+            const auto importers = App::GetApplication().getFormats().importersForFileName(
+                info.fileName().toStdString()
             );
-            if (module.empty()) {
-                module = App::GetApplication().getImportModules(info.suffix().toStdString());
-            }
-            if (!module.empty()) {
+            if (!importers.empty()) {
                 // ok, we support files with this extension
                 files << info.absoluteFilePath();
             }
@@ -2669,9 +2667,6 @@ void MainWindow::changeEvent(QEvent* e)
         if (wb) {
             wb->retranslate();
         }
-
-        // reload all translatable export type strings:
-        App::GetApplication().retranslateExportTypes();
     }
     else if (e->type() == QEvent::ActivationChange) {
         static SbTime savedRealTimeInterval = SoDB::getRealTimeInterval();

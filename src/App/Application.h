@@ -70,6 +70,7 @@ class ApplicationObserver;
 class Property;
 class AutoTransaction;
 class ExtensionContainer;
+class Formats;
 
 /// Options for acquiring links.
 enum GetLinkOption {
@@ -603,6 +604,15 @@ public:
     void RemoveParameterSet(const char* sName);
     /// @}
 
+    Formats& getFormats() { return *_formats; };
+    const Formats& getFormats() const { return *_formats; };
+
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
+#ifndef FC_LEGACY_FORMAT_DEPRECATED
+// This macro is there to allow silencing the deprecations in the tests for those legacy functions
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define FC_LEGACY_FORMAT_DEPRECATED(x) [[deprecated(x)]]
+#endif  // FC_LEGACY_FORMAT_DEPRECATED
     /**
      * @name Import and export of files
      * @brief Methods for importing and exporting file types.
@@ -624,6 +634,7 @@ public:
      * @param[in] filter The filter that describes the file type and extensions.
      * @param[in] moduleName The module name that can handle this file type.
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().addImporter(), and getFormats().addFormat() prior if format yet unknown")
     void addImportType(const char* filter, const char* moduleName);
 
     /**
@@ -633,6 +644,7 @@ public:
      * @param[in] oldModuleName The old module name.
      * @param[in] newModuleName The new module name.
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Will be removed with no replacement")
     void changeImportModule(const char* filter, const char* oldModuleName, const char* newModuleName);
 
     /**
@@ -640,9 +652,11 @@ public:
      *
      * @param[in] extension The file type extension.
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getImporters()")
     std::vector<std::string> getImportModules(const std::string& extension) const;
 
     /// Get a list of all import modules.
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getImporters()")
     std::vector<std::string> getImportModules() const;
 
     /**
@@ -651,9 +665,11 @@ public:
      * @param[in] Module The module name.
      * @return A list of file types (extensions) supported by the module.
      */
-    std::vector<std::string> getImportTypes(const std::string& Module) const;
+    FC_LEGACY_FORMAT_DEPRECATED("Replace extensions with Formats::MimeType and use getFormats().getImporterByModule().fileMimeTypes")
+    std::vector<std::string> getImportTypes(const std::string& module) const;
 
     /// Get a list of all import filetypes represented as extensions.
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getSupportedImportFormats()")
     std::vector<std::string> getImportTypes() const;
 
     /**
@@ -662,9 +678,11 @@ public:
      * @param[in] extension The file type represented by its extension.
      * @return A map of filter description to module name.
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getImportersForFileName()")
     std::map<std::string, std::string> getImportFilters(const std::string& extension) const;
 
     /// Get a mapping of all import filters to their modules.
+    FC_LEGACY_FORMAT_DEPRECATED("Iterate over getFormats().getImporters()")
     std::map<std::string, std::string> getImportFilters() const;
 
     /**
@@ -672,6 +690,7 @@ public:
      *
      * @copydetails addImportType
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().addExporter(), and getFormats().addFormat() prior if format yet unknown")
     void addExportType(const char* filter, const char* moduleName);
 
     /**
@@ -683,16 +702,15 @@ public:
      * extension itself. For example, "txt", not "*.txt".
      * @param[in] moduleName The name of the module handling the export.
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().addExporter(), and getFormats().addFormat() prior if format yet unknown")
     void addTranslatableExportType(const std::string &description,
                                    const std::vector<std::string> &extensions,
                                    const std::string &moduleName);
 
-    /// Intended to be called when the language is changed, this retranslates the export type.
-    void retranslateExportTypes();
-
     /**
      * @copydoc changeImportModule
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Will be removed with no replacement")
     void changeExportModule(const char* filter, const char* oldModuleName, const char* newModuleName);
 
     /**
@@ -700,9 +718,11 @@ public:
      *
      * @copydetails getImportModules
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getExportersForFileName()")
     std::vector<std::string> getExportModules(const std::string& extension) const;
 
     /// Get a list of all export modules.
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getExporters()")
     std::vector<std::string> getExportModules() const;
 
     /**
@@ -710,9 +730,11 @@ public:
      *
      * @copydetails App::Application::getImportTypes(const std::string&) const
      */
-    std::vector<std::string> getExportTypes(const std::string& Module) const;
+    FC_LEGACY_FORMAT_DEPRECATED("Replace extensions with Formats::MimeType and use formats().getExporterByModule().fileMimeTypes")
+    std::vector<std::string> getExportTypes(const std::string& module) const;
 
     /// Get a list of all export filetypes.
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getSupportedExportFormats()")
     std::vector<std::string> getExportTypes() const;
 
     /**
@@ -720,11 +742,14 @@ public:
      *
      * @copydetails App::Application::getImportFilters(const std::string&) const
      */
+    FC_LEGACY_FORMAT_DEPRECATED("Use getFormats().getExportersForFileName()")
     std::map<std::string, std::string> getExportFilters(const std::string& extension) const;
 
     /// Get a mapping of all export filters to their modules.
+    FC_LEGACY_FORMAT_DEPRECATED("Iterate over getFormats().getExporters()")
     std::map<std::string, std::string> getExportFilters() const;
     /// @}
+#endif  // FC_NO_LEGACY_FORMAT_HANDLING
 
     /**
      * @name Init, Destruct and Access methods
@@ -1032,9 +1057,8 @@ private:
         bool translatable = false;
     };
 
-    // open ending information
-    std::vector<FileTypeItem> _mImportTypes;
-    std::vector<FileTypeItem> _mExportTypes;
+    std::unique_ptr<Formats> _formats;
+
     std::map<std::string,Document*> DocMap;
     mutable std::map<std::string,Document*> DocFileMap;
     std::map<std::string,Base::Reference<ParameterManager>> mpcPramManager;
