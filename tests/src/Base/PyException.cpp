@@ -3,18 +3,16 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include <Python.h>
-
-#include <exception>
 #include <numbers>
 #include <stdexcept>
 
+#include <Python.h>
+
 #include <CXX/Exception.hxx>
+#include <CXX/Objects.hxx>
 
-#include "Base/Exception.h"
-#include "Base/PyException.h"
+#include <Base/PyException.h>
 
-#include "CXX/Objects.hxx"
 
 /**
  * @brief Test fixture for Base::pyWrapCppExceptions and the pyThrowWrapped* helpers.

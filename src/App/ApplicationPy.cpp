@@ -499,6 +499,17 @@ PyObject* ApplicationPy::sVersion(PyObject* /*self*/, PyObject* args)
     return Py::new_reference_to(list);
 }
 
+PyObject* ApplicationPy::sGetFormats(PyObject* /*self*/, PyObject*args)
+{
+    if (!PyArg_ParseTuple(args, "")) {
+        return nullptr;
+    }
+
+    // TODO
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
 #ifndef FC_NO_LEGACY_FORMAT_HANDLING
 #ifdef _MSC_VER
 # pragma warning(push)

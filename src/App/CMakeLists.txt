@@ -113,6 +113,7 @@ generate_from_py(OriginGroupExtension)
 generate_from_py(Part)
 generate_from_py(StringHasher)
 generate_from_py(StringID)
+generate_from_py(FileFormat)
 
 generate_from_py(ComplexGeoData)
 generate_from_py(PropertyContainer)
@@ -151,6 +152,7 @@ SET(FreeCADApp_Pyi_SRCS
     FreeCAD.module.pyi
     StringHasher.pyi
     StringID.pyi
+    FileFormat.pyi
 )
 SOURCE_GROUP("Pyi" FILES ${FreeCADApp_Pyi_SRCS})
 
@@ -187,6 +189,7 @@ SET(Document_CPP_SRCS
     FeatureTest.cpp
     FileFormat.cpp
     FileFormatLegacy.cpp
+    FileFormatPyImp.cpp
     GeoFeature.cpp
     GeoFeatureGroupExtensionPyImp.cpp
     GeoFeatureGroupExtension.cpp

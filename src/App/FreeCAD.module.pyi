@@ -12,7 +12,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from typing import Any, Literal, TypeAlias, overload
 
-from Base.Metadata import module
+from Base.Metadata import deprecated, module
 from . import Console as Console  # pylint: disable=no-name-in-module,unused-import
 from . import Units as Units  # pylint: disable=no-name-in-module,unused-import
 
@@ -57,28 +57,55 @@ def ConfigDump() -> dict[str, str]:
     ...
 
 # Import and export registration
+def getFormats() -> Formats:
+    ...
+
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 def addImportType(extension: str, module: str, /) -> None:
     """Register one importer module for a file extension."""
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 def changeImportModule(extension: str, old_module: str, new_module: str, /) -> None:
     """Replace one importer module registration for a file extension."""
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 @overload
 def getImportType() -> _FileTypeModules:
     """Return the full extension-to-module map for all registered importers."""
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 @overload
 def getImportType(extension: str, /) -> list[str]:
     """Return the importer modules registered for one specific extension."""
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 def addExportType(extension: str, module: str, /) -> None:
     """Register one exporter module for a file extension."""
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 def addTranslatableExportType(description: str, extensions: list[str], module: str, /) -> None:
     """Register one exporter together with a translated file-dialog description.
 
@@ -87,15 +114,27 @@ def addTranslatableExportType(description: str, extensions: list[str], module: s
     """
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 def changeExportModule(extension: str, old_module: str, new_module: str, /) -> None:
     """Replace one exporter module registration for a file extension."""
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 @overload
 def getExportType() -> _FileTypeModules:
     """Return the full extension-to-module map for all registered exporters."""
     ...
 
+@deprecated(
+    deprecated_in="26.3",
+    removed_in="27.2",
+)
 @overload
 def getExportType(extension: str, /) -> list[str]:
     """Return the exporter modules registered for one specific extension."""

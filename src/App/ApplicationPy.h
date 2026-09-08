@@ -43,6 +43,9 @@ public:
     static PyObject* sConfigGet              (PyObject *self, PyObject *args);
     static PyObject* sConfigSet              (PyObject *self, PyObject *args);
     static PyObject* sConfigDump             (PyObject *self, PyObject *args);
+
+    static PyObject* sGetFormats             (PyObject *self, PyObject *args);
+#ifndef FC_NO_LEGACY_FORMAT_HANDLING
     static PyObject* sAddImportType          (PyObject *self, PyObject *args);
     static PyObject* sChangeImportModule     (PyObject *self, PyObject *args);
     static PyObject* sGetImportType          (PyObject *self, PyObject *args);
@@ -50,6 +53,8 @@ public:
     static PyObject* sAddTranslatableExportType (PyObject *self, PyObject *args);
     static PyObject* sChangeExportModule     (PyObject *self, PyObject *args);
     static PyObject* sGetExportType          (PyObject *self, PyObject *args);
+#endif  // FC_NO_LEGACY_FORMAT_HANDLING
+
     static PyObject* sGetResourceDir         (PyObject *self, PyObject *args);
     static PyObject* sGetLibraryDir          (PyObject *self, PyObject *args);
     static PyObject* sGetTempPath            (PyObject *self, PyObject *args);
