@@ -76,7 +76,11 @@ TEST_F(FileFormatLegacyTest, noMergeModernAndLegcyImportType)
     // to uniquely tie them together, and file patterns aren't unique to a specific format,
     // e.g. both Z88 meshes and their displacement result files use `*.txt`.
     EXPECT_THAT(fcApp.getFormats().formatsForFileName("test.timl"), IsEmpty());
-    fcApp.getFormats().addFormat({"Test Import Modern-Legacy", "application/x-test-timl", {"*.timl"}});
+    fcApp.getFormats().addFormat({
+        .translatableName = "Test Import Modern-Legacy",
+        .mimeType = "application/x-test-timl",
+        .fileNamePatterns = {"*.timl"},
+    });
     fcApp.addImportType("Import TIML file (*.timl)", "JsonTIMLImporter");
     EXPECT_THAT(
         fcApp.getFormats().formatsForFileName("test.timl"),
@@ -140,7 +144,11 @@ TEST_F(FileFormatLegacyTest, noMergeModernAndLegcyExportType)
     // to uniquely tie them together, and file patterns aren't unique to a specific format,
     // e.g. both FEM JSON meshes and FreeCAD simple mesh exports use `*.json`.
     EXPECT_THAT(fcApp.getFormats().formatsForFileName("test.teml"), IsEmpty());
-    fcApp.getFormats().addFormat({"Test Export Modern-Legacy", "application/x-test-teml", {"*.teml"}});
+    fcApp.getFormats().addFormat({
+        .translatableName = "Test Export Modern-Legacy",
+        .mimeType = "application/x-test-teml",
+        .fileNamePatterns = {"*.teml"},
+    });
     fcApp.addImportType("Export TEML file (*.teml)", "JsonTEMLExporter");
     EXPECT_THAT(
         fcApp.getFormats().formatsForFileName("test.teml"),

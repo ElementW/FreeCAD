@@ -448,18 +448,20 @@ void StartupPostProcess::setImportImageFormats()
         for (const auto& qtPattern : mime.globPatterns()) {
             patterns.emplace_back(qtPattern.toStdString());
         }
-        App::FileFormat format {mime.comment().toStdString(), mimeName.toStdString(), patterns};
-        App::GetApplication().getFormats().addFormat(std::move(format));
+        App::GetApplication().getFormats().addFormat({
+            .translatableName = mime.comment().toStdString(),
+            .mimeType = mimeName.toStdString(),
+            .fileNamePatterns = patterns,
+        });
         importerMimes.emplace_back(mimeName.data());
     }
-    App::FileImporter importer {
-        "FreeCADGui",
-        std::move(importerMimes),
-        QT_TRANSLATE_NOOP("FileFormat", "Image formats"),
-        QT_TRANSLATE_NOOP("FileFormat", "Import images"),
-        QT_TRANSLATE_NOOP("FileFormat", "Import %1 image file(s)"),
-    };
-    App::GetApplication().getFormats().addImporter(std::move(importer));
+    App::GetApplication().getFormats().addImporter({
+        .moduleName = "FreeCADGui",
+        .fileMimeTypes = std::move(importerMimes),
+        .translatableSupportedFormatsText = QT_TRANSLATE_NOOP("FileFormat", "Image formats"),
+        .translatableActionText = QT_TRANSLATE_NOOP("FileFormat", "Import images"),
+        .translatableFilesText = QT_TRANSLATE_NOOP("FileFormat", "Import %1 image file(s)"),
+    });
 }
 
 void StartupPostProcess::showMainWindow()

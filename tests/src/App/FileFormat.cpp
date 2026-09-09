@@ -36,6 +36,7 @@ using ::testing::IsEmpty;
 using ::testing::IsNull;
 using ::testing::Not;
 using ::testing::NotNull;
+using ::testing::SizeIs;
 
 class FileFormatTest: public ::testing::Test
 {
@@ -48,7 +49,14 @@ TEST_F(FileFormatTest, addNewFormat)
     EXPECT_THAT(formats.formats(), Not(Contains(HasMainMimeOf("application/x-fc-new-fmt-test"))));
     EXPECT_THAT(formats.formatByMimeType("application/x-fc-new-fmt-test"), IsNull());
     EXPECT_THAT(formats.formatsForFileName("file.new"), IsEmpty());
-    EXPECT_THAT(formats.addFormat({"New format", "application/x-fc-new-fmt-test", {"*.new"}}), Eq(true));
+    EXPECT_THAT(
+        formats.addFormat(
+            {.translatableName = "New format",
+             .mimeType = "application/x-fc-new-fmt-test",
+             .fileNamePatterns = {"*.new"}}
+        ),
+        Eq(true)
+    );
     EXPECT_THAT(formats.formats(), Contains(HasMainMimeOf("application/x-fc-new-fmt-test")));
     EXPECT_THAT(formats.formatByMimeType("application/x-fc-new-fmt-test"), NotNull());
     EXPECT_THAT(
@@ -57,9 +65,12 @@ TEST_F(FileFormatTest, addNewFormat)
     );
     // Test merging of MIME types and file name patterns
     EXPECT_THAT(
-        formats.addFormat(
-            {"Novo formato", "application/x-fc-new-fmt-test", {"*.novo"}, {"application/x-fc-novo-fmt-test"}}
-        ),
+        formats.addFormat({
+            .translatableName = "Novo formato",
+            .mimeType = "application/x-fc-new-fmt-test",
+            .secondaryMimeTypes = {"application/x-fc-novo-fmt-test"},
+            .fileNamePatterns = {"*.novo"},
+        }),
         Eq(false)
     );
     EXPECT_THAT(
@@ -76,41 +87,68 @@ TEST_F(FileFormatTest, addNewFormatClash)
 {
     EXPECT_THAT(formats.formatByMimeType("test-clash/aaa"), IsNull());
     EXPECT_THAT(
-        formats.addFormat({"Clash AAA", "test-clash/aaa", {"*.aaa"}, {"test-clash/aaa-secondary"}}),
+        formats.addFormat({
+            .translatableName = "Clash AAA",
+            .mimeType = "test-clash/aaa",
+            .secondaryMimeTypes = {"test-clash/aaa-secondary"},
+            .fileNamePatterns = {"*.aaa"},
+        }),
         Eq(true)
     );
     // Try registering a format whose secondary is an existing format's primary
     EXPECT_THROW(
-        formats.addFormat({"Clash BBB", "test-clash/bbb", {"*.bbb"}, {"test-clash/aaa"}}),
+        formats.addFormat({
+            .translatableName = "Clash BBB",
+            .mimeType = "test-clash/bbb",
+            .secondaryMimeTypes = {"test-clash/aaa"},
+            .fileNamePatterns = {"*.bbb"},
+        }),
         std::invalid_argument
     );
     // Try registering a format whose primary is an existing format's secondary
     EXPECT_THROW(
-        formats.addFormat({"Clash AAA 2", "test-clash/aaa-secondary", {"*.aaa"}}),
+        formats.addFormat(
+            {.translatableName = "Clash AAA 2",
+             .mimeType = "test-clash/aaa-secondary",
+             .fileNamePatterns = {"*.aaa"}}
+        ),
         std::invalid_argument
     );
     // Try registering a format whose secondary is an existing unrelated format's secondary
     EXPECT_THROW(
-        formats.addFormat({"Clash BBB", "test-clash/bbb", {"*.bbb"}, {"test-clash/aaa-secondary"}}),
+        formats.addFormat({
+            .translatableName = "Clash BBB",
+            .mimeType = "test-clash/bbb",
+            .secondaryMimeTypes = {"test-clash/aaa-secondary"},
+            .fileNamePatterns = {"*.bbb"},
+        }),
         std::invalid_argument
     );
 }
 
 TEST_F(FileFormatTest, addImporters)
 {
-    formats.addFormat({"Test ABC, JSON", "application/x-fc-abc-test+json", {"*.abc"}});
-    formats.addFormat({"Test ABC, Binary", "application/x-fc-abc-test+bin", {"*.abc"}});
+    formats.addFormat({
+        .translatableName = "Test ABC, JSON",
+        .mimeType = "application/x-fc-abc-test+json",
+        .fileNamePatterns = {"*.abc"},
+    });
+    formats.addFormat({
+        .translatableName = "Test ABC, Binary",
+        .mimeType = "application/x-fc-abc-test+bin",
+        .fileNamePatterns = {"*.abc"},
+    });
     EXPECT_THAT(formats.importers(), Not(Contains(HandlesMime("application/x-fc-abc-test+json"))));
     EXPECT_THAT(formats.importersForMimeType("application/x-fc-abc-test+json"), IsEmpty());
     EXPECT_THAT(formats.importersForFileName("test.abc"), IsEmpty());
 
-    formats.addImporter(
-        {"JsonABCImporter",
-         {"application/x-fc-abc-test+json"},
-         "Test ABC",
-         "Import ABC file",
-         "Import %1 ABC files"}
-    );
+    formats.addImporter({
+        .moduleName = "JsonABCImporter",
+        .fileMimeTypes = {"application/x-fc-abc-test+json"},
+        .translatableSupportedFormatsText = "Test ABC",
+        .translatableActionText = "Import ABC file",
+        .translatableFilesText = "Import %1 ABC files",
+    });
     EXPECT_THAT(formats.importers(), Contains(HandlesMime("application/x-fc-abc-test+json")));
     EXPECT_THAT(formats.importers(), Not(Contains(HandlesMime("application/x-fc-abc-test+bin"))));
     EXPECT_THAT(
@@ -122,13 +160,13 @@ TEST_F(FileFormatTest, addImporters)
         Contains(AdapterWithModule("JsonABCImporter"))
     );
 
-    formats.addImporter(
-        {"LibABCImporter",
-         {"application/x-fc-abc-test+json", "application/x-fc-abc-test+bin"},
-         "Test ABC",
-         "Import ABC file",
-         "Import %1 ABC files"}
-    );
+    formats.addImporter({
+        .moduleName = "LibABCImporter",
+        .fileMimeTypes = {"application/x-fc-abc-test+json", "application/x-fc-abc-test+bin"},
+        .translatableSupportedFormatsText = "Test ABC",
+        .translatableActionText = "Import ABC file",
+        .translatableFilesText = "Import %1 ABC files",
+    });
     EXPECT_THAT(formats.importers(), Contains(HandlesMime("application/x-fc-abc-test+json")));
     EXPECT_THAT(formats.importers(), Contains(HandlesMime("application/x-fc-abc-test+bin")));
     // JSON variant handled by both
@@ -159,21 +197,25 @@ TEST_F(FileFormatTest, addImporters)
 
 TEST_F(FileFormatTest, twoImportersOneMime)
 {
-    formats.addFormat({"Test IJK", "application/x-fc-ijk-test", {"*.ijk"}});
-    formats.addImporter(
-        {"IJKAsGeometry",
-         {"application/x-fc-ijk-test"},
-         "Test IJK",
-         "Import IJK file as geometry",
-         "Export %1 IJK files as geometry"}
-    );
-    formats.addImporter(
-        {"IJKAsImage",
-         {"application/x-fc-ijk-test"},
-         "Test IJK",
-         "Import IJK file as image",
-         "Import %1 IJK files as image"}
-    );
+    formats.addFormat({
+        .translatableName = "Test IJK",
+        .mimeType = "application/x-fc-ijk-test",
+        .fileNamePatterns = {"*.ijk"},
+    });
+    formats.addImporter({
+        .moduleName = "IJKAsGeometry",
+        .fileMimeTypes = {"application/x-fc-ijk-test"},
+        .translatableSupportedFormatsText = "Test IJK",
+        .translatableActionText = "Import IJK file as geometry",
+        .translatableFilesText = "Export %1 IJK files as geometry",
+    });
+    formats.addImporter({
+        .moduleName = "IJKAsImage",
+        .fileMimeTypes = {"application/x-fc-ijk-test"},
+        .translatableSupportedFormatsText = "Test IJK",
+        .translatableActionText = "Import IJK file as image",
+        .translatableFilesText = "Import %1 IJK files as image",
+    });
     EXPECT_THAT(
         formats.importersForMimeType("application/x-fc-ijk-test"),
         AllOf(Contains(AdapterWithModule("IJKAsGeometry")), Contains(AdapterWithModule("IJKAsImage")))
@@ -187,48 +229,60 @@ TEST_F(FileFormatTest, twoImportersOneMime)
 TEST_F(FileFormatTest, addImporterUnknownFormat)
 {
     EXPECT_THROW(
-        formats.addImporter(  // NOLINT
-            {"UnknownFormatImporter",
-             {"non/existent-mime"},
-             "Unknown",
-             "Import unknown file",
-             "Import %1 unknown files"}
-        ),
+        formats.addImporter({
+            .moduleName = "UnknownFormatImporter",
+            .fileMimeTypes = {"non/existent-mime"},
+            .translatableSupportedFormatsText = "Unknown",
+            .translatableActionText = "Import unknown file",
+            .translatableFilesText = "Import %1 unknown files",
+        }),
         std::invalid_argument
     );
 }
 
 TEST_F(FileFormatTest, addImporterSecondaryMime)
 {
-    formats.addFormat(
-        {"Import dual", "application/x-import-dual", {"*.idl"}, {"secondary/x-import-dual"}}
-    );
-    EXPECT_THROW(
-        formats.addImporter(  // NOLINT
-            {"SecondaryMimeFormatImporter",
-             {"secondary/x-import-dual"},
-             "Secondary",
-             "Import secondary MIME file",
-             "Import %1 secondary MIME files"}
-        ),
-        std::invalid_argument
+    formats.addFormat({
+        .translatableName = "Import dual",
+        .mimeType = "application/x-import-dual",
+        .secondaryMimeTypes = {"secondary/x-import-dual"},
+        .fileNamePatterns = {"*.idl"},
+    });
+    formats.addImporter({
+        .moduleName = "SecondaryMimeFormatImporter",
+        .fileMimeTypes = {"secondary/x-import-dual"},
+        .translatableSupportedFormatsText = "Secondary",
+        .translatableActionText = "Import secondary MIME file",
+        .translatableFilesText = "Import %1 secondary MIME files",
+    });
+    EXPECT_THAT(
+        formats.importersForMimeType("application/x-import-dual"),
+        AllOf(SizeIs(1), Contains(AdapterWithModule("SecondaryMimeFormatImporter")))
     );
 }
 
 TEST_F(FileFormatTest, addExporters)
 {
-    formats.addFormat({"Test ABC, JSON", "application/x-fc-abc-test+json", {"*.abc"}});
-    formats.addFormat({"Test ABC, Binary", "application/x-fc-abc-test+bin", {"*.abc"}});
+    formats.addFormat({
+        .translatableName = "Test ABC, JSON",
+        .mimeType = "application/x-fc-abc-test+json",
+        .fileNamePatterns = {"*.abc"},
+    });
+    formats.addFormat({
+        .translatableName = "Test ABC, Binary",
+        .mimeType = "application/x-fc-abc-test+bin",
+        .fileNamePatterns = {"*.abc"},
+    });
     EXPECT_THAT(formats.exporters(), Not(Contains(HandlesMime("application/x-fc-abc-test+json"))));
     EXPECT_THAT(formats.exportersForMimeType("application/x-fc-abc-test+json"), IsEmpty());
     EXPECT_THAT(formats.exportersForFileName("test.abc"), IsEmpty());
-    formats.addExporter(
-        {"JsonABCExporter",
-         {"application/x-fc-abc-test+json"},
-         "Test ABC",
-         "Export ABC file",
-         "Export %1 ABC files"}
-    );
+    formats.addExporter({
+        .moduleName = "JsonABCExporter",
+        .fileMimeTypes = {"application/x-fc-abc-test+json"},
+        .translatableSupportedFormatsText = "Test ABC",
+        .translatableActionText = "Export ABC file",
+        .translatableFilesText = "Export %1 ABC files",
+    });
 
     EXPECT_THAT(formats.exporters(), Contains(HandlesMime("application/x-fc-abc-test+json")));
     EXPECT_THAT(formats.exporters(), Not(Contains(HandlesMime("application/x-fc-abc-test+bin"))));
@@ -241,13 +295,13 @@ TEST_F(FileFormatTest, addExporters)
         Contains(AdapterWithModule("JsonABCExporter"))
     );
 
-    formats.addExporter(
-        {"LibABCExporter",
-         {"application/x-fc-abc-test+json", "application/x-fc-abc-test+bin"},
-         "Test ABC",
-         "Import ABC file",
-         "Import %1 ABC files"}
-    );
+    formats.addExporter({
+        .moduleName = "LibABCExporter",
+        .fileMimeTypes = {"application/x-fc-abc-test+json", "application/x-fc-abc-test+bin"},
+        .translatableSupportedFormatsText = "Test ABC",
+        .translatableActionText = "Import ABC file",
+        .translatableFilesText = "Import %1 ABC files",
+    });
     EXPECT_THAT(formats.exporters(), Contains(HandlesMime("application/x-fc-abc-test+json")));
     EXPECT_THAT(formats.exporters(), Contains(HandlesMime("application/x-fc-abc-test+bin")));
     // JSON variant handled by both
@@ -279,30 +333,34 @@ TEST_F(FileFormatTest, addExporters)
 TEST_F(FileFormatTest, addExporterUnknownFormat)
 {
     EXPECT_THROW(
-        formats.addExporter(  // NOLINT
-            {"UnknownFormatExporter",
-             {"non/existent-mime"},
-             "Unknown",
-             "Export unknown file",
-             "Export %1 unknown files"}
-        ),
+        formats.addExporter({
+            .moduleName = "UnknownFormatExporter",
+            .fileMimeTypes = {"non/existent-mime"},
+            .translatableSupportedFormatsText = "Unknown",
+            .translatableActionText = "Export unknown file",
+            .translatableFilesText = "Export %1 unknown files",
+        }),
         std::invalid_argument
     );
 }
 
 TEST_F(FileFormatTest, addExporterSecondaryMime)
 {
-    formats.addFormat(
-        {"Export dual", "application/x-export-dual", {"*.edl"}, {"secondary/x-export-dual"}}
-    );
-    EXPECT_THROW(
-        formats.addExporter(  // NOLINT
-            {"SecondaryMimeFormatExporter",
-             {"secondary/x-export-dual"},
-             "Secondary",
-             "Export secondary MIME file",
-             "Export %1 secondary MIME files"}
-        ),
-        std::invalid_argument
+    formats.addFormat({
+        .translatableName = "Export dual",
+        .mimeType = "application/x-export-dual",
+        .secondaryMimeTypes = {"secondary/x-export-dual"},
+        .fileNamePatterns = {"*.edl"},
+    });
+    formats.addExporter({
+        .moduleName = "SecondaryMimeFormatExporter",
+        .fileMimeTypes = {"secondary/x-export-dual"},
+        .translatableSupportedFormatsText = "Secondary",
+        .translatableActionText = "Export secondary MIME file",
+        .translatableFilesText = "Export %1 secondary MIME files",
+    });
+    EXPECT_THAT(
+        formats.exportersForMimeType("application/x-export-dual"),
+        AllOf(SizeIs(1), Contains(AdapterWithModule("SecondaryMimeFormatExporter")))
     );
 }

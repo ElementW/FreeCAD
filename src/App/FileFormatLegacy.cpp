@@ -56,7 +56,11 @@ FileFormat FileFormat::fromLegacyFilter(std::string_view filter)
         pos = next;
     }
     const auto name = f.substr(0, fileNamePatternsStart - 1);
-    return {std::string(name), "x-fc-synthetic/" + std::string(name), std::move(fileNamePatterns)};
+    return {
+        .translatableName = std::string(name),
+        .mimeType = "x-fc-synthetic/" + std::string(name),
+        .fileNamePatterns = std::move(fileNamePatterns),
+    };
 }
 
 std::vector<std::string> FileFormat::getLegacyFileExtensions() const
@@ -105,14 +109,14 @@ void Formats::addImportType(const char* filter, const char* moduleName)
 {
     auto format = FileFormat::fromLegacyFilter(filter);
 
-    FileImporter importer;
-    importer.createdFromLegacy = true;
-    importer.moduleName = moduleName;
-    importer.fileMimeTypes.emplace_back(format.mimeType);
-    importer.translatableSupportedFormatsText = format.translatableName;
-    importer.translatableImportActionText = format.translatableName;
-    importer.translatableImportFilesText = format.translatableName;
-    importer.originalLegacyFileFilter = filter;
+    FileImporter importer {
+        .moduleName = moduleName,
+        .fileMimeTypes = {format.mimeType},
+        .translatableSupportedFormatsText = format.translatableName,
+        .translatableActionText = format.translatableName,
+        .translatableFilesText = format.translatableName,
+        .originalLegacyFileFilter = filter,
+    };
 
     addFormat(std::move(format));
     addImporter(std::move(importer));
@@ -135,14 +139,14 @@ void Formats::changeImportModule(const char* filter, const char* oldModuleName, 
         }
     }
 
-    FileImporter newImporter;
-    newImporter.createdFromLegacy = true;
-    newImporter.moduleName = newModuleName;
-    newImporter.fileMimeTypes.emplace_back(format.mimeType);
-    newImporter.translatableSupportedFormatsText = format.translatableName;
-    newImporter.translatableImportActionText = format.translatableName;
-    newImporter.translatableImportFilesText = format.translatableName;
-    newImporter.originalLegacyFileFilter = filter;
+    FileImporter newImporter {
+        .moduleName = newModuleName,
+        .fileMimeTypes = {format.mimeType},
+        .translatableSupportedFormatsText = format.translatableName,
+        .translatableActionText = format.translatableName,
+        .translatableFilesText = format.translatableName,
+        .originalLegacyFileFilter = filter,
+    };
     addImporter(std::move(newImporter));
 }
 
@@ -243,14 +247,14 @@ void Formats::addExportType(const char* filter, const char* moduleName)
 {
     auto format = FileFormat::fromLegacyFilter(filter);
 
-    FileExporter exporter;
-    exporter.createdFromLegacy = true;
-    exporter.moduleName = moduleName;
-    exporter.fileMimeTypes.emplace_back(format.mimeType);
-    exporter.translatableSupportedFormatsText = format.translatableName;
-    exporter.translatableExportActionText = format.translatableName;
-    exporter.translatableExportFilesText = format.translatableName;
-    exporter.originalLegacyFileFilter = filter;
+    FileExporter exporter {
+        .moduleName = moduleName,
+        .fileMimeTypes = {format.mimeType},
+        .translatableSupportedFormatsText = format.translatableName,
+        .translatableActionText = format.translatableName,
+        .translatableFilesText = format.translatableName,
+        .originalLegacyFileFilter = filter,
+    };
 
     addFormat(std::move(format));
     addExporter(std::move(exporter));
@@ -262,18 +266,22 @@ void Formats::addTranslatableExportType(
     const std::string& moduleName
 )
 {
-    FileFormat format {description, "x-fc-synthetic/" + description, {}};
+    FileFormat format {
+        .translatableName = description,
+        .mimeType = "x-fc-synthetic/" + description,
+        .fileNamePatterns = {},
+    };
     for (const auto& extension : extensions) {
         format.fileNamePatterns.emplace_back("*." + extension);
     }
 
-    FileExporter exporter;
-    exporter.createdFromLegacy = true;
-    exporter.moduleName = moduleName;
-    exporter.fileMimeTypes.emplace_back(format.mimeType);
-    exporter.translatableSupportedFormatsText = description;
-    exporter.translatableExportActionText = description;
-    exporter.translatableExportFilesText = description;
+    FileExporter exporter {
+        .moduleName = moduleName,
+        .fileMimeTypes = {format.mimeType},
+        .translatableSupportedFormatsText = description,
+        .translatableActionText = description,
+        .translatableFilesText = description,
+    };
 
     addFormat(std::move(format));
     addExporter(std::move(exporter));
@@ -296,14 +304,14 @@ void Formats::changeExportModule(const char* filter, const char* oldModuleName, 
         }
     }
 
-    FileExporter newExporter;
-    newExporter.createdFromLegacy = true;
-    newExporter.moduleName = newModuleName;
-    newExporter.fileMimeTypes.emplace_back(format.mimeType);
-    newExporter.translatableSupportedFormatsText = format.translatableName;
-    newExporter.translatableExportActionText = format.translatableName;
-    newExporter.translatableExportFilesText = format.translatableName;
-    newExporter.originalLegacyFileFilter = filter;
+    FileExporter newExporter {
+        .moduleName = newModuleName,
+        .fileMimeTypes = {format.mimeType},
+        .translatableSupportedFormatsText = format.translatableName,
+        .translatableActionText = format.translatableName,
+        .translatableFilesText = format.translatableName,
+        .originalLegacyFileFilter = filter,
+    };
     addExporter(std::move(newExporter));
 }
 

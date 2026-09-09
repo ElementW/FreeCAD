@@ -20,6 +20,7 @@
  ******************************************************************************/
 
 #include <limits>
+#include <regex>
 #include <set>
 #include <stdexcept>
 #include <utility>
@@ -48,8 +49,15 @@ namespace App
 static constexpr auto TranslateContext = "FileFormat"sv;
 
 /// FreeCAD branding string to substitute with branding in config.
-/// @private
 static const std::regex BrandRegex("FreeCAD");
+
+
+struct Formats::FormatInfo
+{
+    FileFormat format;
+    std::regex fileNameRegex;
+};
+
 
 std::string FileFormat::displayName() const
 {
@@ -69,11 +77,6 @@ std::string FileAdapter::supportedFormatsText() const
     );
 }
 
-bool FileAdapter::handlesMimeType(std::string_view mimeType) const
-{
-    return std::ranges::find(fileMimeTypes, mimeType) != fileMimeTypes.cend();
-}
-
 FileNamePatternList FileAdapter::getFileNamePatterns(const Formats& formats) const
 {
     std::set<FileNamePattern> patterns;
@@ -84,77 +87,75 @@ FileNamePatternList FileAdapter::getFileNamePatterns(const Formats& formats) con
     return {patterns.cbegin(), patterns.cend()};
 }
 
-std::string FileImporter::importActionText() const
+std::string FileAdapter::actionText() const
 {
     return std::regex_replace(
-        Base::Translation::translate(TranslateContext, translatableImportActionText),
+        Base::Translation::translate(TranslateContext, translatableActionText),
         BrandRegex,
         Application::Config()["ExeName"]
     );
 }
 
-std::string FileImporter::importFilesText(int n) const
+std::string FileAdapter::filesText(int n) const
 {
     return std::regex_replace(
-        Base::Translation::translate(TranslateContext, translatableImportFilesText, {}, n),
+        Base::Translation::translate(TranslateContext, translatableFilesText, {}, n),
         BrandRegex,
         Application::Config()["ExeName"]
     );
 }
 
-std::string FileExporter::exportActionText() const
-{
-    return std::regex_replace(
-        Base::Translation::translate(TranslateContext, translatableExportActionText),
-        BrandRegex,
-        Application::Config()["ExeName"]
-    );
-}
-
-std::string FileExporter::exportFilesText(int n) const
-{
-    return std::regex_replace(
-        Base::Translation::translate(TranslateContext, translatableExportFilesText, {}, n),
-        BrandRegex,
-        Application::Config()["ExeName"]
-    );
-}
-
-/// @private
 static void addDefaultFormats(Formats& r)
 {
     // FreeCAD formats
-    r.addFormat(
-        {QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "FreeCAD Document"),
-         MimeTypes::FreecadDocument,
-         {"*.FCStd"},
-         // Stil subject to change. See #17727
-         {"application/x-extension-fcstd",
-          "application/freecad",
-          "application/x-freecad",
-          "application/vnd.freecad"}}
-    );
+    r.addFormat({
+        .translatableName = QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "FreeCAD Document"),
+        .mimeType = MimeTypes::FreecadDocument,
+        // Stil subject to change. See #17727
+        .secondaryMimeTypes
+        = {"application/x-extension-fcstd",
+           "application/freecad",
+           "application/x-freecad",
+           "application/vnd.freecad"},
+        .fileNamePatterns = {"*.FCStd"},
+    });
 
     // Text document formats
-    r.addFormat({QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "Text Document"), MimeTypes::Txt, {"*.txt"}});
-    r.addFormat(
-        {QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "PDF Document"),
-         MimeTypes::Pdf,
-         {"*.pdf"},
-         {"application/x-pdf", "image/pdf", "application/acrobat", "application/nappdf"}}
-    );
-    r.addFormat(
-        {QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "RTF Document"), MimeTypes::Rtf, {"*.rtf"}, {"text/rtf"}}
-    );
+    r.addFormat({
+        .translatableName = QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "Text Document"),
+        .mimeType = MimeTypes::Txt,
+        .fileNamePatterns = {"*.txt"},
+    });
+    r.addFormat({
+        .translatableName = QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "PDF Document"),
+        .mimeType = MimeTypes::Pdf,
+        .secondaryMimeTypes
+        = {"application/x-pdf", "image/pdf", "application/acrobat", "application/nappdf"},
+        .fileNamePatterns = {"*.pdf"},
+    });
+    r.addFormat({
+        .translatableName = QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "RTF Document"),
+        .mimeType = MimeTypes::Rtf,
+        .secondaryMimeTypes = {"text/rtf"},
+        .fileNamePatterns = {"*.rtf"},
+    });
 
     // Image formats
-    r.addFormat({QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "PNG Image"), MimeTypes::Png, {"*.png"}});
-    r.addFormat({QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "GIF Image"), MimeTypes::Gif, {"*.gif"}});
-    r.addFormat(
-        {QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "JPEG Image"),
-         MimeTypes::Jpeg,
-         {"*.jpg", "*.jpeg", "*.jpe", "*.jfif"}}
-    );
+    r.addFormat({
+        .translatableName = QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "PNG Image"),
+        .mimeType = MimeTypes::Png,
+        .fileNamePatterns = {"*.png"},
+    });
+    r.addFormat({
+        .translatableName = QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "GIF Image"),
+        .mimeType = MimeTypes::Gif,
+        .fileNamePatterns = {"*.gif"},
+    });
+    r.addFormat({
+        .translatableName = QT_TRANSLATE_NOOP(TRANSLATE_CONTEXT, "JPEG Image"),
+        .mimeType = MimeTypes::Jpeg,
+        .fileNamePatterns = {"*.jpg", "*.jpeg", "*.jpe", "*.jfif"},
+    });
 }
 
 Formats::Formats(bool populateDefaultFormats)
@@ -164,8 +165,9 @@ Formats::Formats(bool populateDefaultFormats)
     }
 }
 
-// NOLINTBEGIN(*-magic-numbers)
-/// @private
+Formats::~Formats() = default;
+
+// NOLINTBEGIN(*-magic-numbers) Numbers are explained
 static std::regex patternsToRegex(const FileNamePatternList& patterns)
 {
     // Maximum expected length for the regex translation of a single file name pattern.
@@ -242,7 +244,7 @@ std::optional<Formats::FormatInfoIndex> Formats::checkMergeNoMimeClash(const Fil
         formatInfoIndexIt != _mimeToInfoIndex.end()) {
         auto& existingFormat = _formatInfos[formatInfoIndexIt->second]->format;
         if (newFormat.mimeType != existingFormat.mimeType) {
-            throw std::invalid_argument(
+            throw Base::ValueError(
                 fmt::format(
                     "Cannot register new format whose main MIME type {} is a secondary type of {}",
                     newFormat.mimeType,
@@ -256,7 +258,7 @@ std::optional<Formats::FormatInfoIndex> Formats::checkMergeNoMimeClash(const Fil
     for (const auto& secondaryMime : newFormat.secondaryMimeTypes) {
         if (const auto* existingFormat = formatByMimeType(secondaryMime);
             existingFormat != nullptr && existingFormat != mergeWith) {
-            throw std::invalid_argument(
+            throw Base::ValueError(
                 fmt::format(
                     "Cannot register new format whose secondary MIME type {} is {} type of {}",
                     secondaryMime,
@@ -276,7 +278,7 @@ bool Formats::addFormat(FileFormat format)
         return false;
     }
     if (_formatInfos.size() >= std::numeric_limits<FormatInfoIndex>::max()) {
-        throw std::overflow_error("Too many formats registered");
+        throw Base::IndexError("Too many formats registered");
     }
     FC_TRACE(fmt::format("Adding format {} \"{}\"", format.mimeType, format.translatableName));
     // Can't do this inside the braced init as `format` will already have moved by then
@@ -306,7 +308,7 @@ std::vector<gsl::not_null<const FileFormat*>> Formats::formats() const
     return formats;
 }
 
-const FileFormat* Formats::formatByMimeType(const MimeType& mimeType) const
+const FileFormat* Formats::formatByMimeType(const MimeType& mimeType) const noexcept
 {
     if (const auto formatInfoIndexIt = _mimeToInfoIndex.find(mimeType);
         formatInfoIndexIt != _mimeToInfoIndex.cend()) {
@@ -328,10 +330,10 @@ std::vector<gsl::not_null<const FileFormat*>> Formats::formatsForFileName(std::s
 
 void Formats::addImporter(FileImporter importer)
 {
-    for (const auto& mimeType : importer.fileMimeTypes) {
+    for (auto& mimeType : importer.fileMimeTypes) {
         const auto* format = formatByMimeType(mimeType);
         if (format == nullptr) {
-            throw std::invalid_argument(
+            throw Base::ValueError(
                 fmt::format(
                     "Can't register importer for unknown format with MIME type {}, "
                     "did you forget to addFormat() first?",
@@ -339,17 +341,12 @@ void Formats::addImporter(FileImporter importer)
                 )
             );
         }
-        if (format->mimeType != mimeType) {
-            throw std::invalid_argument(
-                fmt::format(
-                    "Importer supports {} which is not the primary MIME "
-                    "type for that format; expected {}",
-                    mimeType,
-                    format->mimeType
-                )
-            );
+        // Change any referenced secondary MIME types to primaries
+        if (mimeType != format->mimeType) {
+            mimeType = format->mimeType;
         }
     }
+
     FC_TRACE(
         fmt::format(
             "Adding importer with module {} for [{}]",
@@ -374,10 +371,15 @@ std::vector<gsl::not_null<const FileImporter*>> Formats::importersForMimeType(
     const MimeType& mimeType
 ) const
 {
+    // Resolve secondary MIME types
+    const auto* format = formatByMimeType(mimeType);
     std::vector<gsl::not_null<const FileImporter*>> importers;
-    for (const auto& importer : _importers) {
-        if (importer->handlesMimeType(mimeType)) {
-            importers.emplace_back(importer.get());
+    if (format != nullptr) {
+        for (const auto& importer : _importers) {
+            if (std::ranges::find(importer->fileMimeTypes, format->mimeType)
+                != importer->fileMimeTypes.end()) {
+                importers.emplace_back(importer.get());
+            }
         }
     }
     return importers;
@@ -424,10 +426,10 @@ std::vector<gsl::not_null<const FileImporter*>> Formats::importersByModule(std::
 
 void Formats::addExporter(FileExporter exporter)
 {
-    for (const auto& mimeType : exporter.fileMimeTypes) {
+    for (auto& mimeType : exporter.fileMimeTypes) {
         const auto* format = formatByMimeType(mimeType);
         if (format == nullptr) {
-            throw std::invalid_argument(
+            throw Base::ValueError(
                 fmt::format(
                     "Can't register exporter for unknown format with MIME type {}, "
                     "did you forget to addFormat() first?",
@@ -435,15 +437,9 @@ void Formats::addExporter(FileExporter exporter)
                 )
             );
         }
-        if (format->mimeType != mimeType) {
-            throw std::invalid_argument(
-                fmt::format(
-                    "Exporter supports {} which is not the primary MIME "
-                    "type for that format; expected {}",
-                    mimeType,
-                    format->mimeType
-                )
-            );
+        // Change any referenced secondary MIME types to primaries
+        if (mimeType != format->mimeType) {
+            mimeType = format->mimeType;
         }
     }
     FC_TRACE(
@@ -470,10 +466,15 @@ std::vector<gsl::not_null<const FileExporter*>> Formats::exportersForMimeType(
     const MimeType& mimeType
 ) const
 {
+    // Resolve secondary MIME types
+    const auto* format = formatByMimeType(mimeType);
     std::vector<gsl::not_null<const FileExporter*>> exporters;
-    for (const auto& exporter : _exporters) {
-        if (exporter->handlesMimeType(mimeType)) {
-            exporters.emplace_back(exporter.get());
+    if (format != nullptr) {
+        for (const auto& exporter : _exporters) {
+            if (std::ranges::find(exporter->fileMimeTypes, format->mimeType)
+                != exporter->fileMimeTypes.end()) {
+                exporters.emplace_back(exporter.get());
+            }
         }
     }
     return exporters;

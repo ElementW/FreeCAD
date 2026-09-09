@@ -24,7 +24,6 @@
 #include <map>
 #include <memory>
 #include <optional>
-#include <regex>
 #include <string>
 #include <vector>
 
@@ -65,32 +64,35 @@ constexpr const auto Gif = "image/gif";
 constexpr const auto Jpeg = "image/jpeg";
 };  // namespace MimeTypes
 
-// Disable clang-tidy warning about exposed data members: these classes *are* mere data classes
-// and the presence of private members is only supporting code for legacy API compatibility.
-// The silencing of those warnings can be removed at the same time this support code will be.
-// NOLINTBEGIN(cppcoreguidelines-non-private-member-variables-in-classes)
+// NOLINTBEGIN(readability-redundant-member-init) Silence missing-designated-field-initializers
 
-class AppExport FileFormat final
+struct AppExport FileFormat final
 {
-public:
-    FileFormat() = default;
-    FileFormat(
-        std::string translatableName,
-        MimeType mimeType,
-        FileNamePatternList fileNamePatterns,
-        MimeTypeList secondaryMimeTypes = {}
-    )
-        : translatableName(std::move(translatableName))
-        , mimeType(std::move(mimeType))
-        , secondaryMimeTypes(std::move(secondaryMimeTypes))
-        , fileNamePatterns(std::move(fileNamePatterns))
-    {}
-
     /**
      * @brief Translated name for the format.
      * FreeCAD branding is automatically replaced. Only use for display purposes.
      */
     [[nodiscard]] std::string displayName() const;
+
+    /** Translatable (with context "FileFormat") name for the format. */
+    std::string translatableName;
+    /** IANA-registered (or most popular failing that) MIME type. */
+    MimeType mimeType;
+    /** Additional/alias MIME types. */
+    MimeTypeList secondaryMimeTypes = {};
+    /**
+     * Case-insensitive `glob()`-style file name patterns to aid in file type detection, including
+     * in open/save dialog boxes. Note those patterns match more than just file extensions and
+     * should *never* be reduced to extensions only.
+     * @example {"*.abc", "result_*.txt"}
+     */
+    FileNamePatternList fileNamePatterns;
+
+    // TODO: Can be extended with e.g.
+    // * format detection std::function<> (limited to 4k head and 4k tail data for performance)
+    //   to finally enable imports to not be extension-sensitive, as is expected of Linux software
+    // * QIcon holder (derived from QFileIconProvider or FreeCAD overrides)
+    // * etc
 
 #ifndef FC_NO_LEGACY_FORMAT_HANDLING
 private:
@@ -99,165 +101,99 @@ private:
     std::vector<std::string> getLegacyFileExtensions() const;
     bool matchesLegacyFileExtension(std::string_view extension) const;
 #endif  // FC_NO_LEGACY_FORMAT_HANDLING
-
-public:
-    /** Translatable (with context "FileFormat") name for the format. */
-    std::string translatableName;
-    /** IANA-registered (or most popular failing that) MIME type. */
-    MimeType mimeType;
-    /** Additional/alias MIME types. */
-    MimeTypeList secondaryMimeTypes;
-    /**
-     * `glob()`-style file name patterns to aid in file type detection, including in
-     * open/save dialog boxes. Note those patterns match more than just file extensions and should
-     * *never* be reduced to extensions only.
-     */
-    FileNamePatternList fileNamePatterns;
-
-    // Can be extended with e.g. format detection std::function<>, icon path, etc
 };
 
-struct AppExport FileAdapter
+struct AppExport FileAdapter final
 {
-    constexpr FileAdapter() = default;
-    FileAdapter(
-        std::string moduleName,
-        MimeTypeList fileMimeTypes,
-        std::string translatableSupportedFormatsText
-    )
-        : moduleName(std::move(moduleName))
-        , fileMimeTypes(std::move(fileMimeTypes))
-        , translatableSupportedFormatsText(std::move(translatableSupportedFormatsText))
-    {}
+    [[nodiscard]] FileNamePatternList getFileNamePatterns(const Formats& formats) const;
 
     /**
      * @brief Translated text for the supported formats collectively.
-     * FreeCAD branding is automatically replaced. Only use for display purposes.
+     * FreeCAD branding is automatically replaced.
+     * Only use for display purposes, do not store or use as map keys.
      */
     [[nodiscard]] std::string supportedFormatsText() const;
-    [[nodiscard]] bool handlesMimeType(std::string_view mimeType) const;
+    /**
+     * @brief Translated text for the import/export action itself.
+     * FreeCAD branding is automatically replaced.
+     * Only use for display purposes, do not store or use as map keys.
+     */
+    [[nodiscard]] std::string actionText() const;
+    /**
+     * @brief Translated text for importing @p n files.
+     * FreeCAD branding is automatically replaced.
+     * Only use for display purposes, do not store or use as map keys.
+     */
+    [[nodiscard]] std::string filesText(int n) const;
 
-    [[nodiscard]] FileNamePatternList getFileNamePatterns(const Formats& formats) const;
-
+    /**
+     * Arbitrary key that *can* (but is not guaranteed to) be used alphabetically on when
+     * displaying a list of file importers/exporters to the user, e.g. in file dialogs, to
+     * provide a more consistent and permanent order including across languages.
+     * When unspecified, the context-sensitive translated name will be used.
+     * Specify this **if and only if** there is one overarching file extension that's handled by
+     * this importer/exporter that's consistent across all languages.
+     * @example "xlsx" for "Excel 2007 Spreadsheet" (en) & "Tableur Excel 2007" (fr),
+     *          "step+color" for "STEP with colors" (en) & "STEP avec couleurs" (fr),
+     *          but unset for "Supported formats" (en) & "Formats supportés" (fr) as
+     *          "supported" is only logical in English.
+     */
+    std::string sortKey = {};
     /** Python module name to call to run this importer/exporter. */
     std::string moduleName;
     /**
-     * File type MIME identifiers this importer/exporter supports.
+     * File MIME types this importer/exporter supports.
      * File name patterns are derived automatically from this and the list of registered file types.
      */
     MimeTypeList fileMimeTypes;
+
     /**
      * Translatable (with context "FileFormat") text for the supported formats collectively.
      * Used in open/save dialog filters.
-     * @example "Vector images"
+     * @example "Vector images" (en)
      */
     std::string translatableSupportedFormatsText;
+    /**
+     * Translatable (with context "FileFormat") text for the general import/export action itself,
+     * to be used in contexts not concerning specific files, e.g. the toolbar editor.
+     * In languages that use them, sentences that use indefinite articles.
+     * @example "Import FEM simulation results" (en),
+     *          "Importer des résultats de simulation FEM" (fr),
+     *          "Export bodies as meshes" (en)
+     */
+    std::string translatableActionText;
+    /**
+     * Translatable (with context "FileFormat") text for importing/exporting N files,
+     * to be used in contexts where files are involved, e.g. file dialogs or the drag & drop
+     * import type disambiguation dialog.
+     * In languages that use them, sentences that use definite articles.
+     * Translations must support plural forms if applicable; "%1" is replaced by number of files.
+     * @example "Import %1 FEM simulation result file(s)" (en),
+     *          "Importer %1 fichiers de résultat de simulation FEM" (fr),
+     *          "Export %1 body/bodies as mesh(es)" (en)
+     */
+    std::string translatableFilesText;
 
     // TODO: Options here, like those of the STEP importer
-    // Could be embedded straight into the file modals
+    // Could be embedded straight into the file modals on
+    // Win32 (IFileDialogCustomize) & non-native dialogs
 
 #ifndef FC_NO_LEGACY_FORMAT_HANDLING
+public:
+    // Making this private would make FileAdapter a non-aggregate,
+    // therefore unable to be constructed with designated initializers.
+    std::string originalLegacyFileFilter = {};
+
 private:
     friend Formats;
     std::string getLegacyFileFilter(const Formats& formats) const;
-    std::string originalLegacyFileFilter;
-    bool createdFromLegacy = false;
 #endif  // FC_NO_LEGACY_FORMAT_HANDLING
 };
 
-struct AppExport FileImporter final: public FileAdapter
-{
-    constexpr FileImporter() = default;
-    FileImporter(
-        std::string moduleName,
-        MimeTypeList fileMimeTypes,
-        std::string translatableSupportedFormatsText,
-        std::string translatableImportActionText,
-        std::string translatableImportFilesText
-    )
-        : FileAdapter(
-              std::move(moduleName),
-              std::move(fileMimeTypes),
-              std::move(translatableSupportedFormatsText)
-          )
-        , translatableImportActionText(std::move(translatableImportActionText))
-        , translatableImportFilesText(std::move(translatableImportFilesText))
-    {}
+using FileImporter = FileAdapter;
+using FileExporter = FileAdapter;
 
-    /**
-     * @brief Translated text for the import action itself.
-     * FreeCAD branding is automatically replaced. Only use for display purposes.
-     */
-    [[nodiscard]] std::string importActionText() const;
-    /**
-     * @brief Translated text for importing @p n files.
-     * FreeCAD branding is automatically replaced. Only use for display purposes.
-     */
-    [[nodiscard]] std::string importFilesText(int n) const;
-
-    /**
-     * Translatable (with context "FileFormat") text for the general import action itself.
-     * In languages that use them, sentences that use indefinite articles.
-     * @example "Import FEM simulation results" (en),
-     *          "Importer des résultats de simulation FEM" (fr)
-     */
-    std::string translatableImportActionText;
-    /**
-     * Translatable (with context "FileFormat") text for importing N files.
-     * In languages that use them, sentences that use definite articles.
-     * Translations must support plural forms if applicable; "%1" is replaced by number of files.
-     * @example "Import %1 FEM simulation result file(s)" (en)
-     *          "Importer %1 fichiers de résultat de simulation FEM" (fr)
-     */
-    std::string translatableImportFilesText;
-};
-
-struct AppExport FileExporter final: public FileAdapter
-{
-    constexpr FileExporter() = default;
-    FileExporter(
-        std::string moduleName,
-        MimeTypeList fileMimeTypes,
-        std::string translatableSupportedFormatsText,
-        std::string translatableExportActionText,
-        std::string translatableExportFilesText
-    )
-        : FileAdapter(
-              std::move(moduleName),
-              std::move(fileMimeTypes),
-              std::move(translatableSupportedFormatsText)
-          )
-        , translatableExportActionText(std::move(translatableExportActionText))
-        , translatableExportFilesText(std::move(translatableExportFilesText))
-    {}
-
-    /**
-     * @brief Translated text for the export action itself.
-     * FreeCAD branding is automatically replaced. Only use for display purposes.
-     */
-    [[nodiscard]] std::string exportActionText() const;
-    /**
-     * @brief Translated text for exporting @p n files.
-     * FreeCAD branding is automatically replaced. Only use for display purposes.
-     */
-    [[nodiscard]] std::string exportFilesText(int n) const;
-
-    /**
-     * Translatable (with context "FileFormat") text for the general export action itself.
-     * In languages that use them, sentences that use indefinite articles.
-     * @example "Export body as mesh"
-     */
-    std::string translatableExportActionText;
-    /**
-     * Translatable (with context "FileFormat") text for exporting N files.
-     * In languages that use them, sentences that use definite articles.
-     * Translations must support plural forms if applicable; "%1" is replaced by number of files.
-     * @example "Export %1 body/ies as meshe(s)"
-     */
-    std::string translatableExportFilesText;
-};
-
-// NOLINTEND(cppcoreguidelines-non-private-member-variables-in-classes)
+// NOLINTEND(readability-redundant-member-init)
 
 class AppExport Formats final
 {
@@ -266,6 +202,8 @@ public:
         : Formats(true)
     {}
     explicit Formats(bool populateDefaultFormats);
+    ~Formats();
+    FC_DISABLE_COPY_MOVE(Formats);
 
     /// @name Formats
     /// @{
@@ -275,25 +213,29 @@ public:
      * If the format is already known, the properties passed will be merged with the existing entry.
      * @returns `true` if the format was new and added, `false` if it was already known.
      * @throws Base::ParserError if a file name pattern of the format is invalid.
+     * @throws Base::IndexError if too many formats are registered.
+     * @throws Base::ValueError if the main MIME type of the format is a secondary
+     *         type of another known format.
+     * @throws Base::ValueError if any secondary MIME type of the format is the primary
+     *         or a secondary type of another known format.
      */
     bool addFormat(FileFormat format);
     /**
      * @brief Get all known formats.
-     * Lifetime: elements remain valid until destruction of the parents `Formats`.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
      */
     [[nodiscard]] std::vector<gsl::not_null<const FileFormat*>> formats() const;
     /**
      * @brief Find the format with the given MIME type.
-     * Lifetime: elements remain valid until destruction of the parents `Formats`.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
      * @return Pointer to format, or `nullptr` if no such format is known.
      */
-    [[nodiscard]] const FileFormat* formatByMimeType(const MimeType& mimeType) const;
+    [[nodiscard]] const FileFormat* formatByMimeType(const MimeType& mimeType) const noexcept;
     /**
      * @brief Get formats matching the given file name.
-     * Lifetime: elements remain valid until destruction of the parents `Formats`.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
      * @param name Full name (not path) of the file to figure out potential formats of.
-     *        *Never* pass a truncated file name or extension only; as this will fail to match
-     * formats.
+     *        *Never* pass a truncated file name or extension only; format matching will fail.
      */
     [[nodiscard]] std::vector<gsl::not_null<const FileFormat*>> formatsForFileName(
         std::string_view name
@@ -306,14 +248,25 @@ public:
 
     /**
      * @brief Register an importer, associating one or more file formats to a Python module name.
-     * @throws std::invalid_argument if any of the importer's handled MIME types matches no known
-     *         FileFormat.
+     * @throws Base::ValueError if any of the handled MIME types matches no known FileFormat.
      */
     void addImporter(FileImporter importer);
+    /**
+     * @brief List all known importers.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
+     */
     [[nodiscard]] std::vector<gsl::not_null<const FileImporter*>> importers() const;
+    /**
+     * @brief List all known importers able to handle a given MIME type.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
+     */
     [[nodiscard]] std::vector<gsl::not_null<const FileImporter*>> importersForMimeType(
         const MimeType& mimeType
     ) const;
+    /**
+     * @brief List all known importers able to handle a given `FileFormat`.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
+     */
     [[nodiscard]] std::vector<gsl::not_null<const FileImporter*>> importersForFormat(
         const FileFormat& format
     ) const
@@ -322,10 +275,9 @@ public:
     }
     /**
      * @brief Get importers able to import a file with the given file name.
-     * Lifetime: elements remain valid until destruction of the parents `Formats`.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
      * @param name Full name (not path) of the file to be imported.
-     *        *Never* pass a truncated file name or extension only; as this will fail to match
-     *        importers.
+     *        *Never* pass a truncated file name or extension only; importer matching will fail.
      */
     [[nodiscard]] std::vector<gsl::not_null<const FileImporter*>> importersForFileName(
         std::string_view name
@@ -333,7 +285,7 @@ public:
     [[nodiscard]] std::vector<gsl::not_null<const FileFormat*>> supportedImportFormats() const;
     /**
      * @brief Get the importers with a given Python module name.
-     * Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
      */
     [[nodiscard]] std::vector<gsl::not_null<const FileImporter*>> importersByModule(
         std::string_view module
@@ -346,14 +298,26 @@ public:
 
     /**
      * @brief Register an exporter, associating one or more file formats to a Python module name.
-     * @throws std::invalid_argument if any of the importer's handled MIME types matches no known
-     *         FileFormat.
+     * @throws Base::ValueError if any of the handled MIME types matches no known FileFormat.
      */
     void addExporter(FileExporter exporter);
+    /**
+     * @brief List all known exporters.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
+     *
+     */
     [[nodiscard]] std::vector<gsl::not_null<const FileExporter*>> exporters() const;
+    /**
+     * @brief List all known exporters able to handle a given MIME type.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
+     */
     [[nodiscard]] std::vector<gsl::not_null<const FileExporter*>> exportersForMimeType(
         const MimeType& mimeType
     ) const;
+    /**
+     * @brief List all known exporters able to handle a given `FileFormat`.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
+     */
     [[nodiscard]] std::vector<gsl::not_null<const FileExporter*>> exportersForFormat(
         const FileFormat& format
     ) const
@@ -362,10 +326,9 @@ public:
     }
     /**
      * @brief Get exporters able to export to a file with the given file name.
-     * Lifetime: elements remain valid until destruction of the parents `Formats`.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
      * @param name Full name (not path) of the file to be exported to.
-     *        *Never* pass a truncated file name or extension only; as this will fail to match
-     *        exporters.
+     *        *Never* pass a truncated file name or extension only; exporter matching will fail.
      */
     [[nodiscard]] std::vector<gsl::not_null<const FileExporter*>> exportersForFileName(
         std::string_view name
@@ -373,7 +336,7 @@ public:
     [[nodiscard]] std::vector<gsl::not_null<const FileFormat*>> supportedExportFormats() const;
     /**
      * @brief Get the exporters with a given Python module name.
-     * Lifetime: invalidated when addFormat(), addImporter(), or addExporter() is called.
+     * Lifetime: elements remain valid until destruction of this `Formats`.
      */
     [[nodiscard]] std::vector<gsl::not_null<const FileExporter*>> exportersByModule(
         std::string_view module
@@ -409,11 +372,7 @@ private:
 
 private:
     using FormatInfoIndex = uint16_t;
-    struct FormatInfo
-    {
-        FileFormat format;
-        std::regex fileNameRegex;
-    };
+    struct FormatInfo;
     std::vector<std::unique_ptr<FormatInfo>> _formatInfos;
     std::map<MimeType, FormatInfoIndex> _mimeToInfoIndex;
     std::vector<std::unique_ptr<FileImporter>> _importers;
