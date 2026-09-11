@@ -27,16 +27,19 @@
 using namespace App;
 
 
+// returns a string which represents the object e.g. when printed in python
 std::string FileFormatPy::representation() const
 {
     return {"<FileFormat object>"};
 }
 
-Py::String FileFormatPy::getDisplayName() const
+PyObject* FileFormatPy::getDisplayName(PyObject *args) const
 {
-    //return Py::String();
-    throw Py::AttributeError("Not yet implemented");
+    PyErr_SetString(PyExc_NotImplementedError, "Not yet implemented");
+    return nullptr;
 }
+
+
 
 Py::String FileFormatPy::getTranslatableName() const
 {
@@ -50,15 +53,15 @@ Py::Object FileFormatPy::getMimeType() const
     throw Py::AttributeError("Not yet implemented");
 }
 
-Py::Object FileFormatPy::getSecondaryMimeTypes() const
+Py::Sequence FileFormatPy::getSecondaryMimeTypes() const
 {
-    //return Py::Object();
+    //return Py::Sequence();
     throw Py::AttributeError("Not yet implemented");
 }
 
-Py::Object FileFormatPy::getFileNamePatterns() const
+Py::Sequence FileFormatPy::getFileNamePatterns() const
 {
-    //return Py::Object();
+    //return Py::Sequence();
     throw Py::AttributeError("Not yet implemented");
 }
 
