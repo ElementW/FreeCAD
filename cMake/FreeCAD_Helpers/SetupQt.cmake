@@ -35,6 +35,16 @@ foreach(COMPONENT IN LISTS FREECAD_QT_COMPONENTS)
     set(Qt${COMPONENT}_VERSION ${Qt${FREECAD_QT_MAJOR_VERSION}${COMPONENT}_VERSION})
 endforeach()
 
+if(LINUX AND BUILD_GUI)
+    set(REMOVE_GL_QT_COMPONENTS "${FREECAD_QT_COMPONENTS}")
+    list(TRANSFORM REMOVE_GL_QT_COMPONENTS PREPEND "Qt${FREECAD_QT_MAJOR_VERSION}::")
+    alter_opengl_linkage(
+        TARGETS "${REMOVE_GL_QT_COMPONENTS}" WrapOpenGL::WrapOpenGL
+        REMOVE GLX
+        KEEP GL EGL
+    )
+endif()
+
 if(Qt${FREECAD_QT_MAJOR_VERSION}Core_VERSION VERSION_LESS 5.13.0)
     message(FATAL_ERROR [[
      ******************************************************************

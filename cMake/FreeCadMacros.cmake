@@ -468,3 +468,48 @@ function(hdf5_clean_fortify_source)
         hdf5-static hdf5-shared
     )
 endfunction()
+
+# Usage:
+#   alter_opengl_linkage(
+#     [TARGETS target1 target2...]
+#     [REMOVE GL GLX EGL]
+#     [KEEP GL GLX EGL]
+#   )
+function(alter_opengl_linkage)
+    cmake_parse_arguments(arg "" "" "TARGETS;REMOVE;KEEP" ${ARGN})
+    foreach(target IN LISTS arg_TARGETS)
+        if(TARGET "${target}")
+            get_target_property(alias_target "${target}" ALIASED_TARGET)
+            # Variable value will be "alias_target-NOTFOUND" if not an alias, which `if` considers falsy
+            if(alias_target)
+                set(target "${alias_target}")
+            endif()
+            get_target_property(target_interface_link_libs "${target}" INTERFACE_LINK_LIBRARIES)
+            get_target_property(target_link_libs "${target}" LINK_LIBRARIES)
+            message(STATUS "${target}:")
+            message(STATUS "  INTERFACE_LINK_LIBRARIES ${target_interface_link_libs} & LINK_LIBRARIES ${target_link_libs}")
+            if(GL IN_LIST arg_REMOVE)
+                list(REMOVE_ITEM target_interface_link_libs GL OpenGL::GL OpenGL OpenGL::OpenGL)
+                list(REMOVE_ITEM target_link_libs GL OpenGL::GL OpenGL OpenGL::OpenGL)
+            endif()
+            if(GLX IN_LIST arg_REMOVE)
+                list(REMOVE_ITEM target_interface_link_libs GLX OpenGL::GLX)
+                list(REMOVE_ITEM target_link_libs GLX OpenGL::GLX)
+            endif()
+            if(EGL IN_LIST arg_REMOVE)
+                list(REMOVE_ITEM target_interface_link_libs EGL OpenGL::EGL)
+                list(REMOVE_ITEM target_link_libs EGL OpenGL::EGL)
+            endif()
+            # These conditions are written like this because an empty string is falsy,
+            # yet if we end up with such a string we still want to set it as property value.
+            if(NOT target_interface_link_libs MATCHES "-NOTFOUND$")
+                set_target_properties("${target}" PROPERTIES INTERFACE_LINK_LIBRARIES "${target_interface_link_libs}")
+            endif()
+            if(NOT target_link_libs MATCHES "-NOTFOUND$")
+                set_target_properties("${target}" PROPERTIES LINK_LIBRARIES "${target_link_libs}")
+            endif()
+            message(STATUS "  INTERFACE_LINK_LIBRARIES ${target_interface_link_libs} & LINK_LIBRARIES ${target_link_libs}")
+        endif()
+    endforeach()
+    message(DEBUG "Removed ${arg_REMOVE} from ${arg_TARGETS}")
+endfunction()

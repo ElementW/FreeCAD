@@ -33,6 +33,14 @@ macro(SetupCoin3D)
         set(COIN3D_MICRO_VERSION "${CMAKE_MATCH_1}")
         set(COIN3D_VERSION "${COIN3D_MAJOR_VERSION}.${COIN3D_MINOR_VERSION}.${COIN3D_MICRO_VERSION}")
     ENDIF ()
+
+    if(LINUX)
+        alter_opengl_linkage(
+            TARGETS Coin::Coin
+            REMOVE GLX
+            KEEP GL EGL
+        )
+    endif()
 endmacro(SetupCoin3D)
 
 macro(SetupPivy)
@@ -114,6 +122,10 @@ macro(SetupBundledCoinPivy)
     set(USE_EXTERNAL_EXPAT ON CACHE BOOL "Use system Expat for bundled Coin" FORCE)
     set(FREETYPE_RUNTIME_LINKING OFF CACHE BOOL "Disable FreeType runtime linking for bundled Coin" FORCE)
     set(COIN_BUILD_TESTS OFF CACHE BOOL "Build bundled Coin tests" FORCE)
+    if(LINUX)
+        set(COIN_BUILD_GLX OFF CACHE BOOL "Disable the GLX backend on Linux to always use EGL instead" FORCE)
+        set(HAVE_GLX OFF CACHE BOOL "Shunt Coin's GLX detection" FORCE)
+    endif()
     set(COIN_INSTALL OFF CACHE BOOL "Disable standalone install rules for bundled Coin" FORCE)
     add_subdirectory("${CMAKE_SOURCE_DIR}/src/3rdParty/coin" "${CMAKE_BINARY_DIR}/src/3rdParty/coin")
     if (NOT DEFINED COIN_VERSION OR COIN_VERSION STREQUAL "")
@@ -152,6 +164,15 @@ macro(SetupBundledCoinPivy)
     if (NOT DEFINED PIVY_VERSION OR PIVY_VERSION STREQUAL "")
         message(FATAL_ERROR "Bundled Pivy did not define PIVY_VERSION")
     endif ()
+
+    if(LINUX)
+        # Alter the OpenGL linkage to allow proper GL loading on AppImages.
+        alter_opengl_linkage(
+            TARGETS Coin
+            REMOVE GLX
+            KEEP GL EGL
+        )
+    endif()
 endmacro(SetupBundledCoinPivy)
 
 macro(SetupCoinPivy)
