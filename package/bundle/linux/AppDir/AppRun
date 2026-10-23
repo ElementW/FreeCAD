@@ -92,6 +92,10 @@ export XKB_CONFIG_EXTRA_PATH="${XKB_CONFIG_EXTRA_PATH:-${PREFIX}/share/xkeyboard
 # included. Those obviously lead to nowhere on any user system, and causes fallbacks to antiquated X11 cursors.
 export XCURSOR_PATH="${XCURSOR_PATH:-~/.local/share/icons:~/.icons:/usr/share/icons:/usr/share/pixmaps:${PREFIX}/share/icons:${PREFIX}/share/pixmaps}"
 
+# Use EGL to initialize OpenGL, even on X11. Upon failure, its Qt integration
+# does not crash the entire process with a `qFatal()` call like the GLX one does.
+export QT_XCB_GL_INTEGRATION="${QT_XCB_GL_INTEGRATION:-xcb_egl}"
+
 # Show packages info if DEBUG env variable is set
 if [ "${DEBUG:-}" = 1 ]; then
     cat "${HERE}/packages.txt"

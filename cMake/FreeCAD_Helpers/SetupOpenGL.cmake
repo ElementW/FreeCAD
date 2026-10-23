@@ -7,7 +7,8 @@ macro(SetupOpenGL)
     # as it has been available even on X11 as far back as 2013, and offers strictly
     # no advantage over EGL considering we do not support indirect rendering contexts.
     # EGL provides proper VRAM accounting (due to the DRI contexts being owned by the
-    # calling proces and not the X server).
+    # calling proces and not the X server), and can work across ld.so namespaces
+    # (see `dlmopen(3)`) whereas libGLX can't.
     if(LINUX)
         set(OPENGL_USE_EGL TRUE CACHE BOOL "Remove GLX support" FORCE)
         set(OPENGL_USE_GLX FALSE CACHE BOOL "Remove GLX support" FORCE)

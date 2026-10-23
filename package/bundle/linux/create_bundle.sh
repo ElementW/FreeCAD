@@ -36,12 +36,12 @@ sed -i 's/Exec=FreeCAD/Exec=AppRun/g' AppDir/org.freecad.FreeCAD.desktop
 cp ${conda_env}/share/icons/hicolor/scalable/apps/org.freecad.FreeCAD.svg AppDir/
 
 # Remove __pycache__ folders and .pyc files
-find . -path "*/__pycache__/*" -delete
-find . -name "*.pyc" -type f -delete
+find ${conda_env} -path "*/__pycache__/*" -delete
+find ${conda_env} -name "*.pyc" -type f -delete
 
 # reduce size
+rm -rf ${conda_env}/__clobbers__
 rm -rf ${conda_env}/conda
-rm -rf ${conda_env}/conda-meta
 rm -rf ${conda_env}/doc
 rm -rf ${conda_env}/etc/conda
 rm -rf ${conda_env}/lib/clang
@@ -60,7 +60,7 @@ rm -rf ${conda_env}/lib/libclang-cpp.so.*
 rm -rf ${conda_env}/lib/libclang.so.*
 rm -rf ${conda_env}/lib/libLLVM-*.so
 rm -rf ${conda_env}/lib/libLLVM.so.*
-rm -rf ${conda_env}/lib/libdrm*.so*
+rm -rf ${conda_env}/lib/libQt6Wayland*Compositor*
 rm -rf ${conda_env}/lib/node_modules
 rm -rf ${conda_env}/lib/objects-Release
 rm -rf ${conda_env}/lib/perl5
@@ -93,8 +93,33 @@ rm -rf ${conda_env}/share/vim
 rm -rf ${conda_env}/aarch64-conda-linux-gnu
 rm -rf ${conda_env}/x86_64-conda-linux-gnu
 
-find . -name "*.h" -type f -delete
-find . -name "*.cmake" -type f -delete
+echo "Fixing up OpenGL..."
+# You can check for libraries linking libGLX with the following command:
+# find -name '*.so*' -type f -exec readelf -Wd \{\} \+ 2>/dev/null | grep -E '^File: |libGLX\.' | grep -B1 'libGLX\.'
+# And use the following for libraries referencing its symbols:
+# find -name '*.so*' -type f -exec readelf -Ws \{\} \+ 2>/dev/null | grep -E '^File: |UND glX' | grep -B1 'UND glX'
+# libxcb needs to be forwarded because its X11 request ID generator relies on global state,
+# and is used directly by the X11 backend of Mesa's EGL.
+./SystemLoader/build.py \
+    --loader-output ${conda_env}/lib/libFCSystemLoader.so \
+    --crash \
+        ${conda_env}/lib/libGLX.* \
+    --forward \
+        ${conda_env}/lib/libGL.* \
+        ${conda_env}/lib/libEGL.* \
+        ${conda_env}/lib/libOpenGL.* \
+        ${conda_env}/lib/libxcb.* \
+        ${conda_env}/lib/libxcb-*.* \
+# The following end up no longer referenced after the library substitutions above
+rm -rf \
+    ${conda_env}/lib/libdrm*.so* \
+    ${conda_env}/lib/libGLdispatch.* \
+    ${conda_env}/lib/libEGL_mesa.*
+
+find ${conda_env} -name "*.h" -type f -delete
+find ${conda_env} -name "*.cmake" -type f -delete
+
+rm -rf ${conda_env}/conda-meta
 
 version_name="FreeCAD_${BUILD_TAG}-Linux-$(uname -m)"
 
